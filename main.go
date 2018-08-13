@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/urfave/cli"
@@ -20,14 +22,12 @@ import (
 
 */
 
-// see: TODO
-type Auth0OAuthRequest struct {
-	ClientID   string `json:"client_id"`
-	Connection string `json:"connection"`
-	Username   string `json:"username"`
-	Password   string `json:"password"`
-	GrantType  string `json:"grant_type"`
-	Scope      string `json:"scope"`
+// see: https://auth0.com/docs/api/authentication#login
+type Auth0OLoginRequest struct {
+	ResponseType string `json:"response_type"`
+	ClientID     string `json:"client_id"`
+	RedirectURI  string `json:"redirect_uri"`
+	// todo: connection? state?
 }
 
 // see: TODO
@@ -37,7 +37,7 @@ type Auth0OAuthResponse struct {
 
 // see: https://auth0.com/docs/user-profile/user-profile-structure
 type Auth0Profile struct {
-	UserID string `json:"user_id"`
+	UserID   string `json:"user_id"`
 	Username string `json:"username"`
 }
 
@@ -62,14 +62,12 @@ func WriteTokenReview(w http.ResponseWriter, status authentication.TokenReviewSt
 }
 
 const (
-	FlagPort            = "port"
-	EVPort              = "ORCA_PORT"
-	FlagAuth0Domain     = "auth0-domain"
-	EVAuth0Domain       = "ORCA_AUTH0_DOMAIN"
-	FlagAuth0ClientID   = "auth0-client-id"
-	EVAuth0ClientID     = "ORCA_AUTH0_CLIENT_ID"
-	FlagAuth0Connection = "auth0-connection"
-	EVAuth0Connection   = "ORCA_AUTH0_CONNECTION"
+	FlagPort          = "port"
+	EVPort            = "ORCA_PORT"
+	FlagAuth0Domain   = "auth0-domain"
+	EVAuth0Domain     = "ORCA_AUTH0_DOMAIN"
+	FlagAuth0ClientID = "auth0-client-id"
+	EVAuth0ClientID   = "ORCA_AUTH0_CLIENT_ID"
 )
 
 func main() {
@@ -90,17 +88,12 @@ func main() {
 			Name:   FlagAuth0ClientID,
 			EnvVar: EVAuth0ClientID,
 		},
-		cli.StringFlag{
-			Name:   FlagAuth0Connection,
-			EnvVar: EVAuth0Connection,
-		},
 	}
 
 	app.Before = func(c *cli.Context) error {
 		requiredFlags := []string{
 			FlagAuth0Domain,
 			FlagAuth0ClientID,
-			FlagAuth0Connection,
 		}
 
 		for _, flag := range requiredFlags {
@@ -115,40 +108,31 @@ func main() {
 	app.Action = func(c *cli.Context) error {
 		client := rclient.NewRestClient(c.String(FlagAuth0Domain))
 
+		http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
+			b, _ := ioutil.ReadAll(r.Body)
+			w.Write(b)
+		})
+
 		http.HandleFunc("/token", func(w http.ResponseWriter, r *http.Request) {
-			user, pass, ok := r.BasicAuth()
-			if !ok {
-				w.Header().Set("WWW-Authenticate", "Basic realm=\"Restricted\"")
-				w.WriteHeader(401)
-				w.Write([]byte("Unauthorized\n"))
-				return
+			query := url.Values{}
+			query.Set("response_type", "token")
+			query.Set("client_id", c.String(FlagAuth0ClientID))
+			// todo: use non-hardcoded callback
+			query.Set("redirect_uri", "http://localhost:9090/echo")
+
+			// todo: use State param to prevent CSRF attacks. 
+			url := url.URL{
+				Scheme:   "HTTPS",
+				Host:     c.String(FlagAuth0Domain),
+				Path:     "/authorize",
+				RawQuery: query.Encode(),
 			}
 
-			req := Auth0OAuthRequest{
-				ClientID:   c.String(FlagAuth0ClientID),
-				Connection: c.String(FlagAuth0Connection),
-				Username:   user,
-				Password:   pass,
-				GrantType:  "password",
-				Scope:      "openid",
-			}
-
-			var resp Auth0OAuthResponse
-			if err := client.Post("/oauth/ro", req, &resp); err != nil {
-				log.Println("[ERROR]", err.Error())
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			w.WriteHeader(http.StatusOK)
-			if _, err := w.Write([]byte(resp.AccessToken)); err != nil {
-				log.Println("[ERROR]", err.Error())
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
+			http.Redirect(w, r, url.String(), http.StatusTemporaryRedirect)
 		})
 
 		http.HandleFunc("/authenticate", func(w http.ResponseWriter, r *http.Request) {
+			defer r.Body.Close()
 			var tr authentication.TokenReview
 			if err := json.NewDecoder(r.Body).Decode(&tr); err != nil {
 				log.Println("[ERROR]", err.Error())

@@ -11,11 +11,13 @@ import (
 )
 
 const (
-	FlagLocal = "local"
+	FlagInCluster  = "in-cluster"
+	FlagKubeconfig = "kubeconfig"
 )
 
 const (
-	EVLocal = "OP_LOCAL"
+	EVInCluster  = "OP_INCLUSTER"
+	EVKubeconfig = "KUBECONFIG"
 )
 
 func main() {
@@ -23,16 +25,21 @@ func main() {
 	app.Name = "orca-proxy"
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
-			Name:   FlagLocal,
-			EnvVar: EVLocal,
+			Name:   FlagInCluster,
+			EnvVar: EVInCluster,
+		},
+		cli.StringFlag{
+			Name:   FlagKubeconfig,
+			EnvVar: EVKubeconfig,
+			Value:  fmt.Sprintf("%s/.kube/config", os.Getenv("HOME")),
 		},
 	}
 
 	app.Action = func(c *cli.Context) error {
 		getConfig := rest.InClusterConfig
-		if c.Bool(FlagLocal) {
+		if !c.Bool(FlagInCluster) {
 			getConfig = func() (*rest.Config, error) {
-				return clientcmd.BuildConfigFromFlags("", os.Getenv("KUBECONFIG"))
+				return clientcmd.BuildConfigFromFlags("", c.String(FlagKubeconfig))
 			}
 		}
 

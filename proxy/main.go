@@ -3,20 +3,27 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/quintilesims/orca/proxy/controllers"
 	"github.com/urfave/cli"
+	"github.com/zpatrick/handler"
+	"github.com/zpatrick/router"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
 const (
+	FlagPort       = "port"
 	FlagInCluster  = "in-cluster"
 	FlagKubeconfig = "kubeconfig"
 )
 
 const (
-	EVInCluster  = "OP_INCLUSTER"
+	EVPort       = "OP_PORT"
+	EVInCluster  = "OP_IN_CLUSTER"
 	EVKubeconfig = "KUBECONFIG"
 )
 
@@ -24,6 +31,11 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "orca-proxy"
 	app.Flags = []cli.Flag{
+		cli.IntFlag{
+			Name:   FlagPort,
+			EnvVar: EVPort,
+			Value:  9090,
+		},
 		cli.BoolFlag{
 			Name:   FlagInCluster,
 			EnvVar: EVInCluster,
@@ -48,42 +60,38 @@ func main() {
 			return err
 		}
 
-		fmt.Println(config)
-		return nil
+		config.Impersonate = rest.ImpersonationConfig{
+			UserName: "test-user",
+			Groups:   []string{},
+			Extra:    map[string][]string{},
+		}
+
+		client, err := kubernetes.NewForConfig(config)
+		if err != nil {
+			return err
+		}
+
+		rt, err := rest.TransportFor(config)
+		if err != nil {
+			return err
+		}
+
+		proxy := controllers.NewProxyController(client)
+		rm := router.RouteMap{
+			"/api/v1/namespaces/": router.MethodHandlers{
+				http.MethodGet: handler.Constructor(proxy.ListNamespaces),
+			},
+		}
+
+		rm.ApplyMiddleware(router.LoggingMiddleware())
+		router := router.NewRouter(rm.VariableMatch())
+
+		addr := fmt.Sprintf("0.0.0.0:%d", c.Int("port"))
+		log.Printf("[INFO] Listening on %s\n", addr)
+		return http.ListenAndServe(addr, router)
 	}
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
-	/*
-
-		// todo: flags to switch between in-cluster and local development?
-		config, err := rest.InClusterConfig()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// https://github.com/kubernetes/client-go/blob/02384dbe123ff097a279965297f327a72ebefb72/transport/round_trippers.go#L100
-		// https://github.com/kubernetes/client-go/blob/02384dbe123ff097a279965297f327a72ebefb72/transport/transport.go
-		handler := func(w http.ResponseWriter, r *http.Request) {
-			// todo: update config.Impersonate with data from request header
-
-			// todo: should this use transport.TLSConfigFor ?
-			rt, err := transport.New(config)
-			if err != nil {
-				log.Println(err.Error())
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-		}
-
-		rp := httputil.NewSingleHostReverseProxy("") // todo: config.BaseURL?
-
-		// whenever a request comes in:
-		rt, err := transport.HTTPWrappersForConfig(config, rt)
-		if err != nil {
-			log.Fatal(err)
-		}
-	*/
-
 }

@@ -4,27 +4,29 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
+	"strings"
 
-	"github.com/quintilesims/orca/proxy/controllers"
+	"github.com/quintilesims/auth0"
 	"github.com/urfave/cli"
-	"github.com/zpatrick/handler"
-	"github.com/zpatrick/router"
-	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
 const (
-	FlagPort       = "port"
-	FlagInCluster  = "in-cluster"
-	FlagKubeconfig = "kubeconfig"
+	FlagPort        = "port"
+	FlagAuth0Domain = "auth0-domain"
+	FlagInCluster   = "in-cluster"
+	FlagKubeconfig  = "kubeconfig"
 )
 
 const (
-	EVPort       = "OP_PORT"
-	EVInCluster  = "OP_IN_CLUSTER"
-	EVKubeconfig = "KUBECONFIG"
+	EVPort        = "OP_PORT"
+	EVAuth0Domain = "OP_AUTH0_DOMAIN"
+	EVInCluster   = "OP_IN_CLUSTER"
+	EVKubeconfig  = "KUBECONFIG"
 )
 
 func main() {
@@ -35,6 +37,11 @@ func main() {
 			Name:   FlagPort,
 			EnvVar: EVPort,
 			Value:  9090,
+		},
+		cli.StringFlag{
+			Name:   FlagAuth0Domain,
+			EnvVar: EVAuth0Domain,
+			Value:  "imshealth.auth0.com",
 		},
 		cli.BoolFlag{
 			Name:   FlagInCluster,
@@ -60,35 +67,45 @@ func main() {
 			return err
 		}
 
-		config.Impersonate = rest.ImpersonationConfig{
-			UserName: "test-user",
-			Groups:   []string{},
-			Extra:    map[string][]string{},
-		}
+		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
+		proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+			if token == "" {
+				log.Printf("[INFO] Request missing Authorization Header")
+				http.Error(w, "Missing Authorization Header", http.StatusUnauthorized)
+				return
+			}
 
-		client, err := kubernetes.NewForConfig(config)
-		if err != nil {
-			return err
-		}
+			profile, err := auth0.GetProfile(token)
+			if err != nil {
+				log.Printf("[ERROR] Failed to exchange Auth0 token: %v", err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 
-		rt, err := rest.TransportFor(config)
-		if err != nil {
-			return err
-		}
+			config.Impersonate = rest.ImpersonationConfig{
+				UserName: profile.Email,
+			}
 
-		proxy := controllers.NewProxyController(client)
-		rm := router.RouteMap{
-			"/api/v1/namespaces/": router.MethodHandlers{
-				http.MethodGet: handler.Constructor(proxy.ListNamespaces),
-			},
-		}
+			transport, err := rest.TransportFor(config)
+			if err != nil {
+				log.Printf("[ERROR] Failed to create transport: %v", err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 
-		rm.ApplyMiddleware(router.LoggingMiddleware())
-		router := router.NewRouter(rm.VariableMatch())
+			rp := httputil.NewSingleHostReverseProxy(&url.URL{
+				Host:   strings.TrimPrefix(config.Host, "https://"),
+				Scheme: "https",
+			})
+
+			rp.Transport = transport
+			rp.ServeHTTP(w, r)
+		})
 
 		addr := fmt.Sprintf("0.0.0.0:%d", c.Int("port"))
 		log.Printf("[INFO] Listening on %s\n", addr)
-		return http.ListenAndServe(addr, router)
+		return http.ListenAndServe(addr, proxy)
 	}
 
 	if err := app.Run(os.Args); err != nil {

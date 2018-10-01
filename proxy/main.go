@@ -55,6 +55,8 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
+		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
+
 		getConfig := rest.InClusterConfig
 		if !c.Bool(FlagInCluster) {
 			getConfig = func() (*rest.Config, error) {
@@ -67,8 +69,12 @@ func main() {
 			return err
 		}
 
-		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
-		proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		reverseProxy := httputil.NewSingleHostReverseProxy(&url.URL{
+			Host:   strings.TrimPrefix(config.Host, "https://"),
+			Scheme: "https",
+		})
+
+		handler := func(w http.ResponseWriter, r *http.Request) {
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 			if token == "" {
 				log.Printf("[INFO] Request missing Authorization Header")
@@ -76,6 +82,8 @@ func main() {
 				return
 			}
 
+			// todo: return http.StatusUnauthorized if that is error returned by Auth0
+			// todo: cache tokens
 			profile, err := auth0.GetProfile(token)
 			if err != nil {
 				log.Printf("[ERROR] Failed to exchange Auth0 token: %v", err)
@@ -94,18 +102,13 @@ func main() {
 				return
 			}
 
-			rp := httputil.NewSingleHostReverseProxy(&url.URL{
-				Host:   strings.TrimPrefix(config.Host, "https://"),
-				Scheme: "https",
-			})
-
-			rp.Transport = transport
-			rp.ServeHTTP(w, r)
-		})
+			reverseProxy.Transport = transport
+			reverseProxy.ServeHTTP(w, r)
+		}
 
 		addr := fmt.Sprintf("0.0.0.0:%d", c.Int("port"))
 		log.Printf("[INFO] Listening on %s\n", addr)
-		return http.ListenAndServe(addr, proxy)
+		return http.ListenAndServe(addr, http.HandlerFunc(handler))
 	}
 
 	if err := app.Run(os.Args); err != nil {

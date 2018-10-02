@@ -1,0 +1,119 @@
+ul {
+    padding: 0;
+}
+
+li {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.app-container > h1 {
+    text-align: center;
+    color: darkblue;
+}
+
+.kube-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
+
+.kube-nav {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    max-width: 250px;
+    width: 20%;
+    margin: 0 1rem;
+    height: 100%;
+}
+
+.kube-nav ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.kube-nav li {
+    margin: 0.5rem 0;
+    padding: 0.75rem 0;
+    font-size: 1.65rem;
+    background-color: #dff0ff;
+    border-radius: 10px;
+}
+
+.kube-nav a {
+    color: darkblue;
+    margin: 0;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    text-decoration: none;
+    padding-left: 30px;
+}
+
+.kube-nav a:visited {
+    color: darkblue;
+}
+
+.kube-display {
+    width: 100%;
+    margin: 0 1rem;
+}
+
+.phase-active {
+    color: green;
+}
+
+.phase-terminating {
+    color: grey;
+    font-style: italic;
+}
+
+.phase-terminating h4::after {
+    content: " (terminating)";
+}
+
+.namespace-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+.namespace-list-item {
+    background-color: #dff0ff;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.namespace-list-item h4 {
+    margin: 0 0 10px 0;
+}
+
+.namespace-list-item p {
+    margin: 0;
+}
+
+.rolebinding-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.rolebinding-list-item {
+    padding: 5px 0;
+}

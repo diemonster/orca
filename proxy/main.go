@@ -8,9 +8,11 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/quintilesims/auth0"
 	"github.com/urfave/cli"
+	cache "github.com/zpatrick/go-cache"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -20,6 +22,7 @@ const (
 	FlagAuth0Domain = "auth0-domain"
 	FlagInCluster   = "in-cluster"
 	FlagKubeconfig  = "kubeconfig"
+	FlagCacheExpiry = "cache-expiry"
 )
 
 const (
@@ -27,6 +30,7 @@ const (
 	EVAuth0Domain = "OP_AUTH0_DOMAIN"
 	EVInCluster   = "OP_IN_CLUSTER"
 	EVKubeconfig  = "KUBECONFIG"
+	EVCacheExpiry = "OP_CACHE_EXPIRY"
 )
 
 func main() {
@@ -52,10 +56,15 @@ func main() {
 			EnvVar: EVKubeconfig,
 			Value:  fmt.Sprintf("%s/.kube/config", os.Getenv("HOME")),
 		},
+		cli.DurationFlag{
+			Name:   FlagCacheExpiry,
+			EnvVar: EVCacheExpiry,
+			Value:  time.Hour,
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {
-		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
+		auth0Client := auth0.NewClient(c.String(FlagAuth0Domain))
 
 		getConfig := rest.InClusterConfig
 		if !c.Bool(FlagInCluster) {
@@ -74,6 +83,12 @@ func main() {
 			Scheme: "https",
 		})
 
+		che := cache.New()
+		type TokenStatus struct {
+			IsValid bool
+			Email   string
+		}
+
 		handler := func(w http.ResponseWriter, r *http.Request) {
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 			if token == "" {
@@ -82,17 +97,36 @@ func main() {
 				return
 			}
 
-			// todo: return http.StatusUnauthorized if that is error returned by Auth0
-			// todo: cache tokens
-			profile, err := auth0.GetProfile(token)
-			if err != nil {
-				log.Printf("[ERROR] Failed to exchange Auth0 token: %v", err)
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
+			var email string
+			if tokenStatus, ok := che.GetOK(token); ok {
+				if !tokenStatus.(TokenStatus).IsValid {
+					http.Error(w, "Invalid Token", http.StatusUnauthorized)
+					return
+				}
+
+				email = tokenStatus.(TokenStatus).Email
+			} else {
+				profile, err := auth0Client.GetProfile(token)
+				if err != nil {
+					if err, ok := err.(auth0.Error); ok && err.Status == http.StatusUnauthorized {
+						log.Printf("[INFO] Request sent invalid Auth0 token")
+						che.Set(token, TokenStatus{IsValid: false})
+						http.Error(w, "Invalid Token", http.StatusUnauthorized)
+						return
+					}
+
+					log.Printf("[ERROR] Failed to exchange Auth0 token: %v", err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				tokenStatus := TokenStatus{IsValid: true, Email: profile.Email}
+				che.Set(token, tokenStatus, cache.Expire(c.Duration(FlagCacheExpiry)))
+				email = profile.Email
 			}
 
 			config.Impersonate = rest.ImpersonationConfig{
-				UserName: profile.Email,
+				UserName: email,
 			}
 
 			transport, err := rest.TransportFor(config)

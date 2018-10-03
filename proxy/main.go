@@ -4,17 +4,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/quintilesims/auth0"
+	"github.com/quintilesims/orca/proxy/auth"
+	"github.com/quintilesims/orca/proxy/kubeutil"
 	"github.com/urfave/cli"
-	cache "github.com/zpatrick/go-cache"
 	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
 const (
@@ -64,30 +62,13 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		auth0Client := auth0.NewClient(c.String(FlagAuth0Domain))
-
-		getConfig := rest.InClusterConfig
-		if !c.Bool(FlagInCluster) {
-			getConfig = func() (*rest.Config, error) {
-				return clientcmd.BuildConfigFromFlags("", c.String(FlagKubeconfig))
-			}
-		}
-
-		config, err := getConfig()
+		config, err := kubeutil.GetConfig(c.Bool(FlagInCluster), c.String(FlagKubeconfig))
 		if err != nil {
 			return err
 		}
 
-		reverseProxy := httputil.NewSingleHostReverseProxy(&url.URL{
-			Host:   strings.TrimPrefix(config.Host, "https://"),
-			Scheme: "https",
-		})
-
-		che := cache.New()
-		type TokenStatus struct {
-			IsValid bool
-			Email   string
-		}
+		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
+		getProfile := auth.CachedGetProfileFunc(auth0.GetProfile, c.Duration(FlagCacheExpiry))
 
 		handler := func(w http.ResponseWriter, r *http.Request) {
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
@@ -97,46 +78,27 @@ func main() {
 				return
 			}
 
-			var email string
-			if tokenStatus, ok := che.GetOK(token); ok {
-				if !tokenStatus.(TokenStatus).IsValid {
+			profile, err := getProfile(token)
+			if err != nil {
+				if err == auth.InvalidToken {
+					log.Printf("[INFO] Request sent invalid Auth0 token")
 					http.Error(w, "Invalid Token", http.StatusUnauthorized)
 					return
 				}
 
-				email = tokenStatus.(TokenStatus).Email
-			} else {
-				profile, err := auth0Client.GetProfile(token)
-				if err != nil {
-					if err, ok := err.(auth0.Error); ok && err.Status == http.StatusUnauthorized {
-						log.Printf("[INFO] Request sent invalid Auth0 token")
-						che.Set(token, TokenStatus{IsValid: false})
-						http.Error(w, "Invalid Token", http.StatusUnauthorized)
-						return
-					}
-
-					log.Printf("[ERROR] Failed to exchange Auth0 token: %v", err)
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-
-				tokenStatus := TokenStatus{IsValid: true, Email: profile.Email}
-				che.Set(token, tokenStatus, cache.Expire(c.Duration(FlagCacheExpiry)))
-				email = profile.Email
-			}
-
-			config.Impersonate = rest.ImpersonationConfig{
-				UserName: email,
-			}
-
-			transport, err := rest.TransportFor(config)
-			if err != nil {
-				log.Printf("[ERROR] Failed to create transport: %v", err)
+				log.Printf("[ERROR] Failed to exchange Auth0 token: %v", err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 
-			reverseProxy.Transport = transport
+			config.Impersonate = rest.ImpersonationConfig{UserName: profile.Email}
+			reverseProxy, err := kubeutil.NewReverseProxy(config)
+			if err != nil {
+				log.Printf("[ERROR] Failed to create reverse proxy: %v", err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
 			reverseProxy.ServeHTTP(w, r)
 		}
 

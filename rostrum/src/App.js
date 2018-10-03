@@ -7,16 +7,15 @@ import KubeNav from './components/KubeNav';
 import Namespace from './components/namespaces/Namespace';
 import Pod from './components/pods/Pod';
 
-
 const initialState = {
   namespace: {
     namespaceObjects: [],
     namespaceCreateInput: '',
-    namespaceDeleteInput: ''
+    namespaceDeleteInput: '',
   },
   rolebinding: {
-    rolebindingObjects: {}
-  }
+    rolebindingObjects: {},
+  },
 };
 
 const store = configureStore(initialState);

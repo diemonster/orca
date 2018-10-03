@@ -62,13 +62,13 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
+		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
+		getProfile := auth.CachedGetProfileFunc(auth0.GetProfile, c.Duration(FlagCacheExpiry))
+
 		config, err := kubeutil.GetConfig(c.Bool(FlagInCluster), c.String(FlagKubeconfig))
 		if err != nil {
 			return err
 		}
-
-		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
-		getProfile := auth.CachedGetProfileFunc(auth0.GetProfile, c.Duration(FlagCacheExpiry))
 
 		handler := func(w http.ResponseWriter, r *http.Request) {
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
@@ -86,7 +86,7 @@ func main() {
 					return
 				}
 
-				log.Printf("[ERROR] Failed to exchange Auth0 token: %v", err)
+				log.Printf("[ERROR] Failed to get profile: %v", err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}

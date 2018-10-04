@@ -1,21 +1,35 @@
-import auth0 from 'auth0-js';
-
 import history from './history';
+import auth0 from 'auth0-js';
+import axios from 'axios';
 
 export default class Auth {
   // Please use your own credentials here
   auth0 = new auth0.WebAuth({
-    domain: 'divyanshu.auth0.com',
-    clientID: 'TJyKPI6aRiRwgr6SxlT7ExW10NEHW4Vy',
-    redirectUri: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/callback' : 'https://appbaseio-apps.github.io/reactivesearch-auth0-example/callback',
-    audience: 'https://divyanshu.auth0.com/userinfo',
+    domain: 'iqvia.auth0.com',
+    clientID: '0xiyV1vT2LY2zJUKTZvXAUsW6i0IY5Bm',
+    redirectUri: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/callback' : 'https://neworca.com/callback',
     responseType: 'token id_token',
-    scope: 'openid'
+    scope: 'openid profile',
   });
+
 
   login = () => {
     this.auth0.authorize();
   }
+
+  user = () => {
+    var accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+      console.log('Access Token must exist to fetch profile');
+    }
+
+    this.auth0.client.userInfo(accessToken, function (err, profile) {
+      if (profile) {
+        localStorage.setItem('nickname', profile.nickname);
+      }
+    });
+  }
+
 
   // parses the result after authentication from URL hash
   handleAuthentication = () => {
@@ -56,6 +70,15 @@ export default class Auth {
     // Check whether the current time is past the
     // access token's expiry time
     let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    return new Date().getTime() < expiresAt;
+    let isAuthenticated =new Date().getTime() < expiresAt;
+    if (isAuthenticated) {
+      this.addAxiosHeader()
+    }
+    return isAuthenticated
+  }
+
+  // Adds auth to all headers
+  addAxiosHeader = () =>{
+    axios.defaults.headers.common['Authorization'] = "Bearer " +localStorage.getItem('access_token')
   }
 }

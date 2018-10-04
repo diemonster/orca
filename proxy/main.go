@@ -71,6 +71,9 @@ func main() {
 		}
 
 		handler := func(w http.ResponseWriter, r *http.Request) {
+			// set CORS headers
+                        w.Header().Set("Access-Control-Allow-Origin", "*")
+
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 			if token == "" {
 				log.Printf("[INFO] Request missing Authorization Header")

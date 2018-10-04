@@ -38,7 +38,7 @@ func main() {
 		cli.IntFlag{
 			Name:   FlagPort,
 			EnvVar: EVPort,
-			Value:  9090,
+			Value:  8080,
 		},
 		cli.StringFlag{
 			Name:   FlagAuth0Domain,

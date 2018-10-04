@@ -3,7 +3,6 @@ import auth0 from 'auth0-js';
 import axios from 'axios';
 
 export default class Auth {
-  // Please use your own credentials here
   auth0 = new auth0.WebAuth({
     domain: 'iqvia.auth0.com',
     clientID: '0xiyV1vT2LY2zJUKTZvXAUsW6i0IY5Bm',
@@ -51,6 +50,7 @@ export default class Auth {
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
     localStorage.setItem('expires_at', expiresAt);
+
     // navigate to the home route
     history.replace('/home');
   }

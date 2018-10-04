@@ -4,11 +4,10 @@ import App from '../../App';
 import "./home.css"
 
 class Home extends Component {
-  // calls the login method in authentication service
   login = () => {
     this.props.auth.login();
   }
-  // calls the logout method in authentication service
+
   logout = () => {
     this.props.auth.logout();
   }
@@ -19,7 +18,6 @@ class Home extends Component {
   }
 
   render() {
-    // calls the isAuthenticated method in authentication service
     const { isAuthenticated } = this.props.auth;
     return (
       <div>

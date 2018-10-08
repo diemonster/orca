@@ -1,19 +1,22 @@
-import axios from 'axios';
+import k8sApiClient from '../client/k8sApiClient';
 
-const rolebindingListSuccess = (namespace, rolebindingObjects) => {
+function rolebindingListSuccess(namespace, rolebindings) {
   return {
-    type: "ROLEBINDING_LIST_SUCCESS",
-    namespace: namespace,
-    rolebindingObjects: rolebindingObjects
+    type: 'ROLEBINDING_LIST_SUCCESS',
+    namespace,
+    rolebindings,
   };
 }
 
-export const rolebindingList = (namespace) => {
+export function rolebindingList(namespace, apiClient = k8sApiClient) {
   return (dispatch) => {
-    axios.get("http://localhost:8080/apis/rbac.authorization.k8s.io/v1/namespaces/"+namespace+"/rolebindings/")
-      .then(response => {
-        dispatch(rolebindingListSuccess(namespace, response.data.items))
+    apiClient.listRolebindingsForNamespace(namespace)
+      .then((response) => {
+        const { items } = response.data;
+        const rolebindings = items.map(item => item.metadata.name);
+
+        dispatch(rolebindingListSuccess(namespace, rolebindings));
       })
-      .catch(error => { console.log("rolebindingList action error:", error) });
+      .catch((error) => { console.log('rolebindingList action error:', error); });
   };
 }

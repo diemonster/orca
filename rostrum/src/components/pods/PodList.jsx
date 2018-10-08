@@ -1,21 +1,26 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import PodListItem from './PodListItem';
 
 function PodList(props) {
-  const {
-    podObjects,
-  } = props;
+  const { podNames } = props;
 
-  const podListItems = podObjects.map((pod, idx) =>
-    <PodListItem key={idx} value={pod.metadata.name} />
-  );
+  const podListItems = podNames.map(name => (
+    <PodListItem key={name} podName={name} />
+  ));
 
   return (
-    <ul className='podlist'>
+    <ul className="podlist">
       {podListItems}
     </ul>
   );
 }
+
+PodList.propTypes = {
+  podNames: PropTypes.arrayOf(
+    PropTypes.string.isRequired,
+  ).isRequired,
+};
 
 export default PodList;

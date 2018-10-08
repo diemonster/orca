@@ -1,55 +1,54 @@
-import axios from 'axios';
+import k8sApiClient from '../client/k8sApiClient';
 
-const namespaceListSuccess = (namespaceObjects) => {
+function namespaceListSuccess(namespaceObjects) {
   return {
-    type: "NAMESPACE_LIST_SUCCESS",
-    namespaceObjects: namespaceObjects
+    type: 'NAMESPACE_LIST_SUCCESS',
+    namespaceObjects,
   };
 }
 
-export const namespaceList = () => {
+export function namespaceList(apiClient = k8sApiClient) {
   return (dispatch) => {
-    axios.get("http://localhost:8080/api/v1/namespaces")
-      .then(response => {
-        dispatch(namespaceListSuccess(response.data.items))
+    apiClient.listNamespaces()
+      .then((response) => {
+        const { items } = response.data;
+        const namespaceObjects = items.map(namespace => ({
+          name: namespace.metadata.name,
+          status: namespace.status.phase,
+        }));
+
+        dispatch(namespaceListSuccess(namespaceObjects));
       })
-      .catch(error => { console.log("namespaceList action error:", error) });
+      .catch((error) => { console.log('namespaceList action error:', error); });
   };
 }
 
-export const namespaceCreateChangeInput = (namespaceCreateInput) => {
+export function namespaceCreateChangeInput(namespaceCreateInput) {
   return {
-    type: "NAMESPACE_CREATE_CHANGE_INPUT",
-    namespaceCreateInput: namespaceCreateInput
+    type: 'NAMESPACE_CREATE_CHANGE_INPUT',
+    namespaceCreateInput,
   };
 }
 
-export const namespaceCreate = (name) => {
+export function namespaceCreate(name, apiClient = k8sApiClient) {
   return (dispatch) => {
-    axios.post("http://localhost:8080/api/v1/namespaces", {
-      kind: 'Namespace',
-      apiVersion: 'v1',
-      metadata: {
-        name: name,
-        labels: {
-          name: name,
-        },
-      },
-    })
-      .catch(error => { console.log("namespaceCreate action error:", error) });
-  }
-}
-
-export const namespaceDelete = (name) => {
-  return dispatch => {
-    axios.delete("http://localhost:8080/api/v1/namespaces/"+name)
-      .catch(error => { console.log("namespaceDelete action error:", error) })
+    apiClient.createNamespace(name)
+      .then(dispatch(namespaceCreateChangeInput('')))
+      .catch((error) => { console.log('namespaceCreate action error:', error); });
   };
 }
 
-export const namespaceDeleteChangeInput = (namespaceDeleteInput) => {
+export function namespaceDeleteChangeInput(namespaceDeleteInput) {
   return {
-    type: "NAMESPACE_DELETE_CHANGE_INPUT",
-    namespaceDeleteInput: namespaceDeleteInput
+    type: 'NAMESPACE_DELETE_CHANGE_INPUT',
+    namespaceDeleteInput,
+  };
+}
+
+export function namespaceDelete(name, apiClient = k8sApiClient) {
+  return (dispatch) => {
+    apiClient.deleteNamespace(name)
+      .then(dispatch(namespaceDeleteChangeInput('')))
+      .catch((error) => { console.log('namespaceDelete action error:', error); });
   };
 }

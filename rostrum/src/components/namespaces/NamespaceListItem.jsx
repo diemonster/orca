@@ -1,17 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import RolebindingList from '../rolebindings/RolebindingList';
 
 function NamespaceListItem(props) {
   const { namespace, phase } = props;
 
-  var cls = null;
-  switch(phase) {
-    case "Terminating":
-      cls="phase-terminating";
+  let cls = null;
+  switch (phase) {
+    case 'Terminating':
+      cls = 'phase-terminating';
       break;
     default:
-      cls="phase-active";
+      cls = 'phase-active';
   }
 
   return (
@@ -21,5 +22,10 @@ function NamespaceListItem(props) {
     </li>
   );
 }
+
+NamespaceListItem.propTypes = {
+  namespace: PropTypes.string.isRequired,
+  phase: PropTypes.string.isRequired,
+};
 
 export default NamespaceListItem;

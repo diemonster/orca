@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { namespaceDelete, namespaceDeleteChangeInput } from '../../actions/namespaces';
 
@@ -14,39 +15,39 @@ class NamespaceDelete extends React.Component {
   handleChange(event) {
     event.preventDefault();
 
-    const { namespaceDeleteChangeInput } = this.props;
+    const { dispatchNamespaceDeleteChangeInput } = this.props;
 
-    namespaceDeleteChangeInput(event.target.value);
+    dispatchNamespaceDeleteChangeInput(event.target.value);
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
-    const { namespaceDelete, namespaceDeleteInput } = this.props;
+    const { dispatchNamespaceDelete, namespaceDeleteInput } = this.props;
 
-    namespaceDelete(namespaceDeleteInput);
+    dispatchNamespaceDelete(namespaceDeleteInput);
   }
 
   render() {
     const { namespaceDeleteInput } = this.props;
 
     return (
-      <div className='create-namespace'>
+      <div className="create-namespace">
         <h2>Delete Namespace</h2>
-        <form className='namespace-input-form' onSubmit={this.handleSubmit}>
-          <label className='namespace-label' htmlFor='namespace'>
+        <form className="namespace-input-form" onSubmit={this.handleSubmit}>
+          <label className="namespace-label" htmlFor="namespace">
             Delete Namespace:
             <input
-              type='text'
+              type="text"
               value={namespaceDeleteInput}
               onChange={this.handleChange}
-              placeholder='enter namespace'
-              id='namespace'
+              placeholder="enter namespace"
+              id="namespace"
             />
             <button
-              className='button'
-              type='submit'
-              value='submit'
+              className="button"
+              type="submit"
+              value="submit"
             >
               Delete
             </button>
@@ -57,17 +58,21 @@ class NamespaceDelete extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    namespaceDeleteInput: state.namespace.namespaceDeleteInput
-  };
-}
+NamespaceDelete.propTypes = {
+  dispatchNamespaceDelete: PropTypes.func.isRequired,
+  dispatchNamespaceDeleteChangeInput: PropTypes.func.isRequired,
+  namespaceDeleteInput: PropTypes.string.isRequired,
+};
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    namespaceDelete: (name) => dispatch(namespaceDelete(name)),
-    namespaceDeleteChangeInput: (namespaceDeleteInput) => dispatch(namespaceDeleteChangeInput(namespaceDeleteInput))
-  };
-}
+const mapStateToProps = state => ({
+  namespaceDeleteInput: state.namespace.namespaceDeleteInput,
+});
+
+const mapDispatchToProps = dispatch => ({
+  dispatchNamespaceDelete: name => dispatch(namespaceDelete(name)),
+  dispatchNamespaceDeleteChangeInput: namespaceDeleteInput => (
+    dispatch(namespaceDeleteChangeInput(namespaceDeleteInput))
+  ),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(NamespaceDelete);

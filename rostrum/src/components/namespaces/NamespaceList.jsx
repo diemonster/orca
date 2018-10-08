@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { namespaceList } from '../../actions/namespaces';
 
@@ -9,10 +10,10 @@ const apiPollInterval = 2000; // milliseconds
 
 class NamespaceList extends React.Component {
   componentDidMount() {
-    const { namespaceList } = this.props;
+    const { dispatchNamespaceList } = this.props;
 
-    namespaceList();
-    this.timer = setInterval(() => namespaceList(), apiPollInterval);
+    dispatchNamespaceList();
+    this.timer = setInterval(() => dispatchNamespaceList(), apiPollInterval);
   }
 
   componentWillUnmount() {
@@ -25,21 +26,21 @@ class NamespaceList extends React.Component {
 
     if (!namespaceObjects) {
       return (
-        <div className='namespace-list-container'>
+        <div className="namespace-list-container">
           <h2>List Namespaces</h2>
           <p>Loading namespaces...</p>
         </div>
       );
-    };
+    }
 
-    const namespaceListItems = namespaceObjects.map((namespace, idx) =>
-      <NamespaceListItem key={idx} namespace={namespace.metadata.name} phase={namespace.status.phase} />
-    );
+    const namespaceListItems = namespaceObjects.map(namespace => (
+      <NamespaceListItem key={namespace.name} namespace={namespace.name} phase={namespace.status} />
+    ));
 
     return (
-      <div className='namespace-list-container'>
+      <div className="namespace-list-container">
         <h2>List Namespaces</h2>
-        <ul className='namespace-list'>
+        <ul className="namespace-list">
           {namespaceListItems}
         </ul>
       </div>
@@ -47,16 +48,22 @@ class NamespaceList extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    namespaceObjects: state.namespace.namespaceObjects
-  };
+NamespaceList.propTypes = {
+  dispatchNamespaceList: PropTypes.func.isRequired,
+  namespaceObjects: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      status: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    namespaceList: () => dispatch(namespaceList())
-  };
-};
+const mapStateToProps = state => ({
+  namespaceObjects: state.namespace.namespaceObjects,
+});
+
+const mapDispatchToProps = dispatch => ({
+  dispatchNamespaceList: () => dispatch(namespaceList()),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(NamespaceList);

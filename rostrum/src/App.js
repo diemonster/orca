@@ -12,11 +12,11 @@ const initialState = {
   namespace: {
     namespaceObjects: [],
     namespaceCreateInput: '',
-    namespaceDeleteInput: ''
+    namespaceDeleteInput: '',
   },
   rolebinding: {
-    rolebindingObjects: {}
-  }
+    namespacedRolebindings: {},
+  },
 };
 
 const store = configureStore(initialState);
@@ -29,11 +29,11 @@ function App() {
           <h1>
             Orca: The Kubernetes Permissions Manager
           </h1>
-          <div className='kube-container'>
+          <div className="kube-container">
             <KubeNav />
             <Switch>
-              <Route exact path='/namespace/' component={Namespace} />
-              <Route exact path='/pod/' component={Pod} />
+              <Route exact path="/namespace/" component={Namespace} />
+              <Route exact path="/pod/" component={Pod} />
             </Switch>
           </div>
         </div>

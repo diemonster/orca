@@ -1,7 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function PodListItem(props) {
-  return <li>{props.value}</li>;
+  const { podName } = props;
+
+  return <li>{podName}</li>;
 }
+
+PodListItem.propTypes = {
+  podName: PropTypes.string.isRequired,
+};
 
 export default PodListItem;

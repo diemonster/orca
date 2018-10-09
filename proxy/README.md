@@ -17,3 +17,6 @@ The request will then be proxied to the Kubernetes API using the [`Impersonate-U
 | Whether or not the proxy is running inside a K8s cluster             | --in-cluster   | OP_IN_CLUSTER        | false               |
 | Path to kubeconfig file (only required if `--in-cluster` is false)   | --kubeconfig   | KUBECONFIG           | ~/.kube/config      |
 | Duration to cache valid auth tokens                                  | --token-expiry | OP_TOKEN_EXPIRY      | 60m                 |
+
+## Deployment
+Please navigate to the [helm](/helm) directory for information on how to deployment this service using [Helm](https://helm.sh/). 

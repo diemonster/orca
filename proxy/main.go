@@ -20,7 +20,7 @@ const (
 	FlagAuth0Domain = "auth0-domain"
 	FlagInCluster   = "in-cluster"
 	FlagKubeconfig  = "kubeconfig"
-	FlagCacheExpiry = "cache-expiry"
+	FlagTokenExpiry = "token-expiry"
 )
 
 const (
@@ -28,7 +28,7 @@ const (
 	EVAuth0Domain = "OP_AUTH0_DOMAIN"
 	EVInCluster   = "OP_IN_CLUSTER"
 	EVKubeconfig  = "KUBECONFIG"
-	EVCacheExpiry = "OP_CACHE_EXPIRY"
+	EVTokenExpiry = "OP_TOKEN_EXPIRY"
 )
 
 func main() {
@@ -55,15 +55,15 @@ func main() {
 			Value:  fmt.Sprintf("%s/.kube/config", os.Getenv("HOME")),
 		},
 		cli.DurationFlag{
-			Name:   FlagCacheExpiry,
-			EnvVar: EVCacheExpiry,
+			Name:   FlagTokenExpiry,
+			EnvVar: EVTokenExpiry,
 			Value:  time.Hour,
 		},
 	}
 
 	app.Action = func(c *cli.Context) error {
 		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
-		getProfile := auth.CachedGetProfileFunc(auth0.GetProfile, c.Duration(FlagCacheExpiry))
+		getProfile := auth.CachedGetProfileFunc(auth0.GetProfile, c.Duration(FlagTokenExpiry))
 
 		config, err := kubeutil.GetConfig(c.Bool(FlagInCluster), c.String(FlagKubeconfig))
 		if err != nil {

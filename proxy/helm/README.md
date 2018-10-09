@@ -26,7 +26,7 @@ $ minikube service list
 ## Update 
 To update the helm chart, navigate to the `orca-proxy` directory and make the desired changes.
 Then, run the following helm commands:
-```
+```console
 $ cd orca/proxy/helm/orca-proxy
 $ helm package .
 $ helm repo index .

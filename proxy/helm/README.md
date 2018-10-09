@@ -1,5 +1,8 @@
 # Helm Chart for Orca Proxy
 
+## Requirements
+* [Helm and Tiller](https://helm.sh/) installed in your cluster. 
+
 ## Install
 To install this helm chart into your cluster, navigate to this directory and run `helm install`:
 ```console 

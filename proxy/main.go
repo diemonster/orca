@@ -31,9 +31,12 @@ const (
 	EVTokenExpiry = "OP_TOKEN_EXPIRY"
 )
 
+var Version string = "unset/develop"
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "orca-proxy"
+	app.Version = Version
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
 			Name:   FlagPort,
@@ -72,7 +75,7 @@ func main() {
 
 		handler := func(w http.ResponseWriter, r *http.Request) {
 			// set CORS headers
-                        w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 			if token == "" {

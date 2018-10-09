@@ -1,11 +1,10 @@
 import React from 'react';
+import './sidebar.css'
 
-function KubeNav() {
+function Sidebar() {
   return (
-    <div className='kube-nav'>
-      <h2>KubeNav</h2>
+    <div className='sidebar'>
       <ul>
-        <li><a href='/'>Home</a></li>
         <li><a href='namespace'>Namespaces</a></li>
         <li><a href='pod'>Pods</a></li>
       </ul>
@@ -13,4 +12,4 @@ function KubeNav() {
   )
 }
 
-export default KubeNav;
+export default Sidebar;

@@ -4,31 +4,28 @@ import axios from 'axios';
 
 export default class Auth {
   auth0 = new auth0.WebAuth({
-    domain: 'iqvia.auth0.com',
-    clientID: '0xiyV1vT2LY2zJUKTZvXAUsW6i0IY5Bm',
+    domain: process.env.REACT_APP_DOMAIN,
+    clientID: process.env.REACT_APP_CLIENT_ID,
     redirectUri: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/callback' : 'https://neworca.com/callback',
     responseType: 'token id_token',
     scope: 'openid profile',
   });
 
-
   login = () => {
     this.auth0.authorize();
   }
 
-  user = () => {
+  getProfile(cb) {
     var accessToken = localStorage.getItem('access_token');
-    if (!accessToken) {
-      console.log('Access Token must exist to fetch profile');
-    }
-
-    this.auth0.client.userInfo(accessToken, function (err, profile) {
+    this.auth0.client.userInfo(accessToken, (err, profile) => {
       if (profile) {
-        localStorage.setItem('nickname', profile.nickname);
+        this.userProfile = profile;
       }
+
+      // TODO: Add proper error handling
+      cb(err, profile);
     });
   }
-
 
   // parses the result after authentication from URL hash
   handleAuthentication = () => {
@@ -38,7 +35,8 @@ export default class Auth {
         history.replace('/home');
       } else if (err) {
         history.replace('/home');
-        console.log(err);
+
+        // TODO: Add proper error handling
       }
     });
   }
@@ -48,7 +46,6 @@ export default class Auth {
     // Set the time that the access token will expire at
     let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
     localStorage.setItem('access_token', authResult.accessToken);
-    localStorage.setItem('id_token', authResult.idToken);
     localStorage.setItem('expires_at', expiresAt);
 
     // navigate to the home route
@@ -59,8 +56,8 @@ export default class Auth {
   logout = () => {
     // Clear access token and ID token from local storage
     localStorage.removeItem('access_token');
-    localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
+    localStorage.removeItem('name');
     // navigate to the home route
     history.replace('/home');
   }
@@ -70,7 +67,7 @@ export default class Auth {
     // Check whether the current time is past the
     // access token's expiry time
     let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    let isAuthenticated =new Date().getTime() < expiresAt;
+    let isAuthenticated = new Date().getTime() < expiresAt;
     if (isAuthenticated) {
       this.addAxiosHeader()
     }

@@ -17,6 +17,10 @@ export default class Auth {
 
   getProfile(cb) {
     var accessToken = localStorage.getItem('access_token');
+    if (accessToken == null) {
+      return
+    }
+
     this.auth0.client.userInfo(accessToken, (err, profile) => {
       if (profile) {
         this.userProfile = profile;

@@ -14,7 +14,7 @@
 //     { [someObject.someProperty]: "value to be stored" }
 //
 // Further, in order to add one of these objects to the state
-// instead of overwriting it, we can use object spreading
+// instead of overwriting the whole state, we can use object spreading
 //
 //     ...someObject
 //
@@ -26,22 +26,23 @@
 //
 //     {
 //       rolebinding: {
-//         rolebindingObjects: {
-//           namespace1: [ things ],
-//           namespace2: [ things ],
+//         namespacedRolebindings: {
+//           <namespace name>: [ <rolebinding names> ],
+//           <namespace name>: [ <rolebinding names> ],
 //           ...
 //         }
 //       }
 //     }
 //
-export function rolebindingReducer(state=[], action) {
+export function rolebindingReducer(state = {}, action) {
   switch (action.type) {
-    case "ROLEBINDING_LIST_SUCCESS":
+    case 'ROLEBINDING_LIST_SUCCESS':
       return {
-        rolebindingObjects: {
-          ...state.rolebindingObjects,
-          [action.namespace]: action.rolebindingObjects
-        }
+        ...state,
+        namespacedRolebindings: {
+          ...state.namespacedRolebindings,
+          [action.namespace]: action.rolebindings,
+        },
       };
 
     default:

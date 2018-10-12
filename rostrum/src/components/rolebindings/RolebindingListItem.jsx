@@ -1,15 +1,20 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function RolebindingListItem(props) {
   const {
-    rolebinding,
+    rolebindingName,
   } = props;
 
   return (
     <li className="rolebinding-list-item">
-      {rolebinding}
+      {rolebindingName}
     </li>
   );
 }
+
+RolebindingListItem.propTypes = {
+  rolebindingName: PropTypes.string.isRequired,
+};
 
 export default RolebindingListItem;

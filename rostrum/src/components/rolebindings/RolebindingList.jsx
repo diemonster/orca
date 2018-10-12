@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { rolebindingList } from '../../actions/rolebindings';
 
@@ -7,31 +8,29 @@ import RolebindingListItem from './RolebindingListItem';
 
 class RolebindingList extends React.Component {
   componentDidMount() {
-    const { rolebindingList, namespace } = this.props;
-    rolebindingList(namespace);
+    const { namespace, dispatchRolebindingList } = this.props;
+    dispatchRolebindingList(namespace);
   }
 
   render() {
-    // namespace is passed in already from the parent function
-    // rolebindingObjects is populated through rolebindingList()
-    const { namespace, rolebindingObjects } = this.props;
+    const { namespace, namespacedRolebindings } = this.props;
 
-    var namespacedRolebindings = null;
-    if (rolebindingObjects) {
-      namespacedRolebindings = rolebindingObjects[namespace];
+    let rolebindingNames = [];
+    if (Object.prototype.hasOwnProperty.call(namespacedRolebindings, namespace)) {
+      rolebindingNames = namespacedRolebindings[namespace];
     }
 
-    var rolebindingListItems = null;
-    if (namespacedRolebindings) {
-      rolebindingListItems = namespacedRolebindings.map((rolebinding, idx) =>
-        <RolebindingListItem key={idx} rolebinding={rolebinding.metadata.name} />
-      );
+    let rolebindingListItems = [];
+    if (rolebindingNames.length > 0) {
+      rolebindingListItems = rolebindingNames.map(name => (
+        <RolebindingListItem key={name} rolebindingName={name} />
+      ));
     }
 
     return (
-      <div className='rolebinding-container'>
+      <div className="rolebinding-container">
         <h5>Role Bindings:</h5>
-        <ul className='rolebinding-list'>
+        <ul className="rolebinding-list">
           {rolebindingListItems}
         </ul>
       </div>
@@ -39,16 +38,22 @@ class RolebindingList extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    rolebindingObjects: state.rolebinding.rolebindingObjects
-  };
-}
+RolebindingList.propTypes = {
+  namespace: PropTypes.string.isRequired,
+  namespacedRolebindings: PropTypes.objectOf(
+    PropTypes.arrayOf(
+      PropTypes.string.isRequired,
+    ).isRequired,
+  ).isRequired,
+  dispatchRolebindingList: PropTypes.func.isRequired,
+};
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    rolebindingList: (namespace) => dispatch(rolebindingList(namespace))
-  };
-}
+const mapStateToProps = state => ({
+  namespacedRolebindings: state.rolebinding.namespacedRolebindings,
+});
+
+const mapDispatchToProps = dispatch => ({
+  dispatchRolebindingList: namespace => dispatch(rolebindingList(namespace)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(RolebindingList);

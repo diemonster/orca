@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/quintilesims/auth0"
+	"github.com/quintilesims/orca/proxy/auth"
+	"github.com/quintilesims/orca/proxy/kubeutil"
 	"github.com/urfave/cli"
 	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
 const (
@@ -20,6 +20,7 @@ const (
 	FlagAuth0Domain = "auth0-domain"
 	FlagInCluster   = "in-cluster"
 	FlagKubeconfig  = "kubeconfig"
+	FlagTokenExpiry = "token-expiry"
 )
 
 const (
@@ -27,16 +28,20 @@ const (
 	EVAuth0Domain = "OP_AUTH0_DOMAIN"
 	EVInCluster   = "OP_IN_CLUSTER"
 	EVKubeconfig  = "KUBECONFIG"
+	EVTokenExpiry = "OP_TOKEN_EXPIRY"
 )
+
+var Version string = "unset/develop"
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "orca-proxy"
+	app.Version = Version
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
 			Name:   FlagPort,
 			EnvVar: EVPort,
-			Value:  9090,
+			Value:  8080,
 		},
 		cli.StringFlag{
 			Name:   FlagAuth0Domain,
@@ -52,29 +57,26 @@ func main() {
 			EnvVar: EVKubeconfig,
 			Value:  fmt.Sprintf("%s/.kube/config", os.Getenv("HOME")),
 		},
+		cli.DurationFlag{
+			Name:   FlagTokenExpiry,
+			EnvVar: EVTokenExpiry,
+			Value:  time.Hour,
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {
 		auth0 := auth0.NewClient(c.String(FlagAuth0Domain))
+		getProfile := auth.CachedGetProfileFunc(auth0.GetProfile, c.Duration(FlagTokenExpiry))
 
-		getConfig := rest.InClusterConfig
-		if !c.Bool(FlagInCluster) {
-			getConfig = func() (*rest.Config, error) {
-				return clientcmd.BuildConfigFromFlags("", c.String(FlagKubeconfig))
-			}
-		}
-
-		config, err := getConfig()
+		config, err := kubeutil.GetConfig(c.Bool(FlagInCluster), c.String(FlagKubeconfig))
 		if err != nil {
 			return err
 		}
 
-		reverseProxy := httputil.NewSingleHostReverseProxy(&url.URL{
-			Host:   strings.TrimPrefix(config.Host, "https://"),
-			Scheme: "https",
-		})
-
 		handler := func(w http.ResponseWriter, r *http.Request) {
+			// set CORS headers
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 			if token == "" {
 				log.Printf("[INFO] Request missing Authorization Header")
@@ -82,27 +84,27 @@ func main() {
 				return
 			}
 
-			// todo: return http.StatusUnauthorized if that is error returned by Auth0
-			// todo: cache tokens
-			profile, err := auth0.GetProfile(token)
+			profile, err := getProfile(token)
 			if err != nil {
-				log.Printf("[ERROR] Failed to exchange Auth0 token: %v", err)
+				if err == auth.InvalidToken {
+					log.Printf("[INFO] Request sent invalid Auth0 token")
+					http.Error(w, "Invalid Token", http.StatusUnauthorized)
+					return
+				}
+
+				log.Printf("[ERROR] Failed to get profile: %v", err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 
-			config.Impersonate = rest.ImpersonationConfig{
-				UserName: profile.Email,
-			}
-
-			transport, err := rest.TransportFor(config)
+			config.Impersonate = rest.ImpersonationConfig{UserName: profile.Email}
+			reverseProxy, err := kubeutil.NewReverseProxy(config)
 			if err != nil {
-				log.Printf("[ERROR] Failed to create transport: %v", err)
+				log.Printf("[ERROR] Failed to create reverse proxy: %v", err)
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 
-			reverseProxy.Transport = transport
 			reverseProxy.ServeHTTP(w, r)
 		}
 

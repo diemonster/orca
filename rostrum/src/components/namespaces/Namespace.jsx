@@ -6,7 +6,7 @@ import NamespaceDelete from './NamespaceDelete';
 
 function Namespace() {
   return (
-    <div className='kube-display'>
+    <div className="kube-display">
       <NamespaceList />
       <NamespaceCreate />
       <NamespaceDelete />

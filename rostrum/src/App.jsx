@@ -14,7 +14,7 @@ const initialState = {
     namespaceDeleteInput: '',
   },
   rolebinding: {
-    rolebindingObjects: {},
+    namespacedRolebindings: {},
   },
 };
 

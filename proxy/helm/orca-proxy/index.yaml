@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  orca-proxy:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: 2018-10-09T11:07:31.033809933-07:00
+    description: A Helm chart for the Orca Proxy
+    digest: e2527a9f53090dce6142b471a4d45fd10ab8f81daa40d31d06b064bf8fb9b5c5
+    name: orca-proxy
+    urls:
+    - orca-proxy-0.1.0.tgz
+    version: 0.1.0
+generated: 2018-10-09T11:07:31.033411225-07:00

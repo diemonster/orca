@@ -1,0 +1,12 @@
+# Default values 
+image:
+  repository: quintilesims/orca-proxy
+  tag: latest
+  pullPolicy: Always
+
+proxy:
+  port: 8080
+  token_expiry: "60m"
+
+auth0:
+  domain: "imshealth.auth0.com"

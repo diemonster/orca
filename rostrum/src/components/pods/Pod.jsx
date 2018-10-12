@@ -11,12 +11,23 @@ class NamespacePods extends React.Component {
     this.state = {
       namespace: null,
       namespaceInput: '',
-      podObjects: null,
-    }
+      podNames: [],
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getNamespacedPods = this.getNamespacedPods.bind(this);
+  }
+
+  getNamespacedPods(namespace) {
+    axios.get(`http://localhost:8080/api/v1/namespaces/${namespace}/pods`)
+      .then((response) => {
+        const { items } = response.data;
+        const podNames = items.map(item => item.metadata.name);
+        this.setState({
+          podNames,
+        });
+      });
   }
 
   handleChange(event) {
@@ -37,47 +48,33 @@ class NamespacePods extends React.Component {
     });
   }
 
-  getNamespacedPods(namespace) {
-    axios.get("http://localhost:8080/api/v1/namespaces/"+namespace+"/pods")
-      .then((response) => {
-        this.setState({
-          podObjects: response.data.items,
-        });
-    });
-  }
-
   render() {
-    const {
-      namespace,
-      podObjects,
-    } = this.state;
+    const { namespace, namespaceInput, podNames } = this.state;
 
-    if (podObjects) {
+    if (podNames.length > 0) {
       return (
         <div className="kube-display">
           <NamespaceInput
-            namespace={namespace}
+            namespaceInput={namespaceInput}
             handleChange={this.handleChange}
             handleSubmit={this.handleSubmit}
           />
           <h2>
             {`Pods in the '${namespace}' namespace`}
           </h2>
-          <PodList podObjects={podObjects} />
-        </div>
-      );
-
-    } else {
-      return (
-        <div className="kube-display">
-          <NamespaceInput
-            namespace={namespace}
-            handleChange={this.handleChange}
-            handleSubmit={this.handleSubmit}
-          />
+          <PodList podNames={podNames} />
         </div>
       );
     }
+    return (
+      <div className="kube-display">
+        <NamespaceInput
+          namespaceInput={namespaceInput}
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
+        />
+      </div>
+    );
   }
 }
 

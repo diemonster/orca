@@ -1,0 +1,79 @@
+# ------------------- Dashboard Service Account ------------------- #
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: orca-proxy
+  name: orca-proxy
+  namespace: kube-system
+
+---
+# ------------------- Dashboard Role & Role Binding ------------------- #
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: orca-proxy-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: orca-proxy
+  namespace: kube-system
+
+---
+# ------------------- Orca Proxy Deployment ------------------- #
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: orca-proxy
+  name: orca-proxy
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orca-proxy
+  template:
+    metadata:
+      labels:
+        app: orca-proxy
+    spec:
+      containers:
+      - name: orca-proxy
+        image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.proxy.port }}
+        env:
+        - name: OP_PORT
+          value: "{{ .Values.proxy.port }}"
+        - name: OP_TOKEN_EXPIRY
+          value: "{{ .Values.proxy.token_expiry }}"
+        - name: OP_IN_CLUSTER
+          value: "true"
+        - name: OP_AUTH0_DOMAIN
+          value: "{{ .Values.auth0.domain }}"
+      serviceAccountName: orca-proxy
+---
+
+# ------------------- Orca Proxy Service ------------------- #
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: orca-proxy
+  name: orca-proxy
+  namespace: kube-system
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: {{ .Values.proxy.port }}
+  selector:
+    app: orca-proxy

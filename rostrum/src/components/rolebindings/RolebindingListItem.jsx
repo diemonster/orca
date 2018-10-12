@@ -6,7 +6,7 @@ function RolebindingListItem(props) {
   } = props;
 
   return (
-    <li className={`rolebinding-list-item`}>
+    <li className="rolebinding-list-item">
       {rolebinding}
     </li>
   );

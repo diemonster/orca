@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import App from '../../App';
 import NavigationBar from '../navigationBar/NavigationBar';
-import './home.css'
+import './home.css';
 
 class Home extends Component {
   componentWillMount() {
@@ -12,11 +12,11 @@ class Home extends Component {
     });
   }
 
-  login = () => {
+  login = () =>  {
     this.props.auth.login();
   }
 
-  logout = () => {
+  logout = () =>   {
     this.props.auth.logout();
   }
 
@@ -25,11 +25,12 @@ class Home extends Component {
     return (
       <div>
         {
-          isAuthenticated() &&
-          <div>
-            <NavigationBar name={this.state.profile.name} logout={this.logout}/>
-            <App />
-          </div>
+          isAuthenticated() && (
+            <div>
+              <NavigationBar name={this.state.profile.name} logout={this.logout}/>
+              <App />
+            </div>
+          )
         }
         {
           !isAuthenticated() && (

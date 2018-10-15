@@ -1,5 +1,4 @@
 import auth0 from 'auth0-js';
-import axios from 'axios';
 import history from './history';
 
 export default class Auth {
@@ -77,9 +76,7 @@ export default class Auth {
     // access token's expiry time
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
     const isAuthenticated = new Date().getTime() < expiresAt;
-    if (isAuthenticated) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`;
-    }
+
     return isAuthenticated;
   }
 }

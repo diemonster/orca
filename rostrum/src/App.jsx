@@ -3,10 +3,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
 
-import KubeNav from './components/KubeNav';
+import Sidebar from './components/sidebar/Sidebar';
 import Namespace from './components/namespaces/Namespace';
 import Pod from './components/pods/Pod';
-
 
 const initialState = {
   namespace: {
@@ -30,7 +29,7 @@ function App() {
             Orca: The Kubernetes Permissions Manager
           </h1>
           <div className="kube-container">
-            <KubeNav />
+            <Sidebar />
             <Switch>
               <Route exact path="/namespace/" component={Namespace} />
               <Route exact path="/pod/" component={Pod} />

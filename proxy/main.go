@@ -46,7 +46,7 @@ func main() {
 		cli.StringFlag{
 			Name:   FlagAuth0Domain,
 			EnvVar: EVAuth0Domain,
-			Value:  "imshealth.auth0.com",
+			Value:  "iqvia.auth0.com",
 		},
 		cli.BoolFlag{
 			Name:   FlagInCluster,
@@ -74,8 +74,12 @@ func main() {
 		}
 
 		handler := func(w http.ResponseWriter, r *http.Request) {
-			// set CORS headers
 			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Headers", "*")
+			if r.Method == http.MethodOptions {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
 
 			token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 			if token == "" {

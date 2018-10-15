@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"../proxy/auth"
-	"../proxy/kubeutil"
 	"github.com/quintilesims/auth0"
+	"github.com/quintilesims/orca/proxy/auth"
+	"github.com/quintilesims/orca/proxy/kubeutil"
 	"github.com/urfave/cli"
 	"k8s.io/client-go/rest"
 )

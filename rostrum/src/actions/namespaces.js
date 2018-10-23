@@ -1,13 +1,21 @@
-import k8sApiClient from '../client/k8sApiClient';
+import K8sApiClient from '../client/k8sApiClient';
+import {
+  NAMESPACE_CREATE_CHANGE_INPUT,
+  NAMESPACE_DELETE_CHANGE_INPUT,
+  NAMESPACE_LIST,
+} from './actionTypes';
+
+
+const client = new K8sApiClient();
 
 function namespaceListSuccess(namespaceObjects) {
   return {
-    type: 'NAMESPACE_LIST_SUCCESS',
+    type: NAMESPACE_LIST,
     namespaceObjects,
   };
 }
 
-export function namespaceList(apiClient = k8sApiClient) {
+export function namespaceList(apiClient = client) {
   return (dispatch) => {
     apiClient.listNamespaces()
       .then((response) => {
@@ -18,37 +26,38 @@ export function namespaceList(apiClient = k8sApiClient) {
         }));
 
         dispatch(namespaceListSuccess(namespaceObjects));
-      })
-      .catch((error) => { console.log('namespaceList action error:', error); });
+      });
   };
 }
 
 export function namespaceCreateChangeInput(namespaceCreateInput) {
   return {
-    type: 'NAMESPACE_CREATE_CHANGE_INPUT',
+    type: NAMESPACE_CREATE_CHANGE_INPUT,
     namespaceCreateInput,
   };
 }
 
-export function namespaceCreate(name, apiClient = k8sApiClient) {
+export function namespaceCreate(name, apiClient = client) {
   return (dispatch) => {
     apiClient.createNamespace(name)
-      .then(dispatch(namespaceCreateChangeInput('')))
-      .catch((error) => { console.log('namespaceCreate action error:', error); });
+      .then(() => {
+        dispatch(namespaceCreateChangeInput(''));
+      });
   };
 }
 
 export function namespaceDeleteChangeInput(namespaceDeleteInput) {
   return {
-    type: 'NAMESPACE_DELETE_CHANGE_INPUT',
+    type: NAMESPACE_DELETE_CHANGE_INPUT,
     namespaceDeleteInput,
   };
 }
 
-export function namespaceDelete(name, apiClient = k8sApiClient) {
+export function namespaceDelete(name, apiClient = client) {
   return (dispatch) => {
     apiClient.deleteNamespace(name)
-      .then(dispatch(namespaceDeleteChangeInput('')))
-      .catch((error) => { console.log('namespaceDelete action error:', error); });
+      .then(() => {
+        dispatch(namespaceDeleteChangeInput(''));
+      });
   };
 }

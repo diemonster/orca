@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
-import { namespaceReducer } from './namespaces';
-import { rolebindingReducer } from './rolebindings';
+import configReducer from './config';
+import namespaceReducer from './namespaces';
+import rolebindingReducer from './rolebindings';
 
 // The keys in 'combineReducers({})' will be reflected in the state object,
 // and any state a reducer sets will be namespaced under the reducer's key.
@@ -31,6 +32,7 @@ import { rolebindingReducer } from './rolebindings';
 //     return { nameOfProp: state.namespace.namespaceObjects };
 //
 const rootReducer = combineReducers({
+  config: configReducer,
   namespace: namespaceReducer,
   rolebinding: rolebindingReducer,
 });

@@ -1,7 +1,7 @@
 import auth0 from 'auth0-js';
 import history from './history';
 
-export default class Auth {
+export default class Authenticator {
   constructor() {
     this.auth0 = new auth0.WebAuth({
       domain: process.env.REACT_APP_DOMAIN,
@@ -39,9 +39,11 @@ export default class Auth {
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken) {
         this.setSession(authResult);
-        history.replace('/home');
+        // navigate to the home route
+        history.replace('/');
       } else if (err) {
-        history.replace('/home');
+        // navigate to the home route
+        history.replace('/');
 
         // TODO: Add proper error handling
       }
@@ -56,8 +58,6 @@ export default class Auth {
     localStorage.setItem('expires_at', expiresAt);
 
     this.accessToken = authResult.accessToken;
-    // navigate to the home route
-    history.replace('/home');
   }
 
   // removes user details from localStorage
@@ -67,7 +67,7 @@ export default class Auth {
     localStorage.removeItem('expires_at');
     localStorage.removeItem('name');
     // navigate to the home route
-    history.replace('/home');
+    history.replace('/');
   }
 
   // checks if the user is authenticated

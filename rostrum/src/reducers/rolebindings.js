@@ -1,5 +1,7 @@
-//
-// The ROLEBINDING_LIST_SUCCESS action yields an object like so:
+import { ROLEBINDING_LIST } from '../actions/actionTypes';
+
+
+// The ROLEBINDING_LIST action yields an object like so:
 //
 //     { <name of namespace>: [ <array of rolebinding objects> ] }
 //
@@ -34,9 +36,9 @@
 //       }
 //     }
 //
-export function rolebindingReducer(state = {}, action) {
+export default function rolebindingReducer(state = {}, action) {
   switch (action.type) {
-    case 'ROLEBINDING_LIST_SUCCESS':
+    case ROLEBINDING_LIST:
       return {
         ...state,
         namespacedRolebindings: {

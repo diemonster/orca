@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import './index.css';
-import Routes from './Routes';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<Routes />, document.getElementById('root'));
+import './index.css';
+import '../node_modules/toastr/build/toastr.min.css';
+
+import Root from './components/Root';
+
+ReactDOM.render(
+  <Root />,
+  document.getElementById('root'),
+);
 
 registerServiceWorker();

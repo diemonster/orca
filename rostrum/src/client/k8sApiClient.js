@@ -1,32 +1,73 @@
 import axios from 'axios';
+import toastr from 'toastr';
 
 const baseURL = process.env.REACT_APP_K8S_API_CLIENT_BASE_URL || 'http://localhost:8080';
 
+function getTokenFromSession() {
+  return localStorage.getItem('access_token');
+}
+
 class K8sApiClient {
-  static listNamespaces() {
-    return axios.get(`${baseURL}/api/v1/namespaces`);
+  constructor(getToken = getTokenFromSession) {
+    this.getToken = getToken;
+    this.handleError = (err) => {
+      toastr.error(err);
+    };
   }
 
-  static createNamespace(name) {
-    return axios.post(`${baseURL}/api/v1/namespaces`, {
-      kind: 'Namespace',
-      apiVersion: 'v1',
-      metadata: {
-        name,
-        labels: {
+  listNamespaces() {
+    const token = this.getToken();
+    return axios.get(`${baseURL}/api/v1/namespaces`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .catch((err) => {
+        this.handleError(err);
+      });
+  }
+
+  createNamespace(name) {
+    const token = this.getToken();
+    return axios.post(
+      `${baseURL}/api/v1/namespaces`,
+      {
+        kind: 'Namespace',
+        apiVersion: 'v1',
+        metadata: {
           name,
+          labels: {
+            name,
+          },
         },
       },
-    });
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
+      .catch((err) => {
+        this.handleError(err);
+      });
   }
 
-  static deleteNamespace(name) {
-    return axios.delete(`${baseURL}/api/v1/namespaces/${name}`);
+  deleteNamespace(name) {
+    const token = this.getToken();
+    return axios.delete(`${baseURL}/api/v1/namespaces/${name}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .catch((err) => {
+        this.handleError(err);
+      });
   }
 
-  static listRolebindingsForNamespace(namespace) {
-    return axios.get(`${baseURL}/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings/`);
+  listRolebindingsForNamespace(namespace) {
+    const token = this.getToken();
+    return axios.get(`${baseURL}/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .catch((err) => {
+        this.handleErr(err);
+      });
   }
 }
+
 
 export default K8sApiClient;

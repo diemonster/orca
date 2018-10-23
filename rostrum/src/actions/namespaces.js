@@ -1,12 +1,11 @@
-import K8sApiClient from '../client/k8sApiClient';
+import K8sClient from '../k8s/client';
+import watch from '../utils/watch';
 import {
   NAMESPACE_CREATE_CHANGE_INPUT,
   NAMESPACE_DELETE_CHANGE_INPUT,
   NAMESPACE_LIST,
 } from './actionTypes';
 
-
-const client = new K8sApiClient();
 
 function namespaceListSuccess(namespaceObjects) {
   return {
@@ -15,9 +14,9 @@ function namespaceListSuccess(namespaceObjects) {
   };
 }
 
-export function namespaceList(apiClient = client) {
+export function namespaceList(client = K8sClient) {
   return (dispatch) => {
-    apiClient.listNamespaces()
+    client.listNamespaces()
       .then((response) => {
         const { items } = response.data;
         const namespaceObjects = items.map(namespace => ({
@@ -37,11 +36,12 @@ export function namespaceCreateChangeInput(namespaceCreateInput) {
   };
 }
 
-export function namespaceCreate(name, apiClient = client) {
+export function namespaceCreate(name, client = K8sClient) {
   return (dispatch) => {
-    apiClient.createNamespace(name)
+    client.createNamespace(name)
       .then(() => {
         dispatch(namespaceCreateChangeInput(''));
+        dispatch(namespaceList()); 
       });
   };
 }
@@ -53,11 +53,26 @@ export function namespaceDeleteChangeInput(namespaceDeleteInput) {
   };
 }
 
-export function namespaceDelete(name, apiClient = client) {
-  return (dispatch) => {
-    apiClient.deleteNamespace(name)
-      .then(() => {
-        dispatch(namespaceDeleteChangeInput(''));
+function watchNamespaceDelete(name, dispatch, client = K8sClient) {
+  watch(2000, (stop) => {
+    // todo: combine these two calls into one
+    dispatch(namespaceList(client));
+    client.listNamespaces()
+      .then((response) => {
+        for (let i = 0; i < response.data.items.length; i += 1) {
+          if (response.data.items[i].metadata.name === name) {
+            return;
+          }
+        }
+
+        stop();
       });
+  });
+}
+
+export function namespaceDelete(name, client = K8sClient) {
+  return (dispatch) => {
+    client.deleteNamespace(name)
+      .then(dispatch(namespaceDeleteChangeInput('')), watchNamespaceDelete(name, dispatch, client));
   };
 }

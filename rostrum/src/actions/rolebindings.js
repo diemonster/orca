@@ -1,7 +1,5 @@
-import K8sApiClient from '../client/k8sApiClient';
+import K8sClient from '../k8s/client';
 import { ROLEBINDING_LIST } from './actionTypes';
-
-const client = new K8sApiClient();
 
 function rolebindingListSuccess(namespace, rolebindings) {
   return {
@@ -11,13 +9,12 @@ function rolebindingListSuccess(namespace, rolebindings) {
   };
 }
 
-export function rolebindingList(namespace, apiClient = client) {
+export function rolebindingList(namespace, client = K8sClient) {
   return (dispatch) => {
-    apiClient.listRolebindingsForNamespace(namespace)
+    client.listRolebindings(namespace)
       .then((response) => {
         const { items } = response.data;
         const rolebindings = items.map(item => item.metadata.name);
-
         dispatch(rolebindingListSuccess(namespace, rolebindings));
       });
   };

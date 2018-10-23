@@ -6,19 +6,11 @@ import { namespaceList } from '../../actions/namespaces';
 
 import NamespaceListItem from './NamespaceListItem';
 
-const apiPollInterval = 2000; // milliseconds
-
 class NamespaceList extends React.Component {
   componentDidMount() {
     const { dispatchNamespaceList } = this.props;
 
     dispatchNamespaceList();
-    this.timer = setInterval(() => dispatchNamespaceList(), apiPollInterval);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
-    this.timer = null;
   }
 
   render() {

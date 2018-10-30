@@ -1,4 +1,3 @@
-import K8sClient from '../k8s/client';
 import { ROLEBINDING_LIST } from './actionTypes';
 
 function rolebindingListSuccess(namespace, rolebindings) {
@@ -9,7 +8,7 @@ function rolebindingListSuccess(namespace, rolebindings) {
   };
 }
 
-export function rolebindingList(namespace, client = K8sClient) {
+export function rolebindingList(namespace, client) {
   return (dispatch) => {
     client.listRolebindings(namespace)
       .then((response) => {

@@ -2,57 +2,41 @@ import React from 'react';
 import {
   BrowserRouter as Router, Route, Switch, Redirect,
 } from 'react-router-dom';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { CONFIG_URL } from './Root';
-import getConfig from '../actions/config';
+import K8sClient from '../k8s/client';
 
 import Sidebar from './sidebar/Sidebar';
 import Namespace from './namespaces/Namespace';
 import Pod from './pods/Pod';
 
-class App extends React.Component {
-  componentDidMount() {
-    const { appIsConfigured, dispatchGetConfig } = this.props;
+function App(props) {
+  const { client } = props;
 
-    if (!appIsConfigured) {
-      dispatchGetConfig(CONFIG_URL);
-    }
-  }
+  const NamespaceWithProps = p => (
+    <Namespace client={client} {...p} />
+  );
 
-  render() {
-    return (
-      <Router>
-        <div className="app-container">
-          <h1> Orca: the Kubernetes permissions manager</h1>
-          <div className="kube-container">
-            <Sidebar />
-            <Switch>
-              <Route exact path="/namespace/" component={Namespace} />
-              <Route exact path="/pod/" component={Pod} />
-              { /* default behavior: reroute to "/" */ }
-              <Route render={() => <Redirect to="/" />} />
-            </Switch>
-          </div>
+  return (
+    <Router>
+      <div className="app-container">
+        <h1> Orca: the Kubernetes permissions manager</h1>
+        <div className="kube-container">
+          <Sidebar />
+          <Switch>
+            <Route exact path="/namespace/" render={NamespaceWithProps} />
+            <Route exact path="/pod/" component={Pod} />
+            { /* default behavior: reroute to "/" */ }
+            <Route render={() => <Redirect to="/" />} />
+          </Switch>
         </div>
-      </Router>
-    );
-  }
+      </div>
+    </Router>
+  );
 }
 
 App.propTypes = {
-  appIsConfigured: PropTypes.bool.isRequired,
-  dispatchGetConfig: PropTypes.func.isRequired,
+  client: PropTypes.instanceOf(K8sClient).isRequired,
 };
 
-const mapStateToProps = state => ({
-  appIsConfigured: state.config.appIsConfigured,
-  CONFIG_URL: state.config.CONFIG_URL,
-});
-
-const mapDispatchToProps = dispatch => ({
-  dispatchGetConfig: () => dispatch(getConfig()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

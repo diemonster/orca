@@ -1,7 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import toastr from 'toastr';
 
 import './auth.css';
-import { auth } from '../Root';
+import Authenticator from '../../authenticator/authenticator';
+import K8sClient from '../../k8s/client';
 
 import App from '../App';
 import NavigationBar from '../navigationBar/NavigationBar';
@@ -10,37 +13,42 @@ class Auth extends React.Component {
   componentWillMount() {
     this.setState({ profile: {} });
 
-    auth.getProfile((err, profile) => {
-      this.setState({ profile });
-    });
-  }
+    const cb = (err, profile) => {
+      if (err) {
+        toastr.err(err);
+      } else {
+        this.setState({ profile });
+      }
+    };
 
-  login = () =>  {
-    auth.login();
-  }
-
-  logout = () =>   {
-    auth.logout();
+    const { authenticator } = this.props;
+    authenticator.getProfile(cb);
   }
 
   render() {
-    const { isAuthenticated } = auth;
-    if ( isAuthenticated() ) {
+    const { authenticator, client } = this.props;
+    const { profile } = this.state;
+    if (authenticator.isAuthenticated()) {
       return (
         <div className="home-container">
-          <NavigationBar name={this.state.profile.name} logout={this.logout}/>
-          <App />
+          <NavigationBar name={profile.name} logout={authenticator.logout} />
+          <App client={client} />
         </div>
-      )
-    } else {
-      return (
-        <div className="login-container">
-          <NavigationBar login={this.login} />
-          <h1>ORCA</h1>
-        </div>
-      )
+      );
     }
+
+    return (
+      <div className="login-container">
+        <NavigationBar login={authenticator.login} />
+        <h1>ORCA</h1>
+      </div>
+    );
   }
 }
+
+Auth.propTypes = {
+  authenticator: PropTypes.instanceOf(Authenticator).isRequired,
+  client: PropTypes.instanceOf(K8sClient).isRequired,
+};
 
 export default Auth;

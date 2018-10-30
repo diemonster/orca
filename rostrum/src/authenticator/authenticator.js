@@ -12,6 +12,8 @@ export default class Authenticator {
     });
 
     this.accessToken = '';
+
+    this.login = this.login.bind(this);
   }
 
   login() {
@@ -24,14 +26,7 @@ export default class Authenticator {
       return;
     }
 
-    this.auth0.client.userInfo(accessToken, (err, profile) => {
-      if (profile) {
-        this.userProfile = profile;
-      }
-
-      // TODO: Add proper error handling
-      cb(err, profile);
-    });
+    this.auth0.client.userInfo(accessToken, cb);
   }
 
   // parses the result after authentication from URL hash

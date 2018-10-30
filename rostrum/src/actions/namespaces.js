@@ -1,4 +1,3 @@
-import K8sClient from '../k8s/client';
 import watch from '../utils/watch';
 import {
   NAMESPACE_CREATE_CHANGE_INPUT,
@@ -14,7 +13,7 @@ function namespaceListSuccess(namespaceObjects) {
   };
 }
 
-export function namespaceList(client = K8sClient) {
+export function namespaceList(client) {
   return (dispatch) => {
     client.listNamespaces()
       .then((response) => {
@@ -36,12 +35,12 @@ export function namespaceCreateChangeInput(namespaceCreateInput) {
   };
 }
 
-export function namespaceCreate(name, client = K8sClient) {
+export function namespaceCreate(name, client) {
   return (dispatch) => {
     client.createNamespace(name)
       .then(() => {
         dispatch(namespaceCreateChangeInput(''));
-        dispatch(namespaceList()); 
+        dispatch(namespaceList(client));
       });
   };
 }
@@ -53,7 +52,7 @@ export function namespaceDeleteChangeInput(namespaceDeleteInput) {
   };
 }
 
-function watchNamespaceDelete(name, dispatch, client = K8sClient) {
+function watchNamespaceDelete(name, dispatch, client) {
   watch(2000, (stop) => {
     // todo: combine these two calls into one
     dispatch(namespaceList(client));
@@ -70,7 +69,7 @@ function watchNamespaceDelete(name, dispatch, client = K8sClient) {
   });
 }
 
-export function namespaceDelete(name, client = K8sClient) {
+export function namespaceDelete(name, client) {
   return (dispatch) => {
     client.deleteNamespace(name)
       .then(dispatch(namespaceDeleteChangeInput('')), watchNamespaceDelete(name, dispatch, client));

@@ -2,8 +2,7 @@ import axios from 'axios';
 import { CONFIG_SET } from './actionTypes';
 
 const defaultConfig = {
-  appIsConfigured: true,
-  proxyUrl: 'localhost:8080',
+  proxyUrl: 'http://localhost:8080',
 };
 
 function setConfig(config) {
@@ -21,7 +20,6 @@ export default function getConfig(configUrl) {
         const { items } = response.data;
         const config = {
           ...items,
-          appIsConfigured: true,
         };
 
         dispatch(setConfig(config));

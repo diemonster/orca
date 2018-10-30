@@ -3,18 +3,19 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { namespaceList } from '../../actions/namespaces';
+import K8sClient from '../../k8s/client';
 
 import NamespaceListItem from './NamespaceListItem';
 
 class NamespaceList extends React.Component {
   componentDidMount() {
-    const { dispatchNamespaceList } = this.props;
+    const { client, dispatchNamespaceList } = this.props;
 
-    dispatchNamespaceList();
+    dispatchNamespaceList(client);
   }
 
   render() {
-    const { namespaceObjects } = this.props;
+    const { client, namespaceObjects } = this.props;
 
     if (!namespaceObjects) {
       return (
@@ -26,7 +27,12 @@ class NamespaceList extends React.Component {
     }
 
     const namespaceListItems = namespaceObjects.map(namespace => (
-      <NamespaceListItem key={namespace.name} namespace={namespace.name} phase={namespace.status} />
+      <NamespaceListItem
+        client={client}
+        key={namespace.name}
+        namespace={namespace.name}
+        phase={namespace.status}
+      />
     ));
 
     return (
@@ -41,6 +47,7 @@ class NamespaceList extends React.Component {
 }
 
 NamespaceList.propTypes = {
+  client: PropTypes.instanceOf(K8sClient).isRequired,
   dispatchNamespaceList: PropTypes.func.isRequired,
   namespaceObjects: PropTypes.arrayOf(
     PropTypes.shape({
@@ -55,7 +62,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  dispatchNamespaceList: () => dispatch(namespaceList()),
+  dispatchNamespaceList: client => dispatch(namespaceList(client)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NamespaceList);

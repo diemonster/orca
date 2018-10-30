@@ -13,7 +13,7 @@ const METHODS = {
 function getTokenFromSession() {
   // todo: throw exception when token is expired/does not exist
   // this exception can be caught by a higher-level component which will re-trigger
-  // the auth0 lock workflow. 
+  // the auth0 lock workflow.
   return localStorage.getItem('access_token');
 }
 
@@ -74,4 +74,4 @@ class K8sClient {
   }
 }
 
-export default new K8sClient();
+export default K8sClient;

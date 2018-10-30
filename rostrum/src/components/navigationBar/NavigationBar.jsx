@@ -3,7 +3,7 @@ import './navigation-bar.css';
 import PropTypes from 'prop-types';
 
 function NavigationBar(props) {
-  const { name, logout, login } = props;
+  const { login, logout, name } = props;
   if (logout) {
     return (
       <div className="navigation-bar">
@@ -11,8 +11,7 @@ function NavigationBar(props) {
           <li className="home"><a href="/">Home</a></li>
           <li className="profile">
             <button type="button" onClick={logout}>
-              {name}
-              , Log Out
+              {name ? `${name}, Log Out` : 'Log Out'}
             </button>
           </li>
         </ul>
@@ -33,9 +32,9 @@ function NavigationBar(props) {
 }
 
 NavigationBar.propTypes = {
-  name: PropTypes.string,
-  logout: PropTypes.func,
   login: PropTypes.func,
+  logout: PropTypes.func,
+  name: PropTypes.string,
 };
 
 export default NavigationBar;

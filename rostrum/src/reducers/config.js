@@ -5,7 +5,6 @@ export default function configReducer(state = {}, action) {
     case CONFIG_SET:
       return {
         ...state,
-        appIsConfigured: action.config.appIsConfigured,
         proxyUrl: action.config.proxyUrl,
       };
 

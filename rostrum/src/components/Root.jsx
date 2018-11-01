@@ -11,9 +11,7 @@ import Auth from './auth/Auth';
 import Callback from './callback/Callback';
 
 const initialState = {
-  config: {
-    proxyUrl: 'http://localhost:8080',
-  },
+  config: {},
   namespace: {
     namespaceObjects: [],
     namespaceCreateInput: '',
@@ -24,9 +22,17 @@ const initialState = {
   },
 };
 
-const store = configureStore(initialState);
+function setConfigFromWindow() {
+  if (window.config) {
+    initialState.config = window.config;
+  }
+}
 
-const authenticator = new Authenticator();
+setConfigFromWindow();
+const store = configureStore(initialState);
+const client = new K8sClient(initialState.config.proxyURL);
+const authenticator = new Authenticator(initialState.config.auth0Domain, initialState.config.auth0ClientID);
+
 const handleAuthentication = (props) => {
   const { location } = props;
   if (/access_token|id_token|error/.test(location.hash)) {
@@ -36,14 +42,11 @@ const handleAuthentication = (props) => {
   return <Callback {...props} />;
 };
 
-// this will be properly populated in PR#39
-const client = new K8sClient(initialState.config.proxyURL);
+const AuthWithProps = props => (
+  <Auth authenticator={authenticator} client={client} {...props} />
+);
 
 function Root() {
-  const AuthWithProps = props => (
-    <Auth authenticator={authenticator} client={client} {...props} />
-  );
-
   return (
     <Provider store={store}>
       <Router history={History} render={AuthWithProps}>

@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import configReducer from './config';
 import namespaceReducer from './namespaces';
 import rolebindingReducer from './rolebindings';
 
@@ -32,7 +31,6 @@ import rolebindingReducer from './rolebindings';
 //     return { nameOfProp: state.namespace.namespaceObjects };
 //
 const rootReducer = combineReducers({
-  config: configReducer,
   namespace: namespaceReducer,
   rolebinding: rolebindingReducer,
 });

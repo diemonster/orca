@@ -1,12 +1,13 @@
 import auth0 from 'auth0-js';
 import history from './history';
 
+
 export default class Authenticator {
-  constructor() {
+  constructor(domain, clientID) {
     this.auth0 = new auth0.WebAuth({
-      domain: process.env.REACT_APP_DOMAIN,
-      clientID: process.env.REACT_APP_CLIENT_ID,
-      redirectUri: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/callback' : 'https://neworca.com/callback',
+      domain,
+      clientID,
+      redirectUri: window.location.origin + '/callback',
       responseType: 'token id_token',
       scope: 'openid profile',
     });

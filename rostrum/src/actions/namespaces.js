@@ -1,10 +1,10 @@
 import watch from '../utils/watch';
+
 import {
   NAMESPACE_CREATE_CHANGE_INPUT,
   NAMESPACE_DELETE_CHANGE_INPUT,
   NAMESPACE_LIST,
 } from './actionTypes';
-
 
 function namespaceListSuccess(namespaceObjects) {
   return {

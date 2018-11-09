@@ -10,8 +10,10 @@ module.exports = {
     "localStorage": true,
     "fetch": true,
     // testing keywords:
+    "jest": true,
     "describe": true,
     "it": true,
     "expect": true,
+    "afterEach": true,
   },
 };

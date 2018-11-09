@@ -7,6 +7,7 @@ module.exports = {
   ],
   "globals": {
     "document": true,
+    "window": true,
     "localStorage": true,
     "fetch": true,
     // testing keywords:

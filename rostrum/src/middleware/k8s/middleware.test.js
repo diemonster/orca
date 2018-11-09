@@ -1,0 +1,122 @@
+import * as types from '../../actions/actionTypes';
+import * as actions from './actions';
+import K8sClient from './client';
+import k8sMiddleware from './middleware';
+
+const create = () => {
+  const getToken = jest.fn();
+  const client = {
+    createNamespace: jest.fn(),
+    deleteNamespace: jest.fn(),
+    listNamespaces: jest.fn(),
+    listRolebindings: jest.fn(),
+  };
+
+  const config = { client };
+
+  const store = {
+    getState: jest.fn(() => ({ config })),
+    dispatch: jest.fn(),
+  };
+
+  const next = jest.fn();
+  const invoke = action => k8sMiddleware(store)(next)(action);
+
+  return {
+    store, next, invoke, client,
+  };
+};
+
+describe('k8sMiddleware', () => {
+  it('passes along any irrelevant action', () => {
+    const { next, invoke } = create();
+    const action = { type: 'IRRELEVANT' };
+
+    const namespaceCreate = jest.spyOn(actions, 'namespaceCreate');
+    const namespaceDelete = jest.spyOn(actions, 'namespaceDelete');
+    const namespaceList = jest.spyOn(actions, 'namespaceList');
+    const rolebindingList = jest.spyOn(actions, 'rolebindingList');
+
+    invoke(action);
+
+    expect(namespaceCreate).not.toHaveBeenCalled();
+    expect(namespaceDelete).not.toHaveBeenCalled();
+    expect(namespaceList).not.toHaveBeenCalled();
+    expect(rolebindingList).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalledWith(action);
+  });
+});
+
+describe('k8sMiddleware', () => {
+  it('correctly dispatches an action to create a namespace', () => {
+    const { next, invoke, client } = create();
+    const name = 'new-namespace';
+    const action = { type: types.NAMESPACE_CREATE, name };
+
+    const namespaceCreate = jest.spyOn(actions, 'namespaceCreate');
+
+    invoke(action);
+
+    expect(namespaceCreate).toHaveBeenCalledWith(client, name);
+    expect(next).toHaveBeenCalledWith(action);
+  });
+});
+
+describe('k8sMiddleware', () => {
+  it('correctly dispatches an action to delete a namespace', () => {
+    const { next, invoke, client } = create();
+    const name = 'some-namespace';
+    const action = { type: types.NAMESPACE_DELETE, name };
+
+    const namespaceDelete = jest.spyOn(actions, 'namespaceDelete');
+
+    invoke(action);
+
+    expect(namespaceDelete).toHaveBeenCalledWith(client, name);
+    expect(next).toHaveBeenCalledWith(action);
+  });
+});
+
+describe('k8sMiddleware', () => {
+  it('correctly dispatches an action to list namespaces', () => {
+    const { next, invoke, client } = create();
+    const action = { type: types.NAMESPACE_LIST };
+
+    const namespaceList = jest.spyOn(actions, 'namespaceList');
+
+    invoke(action);
+
+    expect(namespaceList).toHaveBeenCalledWith(client);
+    expect(next).toHaveBeenCalledWith(action);
+  });
+});
+
+describe('k8sMiddleware', () => {
+  it('correctly dispatches an action to watch a namespace for deletion', () => {
+    const { next, invoke, client } = create();
+    const name = 'some-namespace';
+    const action = { type: types.NAMESPACE_WATCH_FOR_DELETION, name };
+
+    const watchNamespaceDelete = jest.spyOn(actions, 'watchNamespaceDelete');
+
+    invoke(action);
+
+    expect(watchNamespaceDelete).toHaveBeenCalledWith(client, name);
+    expect(next).toHaveBeenCalledWith(action);
+  });
+});
+
+describe('k8sMiddleware', () => {
+  it('correctly dispatches an action to list rolebindings', () => {
+    const { next, invoke, client } = create();
+    const namespace = 'some-namespace';
+    const action = { type: types.ROLEBINDING_LIST, namespace };
+
+    const rolebindingList = jest.spyOn(actions, 'rolebindingList');
+
+    invoke(action);
+
+    expect(rolebindingList).toHaveBeenCalledWith(client, namespace);
+    expect(next).toHaveBeenCalledWith(action);
+  });
+});

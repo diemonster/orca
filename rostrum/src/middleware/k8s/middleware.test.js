@@ -1,10 +1,8 @@
 import * as types from '../../actions/actionTypes';
 import * as actions from './actions';
-import K8sClient from './client';
 import k8sMiddleware from './middleware';
 
 const create = () => {
-  const getToken = jest.fn();
   const client = {
     createNamespace: jest.fn(),
     deleteNamespace: jest.fn(),
@@ -27,7 +25,7 @@ const create = () => {
   };
 };
 
-describe('k8sMiddleware', () => {
+describe('kubernetes middleware', () => {
   it('passes along any irrelevant action', () => {
     const { next, invoke } = create();
     const action = { type: 'IRRELEVANT' };
@@ -45,9 +43,7 @@ describe('k8sMiddleware', () => {
     expect(rolebindingList).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalledWith(action);
   });
-});
 
-describe('k8sMiddleware', () => {
   it('correctly dispatches an action to create a namespace', () => {
     const { next, invoke, client } = create();
     const name = 'new-namespace';
@@ -60,9 +56,7 @@ describe('k8sMiddleware', () => {
     expect(namespaceCreate).toHaveBeenCalledWith(client, name);
     expect(next).toHaveBeenCalledWith(action);
   });
-});
 
-describe('k8sMiddleware', () => {
   it('correctly dispatches an action to delete a namespace', () => {
     const { next, invoke, client } = create();
     const name = 'some-namespace';
@@ -75,9 +69,7 @@ describe('k8sMiddleware', () => {
     expect(namespaceDelete).toHaveBeenCalledWith(client, name);
     expect(next).toHaveBeenCalledWith(action);
   });
-});
 
-describe('k8sMiddleware', () => {
   it('correctly dispatches an action to list namespaces', () => {
     const { next, invoke, client } = create();
     const action = { type: types.NAMESPACE_LIST };
@@ -89,9 +81,7 @@ describe('k8sMiddleware', () => {
     expect(namespaceList).toHaveBeenCalledWith(client);
     expect(next).toHaveBeenCalledWith(action);
   });
-});
 
-describe('k8sMiddleware', () => {
   it('correctly dispatches an action to watch a namespace for deletion', () => {
     const { next, invoke, client } = create();
     const name = 'some-namespace';
@@ -104,9 +94,7 @@ describe('k8sMiddleware', () => {
     expect(watchNamespaceDelete).toHaveBeenCalledWith(client, name);
     expect(next).toHaveBeenCalledWith(action);
   });
-});
 
-describe('k8sMiddleware', () => {
   it('correctly dispatches an action to list rolebindings', () => {
     const { next, invoke, client } = create();
     const namespace = 'some-namespace';

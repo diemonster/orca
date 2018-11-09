@@ -15,9 +15,7 @@ describe('middleware actions', () => {
 
     expect(actions.namespaceCreateError(error)).toEqual(expectedAction);
   });
-});
 
-describe('middleware actions', () => {
   it('should create an action to indicate a namespace deletion error', () => {
     const error = new Error();
     const expectedAction = {
@@ -27,9 +25,7 @@ describe('middleware actions', () => {
 
     expect(actions.namespaceDeleteError(error)).toEqual(expectedAction);
   });
-});
 
-describe('middleware actions', () => {
   it('should create an action to indicate a namespace list error', () => {
     const error = new Error();
     const expectedAction = {
@@ -39,9 +35,7 @@ describe('middleware actions', () => {
 
     expect(actions.namespaceListError(error)).toEqual(expectedAction);
   });
-});
 
-describe('middleware actions', () => {
   it('should create an action to indicate a namespace list success', () => {
     const namespaceObjects = [{ namespace: 'any' }];
     const expectedAction = {
@@ -51,9 +45,7 @@ describe('middleware actions', () => {
 
     expect(actions.namespaceListSuccess(namespaceObjects)).toEqual(expectedAction);
   });
-});
 
-describe('middleware actions', () => {
   it('should create an action to watch a namespace as it\'s being deleted', () => {
     const name = 'some-namespace';
     const expectedAction = {
@@ -63,9 +55,7 @@ describe('middleware actions', () => {
 
     expect(actions.namespaceWatchForDeletion(name)).toEqual(expectedAction);
   });
-});
 
-describe('middleware actions', () => {
   it('should create an action to indicate a rolebinding list error', () => {
     const error = new Error();
     const expectedAction = {
@@ -75,9 +65,7 @@ describe('middleware actions', () => {
 
     expect(actions.rolebindingListError(error)).toEqual(expectedAction);
   });
-});
 
-describe('middleware actions', () => {
   it('should create an action to indicate a rolebinding list success', () => {
     const namespace = 'some-namespace';
     const rolebindings = ['rolebinding1', 'rolebinding2'];
@@ -120,9 +108,7 @@ describe('middleware async actions', () => {
     return store.dispatch(actions.namespaceCreate(client, name))
       .then(() => { expect(store.getActions()).toEqual(expectedActions); });
   });
-});
 
-describe('middleware async actions', () => {
   it('on namespaceCreate failure, should emit namespaceCreateError and namespaceCreateChangeInput actions', () => {
     const error = new Error('failed as intended');
     const client = {
@@ -142,9 +128,7 @@ describe('middleware async actions', () => {
     return store.dispatch(actions.namespaceCreate(client, name))
       .then(() => { expect(store.getActions()).toEqual(expectedActions); });
   });
-});
 
-describe('middleware async actions', () => {
   it('on namespaceDelete success, should emit namespaceDeleteChangeInput and namespaceWatchForDeletion actions', () => {
     const client = {
       deleteNamespace: jest.fn(() => new Promise((resolve) => {
@@ -168,9 +152,7 @@ describe('middleware async actions', () => {
         expect(watchNamespaceDelete).toHaveBeenCalledWith(client, name);
       });
   });
-});
 
-describe('middleware async actions', () => {
   it('on namespaceDelete failure, should emit namespaceDeleteError and namespaceDeleteChangeInput actions', () => {
     const error = new Error('failed as intended');
     const client = {
@@ -190,9 +172,7 @@ describe('middleware async actions', () => {
     return store.dispatch(actions.namespaceDelete(client, name))
       .then(() => { expect(store.getActions()).toEqual(expectedActions); });
   });
-});
 
-describe('middleware async actions', () => {
   it('on namespaceList success, should emit namespaceListSuccess action', () => {
     const client = {
       listNamespaces: jest.fn(() => new Promise((resolve) => {
@@ -209,9 +189,7 @@ describe('middleware async actions', () => {
     return store.dispatch(actions.namespaceList(client))
       .then(() => { expect(store.getActions()).toEqual(expectedActions); });
   });
-});
 
-describe('middleware async actions', () => {
   it('on namespaceList failure, should emit namespaceListError action', () => {
     const error = new Error('failed as intended');
     const client = {
@@ -229,9 +207,7 @@ describe('middleware async actions', () => {
     return store.dispatch(actions.namespaceList(client))
       .then(() => { expect(store.getActions()).toEqual(expectedActions); });
   });
-});
 
-describe('middleware async actions', () => {
   it('on rolebindingList success, should emit rolebindingListSuccess action', () => {
     const client = {
       listRolebindings: jest.fn(() => new Promise((resolve) => {
@@ -249,9 +225,7 @@ describe('middleware async actions', () => {
     return store.dispatch(actions.rolebindingList(client, namespace))
       .then(() => { expect(store.getActions()).toEqual(expectedActions); });
   });
-});
 
-describe('middleware async actions', () => {
   it('on rolebindingList failure, should emit rolebindingListError action', () => {
     const error = new Error('failed as intended');
     const client = {

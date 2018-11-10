@@ -6,7 +6,7 @@ import { namespaceList } from '../../actions/namespaces';
 
 import NamespaceListItem from './NamespaceListItem';
 
-class NamespaceList extends React.Component {
+export class NamespaceList extends React.Component {
   componentDidMount() {
     const { dispatchNamespaceList } = this.props;
 

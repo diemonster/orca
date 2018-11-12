@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { namespaceCreateChangeInput, namespaceCreate } from '../../actions/namespaces';
 
-class NamespaceCreate extends React.Component {
+export class NamespaceCreate extends React.Component {
   constructor(props) {
     super(props);
 
@@ -34,20 +34,25 @@ class NamespaceCreate extends React.Component {
     return (
       <div className="create-namespace">
         <h2>Create Namespace</h2>
-        <form className="namespace-input-form" onSubmit={this.handleSubmit}>
-          <label className="namespace-label" htmlFor="namespace">
+        <form className="namespace-input-form" id="namespace-create-input-form" onSubmit={this.handleSubmit}>
+          <label className="namespace-input-label" htmlFor="namespace-create-input">
             New Namespace:
-            <input
-              type="text"
-              value={namespaceCreateInput}
-              onChange={this.handleChange}
-              placeholder="enter namespace"
-              id="namespace"
-            />
-            <button className="button" type="submit" value="submit">
-              Create
-            </button>
           </label>
+          <input
+            type="text"
+            value={namespaceCreateInput}
+            onChange={this.handleChange}
+            placeholder="enter namespace"
+            name="namespace-create-input"
+            id="namespace-create-input"
+          />
+          <button
+            className="button"
+            type="submit"
+            value="submit"
+          >
+            Create
+          </button>
         </form>
       </div>
     );

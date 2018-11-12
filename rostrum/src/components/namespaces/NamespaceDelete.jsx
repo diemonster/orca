@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { namespaceDelete, namespaceDeleteChangeInput } from '../../actions/namespaces';
 
-class NamespaceDelete extends React.Component {
+export class NamespaceDelete extends React.Component {
   constructor(props) {
     super(props);
 
@@ -32,26 +32,27 @@ class NamespaceDelete extends React.Component {
     const { namespaceDeleteInput } = this.props;
 
     return (
-      <div className="create-namespace">
+      <div className="delete-namespace">
         <h2>Delete Namespace</h2>
-        <form className="namespace-input-form" onSubmit={this.handleSubmit}>
-          <label className="namespace-label" htmlFor="namespace">
+        <form className="namespace-input-form" id="namespace-delete-input-form" onSubmit={this.handleSubmit}>
+          <label className="namespace-input-label" htmlFor="namespace-delete-input">
             Delete Namespace:
-            <input
-              type="text"
-              value={namespaceDeleteInput}
-              onChange={this.handleChange}
-              placeholder="enter namespace"
-              id="namespace"
-            />
-            <button
-              className="button"
-              type="submit"
-              value="submit"
-            >
-              Delete
-            </button>
           </label>
+          <input
+            type="text"
+            value={namespaceDeleteInput}
+            onChange={this.handleChange}
+            placeholder="enter namespace"
+            name="namespace-delete-input"
+            id="namespace-delete-input"
+          />
+          <button
+            className="button"
+            type="submit"
+            value="submit"
+          >
+            Delete
+          </button>
         </form>
       </div>
     );

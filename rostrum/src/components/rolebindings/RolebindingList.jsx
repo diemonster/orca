@@ -6,7 +6,7 @@ import { rolebindingList } from '../../actions/rolebindings';
 
 import RolebindingListItem from './RolebindingListItem';
 
-class RolebindingList extends React.Component {
+export class RolebindingList extends React.Component {
   componentDidMount() {
     const { dispatchRolebindingList, namespace } = this.props;
 

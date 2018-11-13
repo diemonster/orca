@@ -41,7 +41,7 @@ describe('components', () => {
       expect(auth.find('div').hasClass('home-container')).toBe(true);
       expect(auth.find(NavigationBar).prop('name')).toBe('username');
       expect(auth.find(NavigationBar).prop('logout')).toBe(authenticator.logout);
-      expect(auth.find(App).length).not.toEqual(0);
+      expect(auth.find(App).exists()).toBe(true);
     });
   });
 });

@@ -12,42 +12,19 @@ describe('namespace reducer', () => {
     expect(namespaceReducer(undefined, {})).toEqual(initialState);
   });
 
-  it('should handle NAMESPACE_CREATE_CHANGE_INPUT', () => {
-    let state;
-    let action = {
-      type: types.NAMESPACE_CREATE_CHANGE_INPUT,
-      namespaceCreateInput: 'a',
-    };
-
-    let expectedState = {
-      namespaceObjects: [],
-      namespaceCreateInput: 'a',
-      namespaceDeleteInput: '',
-    };
-
-    expect(namespaceReducer(state, action)).toEqual(expectedState);
-
-    state = expectedState;
-    action = {
-      type: types.NAMESPACE_CREATE_CHANGE_INPUT,
-      namespaceCreateInput: 'ab',
-    };
-
-    expectedState = {
+  it('should replace namespaceCreateInput on NAMESPACE_CREATE_CHANGE_INPUT', () => {
+    const state = {
       namespaceObjects: [],
       namespaceCreateInput: 'ab',
       namespaceDeleteInput: '',
     };
 
-    expect(namespaceReducer(state, action)).toEqual(expectedState);
-
-    state = expectedState;
-    action = {
+    const action = {
       type: types.NAMESPACE_CREATE_CHANGE_INPUT,
       namespaceCreateInput: '',
     };
 
-    expectedState = {
+    const expectedState = {
       namespaceObjects: [],
       namespaceCreateInput: '',
       namespaceDeleteInput: '',
@@ -56,42 +33,19 @@ describe('namespace reducer', () => {
     expect(namespaceReducer(state, action)).toEqual(expectedState);
   });
 
-  it('should handle NAMESPACE_DELETE_CHANGE_INPUT', () => {
-    let state;
-    let action = {
-      type: types.NAMESPACE_DELETE_CHANGE_INPUT,
-      namespaceDeleteInput: 'a',
-    };
-
-    let expectedState = {
-      namespaceObjects: [],
-      namespaceCreateInput: '',
-      namespaceDeleteInput: 'a',
-    };
-
-    expect(namespaceReducer(state, action)).toEqual(expectedState);
-
-    state = expectedState;
-    action = {
-      type: types.NAMESPACE_DELETE_CHANGE_INPUT,
-      namespaceDeleteInput: 'ab',
-    };
-
-    expectedState = {
+  it('should replace namespaceDeleteInput on NAMESPACE_DELETE_CHANGE_INPUT', () => {
+    const state = {
       namespaceObjects: [],
       namespaceCreateInput: '',
       namespaceDeleteInput: 'ab',
     };
 
-    expect(namespaceReducer(state, action)).toEqual(expectedState);
-
-    state = expectedState;
-    action = {
+    const action = {
       type: types.NAMESPACE_DELETE_CHANGE_INPUT,
       namespaceDeleteInput: '',
     };
 
-    expectedState = {
+    const expectedState = {
       namespaceObjects: [],
       namespaceCreateInput: '',
       namespaceDeleteInput: '',
@@ -100,31 +54,8 @@ describe('namespace reducer', () => {
     expect(namespaceReducer(state, action)).toEqual(expectedState);
   });
 
-  it('should handle NAMESPACE_LIST_SUCCESS', () => {
-    let state;
-    let action = {
-      type: types.NAMESPACE_LIST_SUCCESS,
-      namespaceObjects: [{ name: 'namespace1', status: 'ACTIVE' }],
-    };
-
-    let expectedState = {
-      namespaceObjects: [{ name: 'namespace1', status: 'ACTIVE' }],
-      namespaceCreateInput: '',
-      namespaceDeleteInput: '',
-    };
-
-    expect(namespaceReducer(state, action)).toEqual(expectedState);
-
-    state = expectedState;
-    action = {
-      type: types.NAMESPACE_LIST_SUCCESS,
-      namespaceObjects: [
-        { name: 'namespace1', status: 'ACTIVE' },
-        { name: 'namespace2', status: 'ACTIVE' },
-      ],
-    };
-
-    expectedState = {
+  it('should replace namespaceObjects on NAMESPACE_LIST_SUCCESS', () => {
+    const state = {
       namespaceObjects: [
         { name: 'namespace1', status: 'ACTIVE' },
         { name: 'namespace2', status: 'ACTIVE' },
@@ -133,19 +64,17 @@ describe('namespace reducer', () => {
       namespaceDeleteInput: '',
     };
 
-    expect(namespaceReducer(state, action)).toEqual(expectedState);
-
-    state = expectedState;
-    action = {
+    const action = {
       type: types.NAMESPACE_LIST_SUCCESS,
       namespaceObjects: [{ name: 'namespace2', status: 'ACTIVE' }],
     };
 
-    expectedState = {
+    const expectedState = {
       namespaceObjects: [{ name: 'namespace2', status: 'ACTIVE' }],
       namespaceCreateInput: '',
       namespaceDeleteInput: '',
     };
+
     expect(namespaceReducer(state, action)).toEqual(expectedState);
   });
 });

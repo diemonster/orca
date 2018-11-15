@@ -21,7 +21,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "ci-test": "CI=true react-scripts test --env=jsdom",
+    "ci-test": "CI=true react-scripts test -o --env=jsdom",
     "cov": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },

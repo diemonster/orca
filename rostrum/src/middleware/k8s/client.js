@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const DEFAULT_ENDPOINT = 'http://localhost:8080';
+export const DEFAULT_ENDPOINT = 'http://localhost:8080';
 
-const METHODS = {
+export const METHODS = {
   DELETE: 'delete',
   GET: 'get',
   POST: 'post',
@@ -10,7 +10,7 @@ const METHODS = {
 };
 
 // todo: place in shared location
-function getTokenFromSession() {
+export function getTokenFromSession() {
   // todo: throw exception when token is expired/does not exist
   // this exception can be caught by a higher-level component which will re-trigger
   // the auth0 lock workflow.

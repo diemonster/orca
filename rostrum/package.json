@@ -21,7 +21,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "ci-test": "CI=true react-scripts test -o --env=jsdom",
+    "test-staged": "CI=true react-scripts test --env=jsdom --findRelatedTests",
     "cov": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },
@@ -39,14 +39,15 @@
     "redux-mock-store": "^1.5.3"
   },
   "lint-staged": {
-    "*.{js,jsx}": [
+    "src/**/*.{js,jsx}": [
+      "yarn test-staged",
       "eslint --fix",
       "git add"
     ]
   },
   "husky": {
     "hooks": {
-      "pre-commit": ["lint-staged && yarn ci-test"]
+      "pre-commit": ["lint-staged"]
     }
   }
 }

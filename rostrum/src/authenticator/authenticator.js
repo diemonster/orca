@@ -15,6 +15,17 @@ export default class Authenticator {
     this.accessToken = '';
 
     this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
+
+    // checks if the user is authenticated
+    this.isAuthenticated = () => {
+      // Check whether the current time is past the
+      // access token's expiry time
+      const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+      const isAuthenticated = new Date().getTime() < expiresAt;
+
+      return isAuthenticated;
+    };
   }
 
   login() {
@@ -32,7 +43,7 @@ export default class Authenticator {
 
   // parses the result after authentication from URL hash
   handleAuthentication() {
-    this.auth0.parseHash((err, authResult) => {
+    const callback = (err, authResult) => {
       if (authResult && authResult.accessToken) {
         this.setSession(authResult);
         // navigate to the home route
@@ -43,7 +54,9 @@ export default class Authenticator {
 
         // TODO: Add proper error handling
       }
-    });
+    };
+
+    this.auth0.parseHash({}, callback);
   }
 
   // Sets user details in localStorage
@@ -62,17 +75,10 @@ export default class Authenticator {
     localStorage.removeItem('access_token');
     localStorage.removeItem('expires_at');
     localStorage.removeItem('name');
+
+    this.accessToken = '';
+
     // navigate to the home route
     history.replace('/');
-  }
-
-  // checks if the user is authenticated
-  isAuthenticated() {
-    // Check whether the current time is past the
-    // access token's expiry time
-    const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    const isAuthenticated = new Date().getTime() < expiresAt;
-
-    return isAuthenticated;
   }
 }

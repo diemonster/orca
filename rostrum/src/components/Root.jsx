@@ -41,8 +41,9 @@ class Root extends React.Component {
       <Provider store={this.store}>
         <Router history={History}>
           <Switch>
-            <Route exact path="/callback" render={this.handleAuthentication} />
-            {/* if no above route matches (in this case, just /callback), <Auth> will be rendered */}
+            <Route exact path="/callback" render={this.handleAuthentication()} />
+            {/* if no above route matches (in this case, just /callback),
+            <Auth> will be rendered */}
             <Route render={this.authWithProps()} />
           </Switch>
         </Router>

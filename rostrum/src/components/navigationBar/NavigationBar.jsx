@@ -18,12 +18,13 @@ function NavigationBar(props) {
       </div>
     );
   }
+
   return (
     <div className="navigation-bar">
       <ul>
         <li className="profile">
           <button type="button" onClick={login}>
-            Login
+            Log In
           </button>
         </li>
       </ul>
@@ -35,6 +36,12 @@ NavigationBar.propTypes = {
   login: PropTypes.func,
   logout: PropTypes.func,
   name: PropTypes.string,
+};
+
+NavigationBar.defaultProps = {
+  login: null,
+  logout: null,
+  name: null,
 };
 
 export default NavigationBar;

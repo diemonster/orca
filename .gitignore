@@ -8,7 +8,7 @@ node_modules/
 
 # production
 build/
-rostrum
+rostrum/rostrum
 
 # vim
 *.swp

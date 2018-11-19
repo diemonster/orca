@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { namespaceDelete, namespaceDeleteChangeInput } from '../../actions/namespaces';
-import K8sClient from '../../k8s/client';
 
 class NamespaceDelete extends React.Component {
   constructor(props) {
@@ -24,9 +23,9 @@ class NamespaceDelete extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    const { client, dispatchNamespaceDelete, namespaceDeleteInput} = this.props;
+    const { dispatchNamespaceDelete, namespaceDeleteInput } = this.props;
 
-    dispatchNamespaceDelete(namespaceDeleteInput, client);
+    dispatchNamespaceDelete(namespaceDeleteInput);
   }
 
   render() {
@@ -60,7 +59,6 @@ class NamespaceDelete extends React.Component {
 }
 
 NamespaceDelete.propTypes = {
-  client: PropTypes.instanceOf(K8sClient).isRequired,
   dispatchNamespaceDelete: PropTypes.func.isRequired,
   dispatchNamespaceDeleteChangeInput: PropTypes.func.isRequired,
   namespaceDeleteInput: PropTypes.string.isRequired,
@@ -71,7 +69,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  dispatchNamespaceDelete: (name, client) => dispatch(namespaceDelete(name, client)),
+  dispatchNamespaceDelete: name => dispatch(namespaceDelete(name)),
   dispatchNamespaceDeleteChangeInput: namespaceDeleteInput => (
     dispatch(namespaceDeleteChangeInput(namespaceDeleteInput))
   ),

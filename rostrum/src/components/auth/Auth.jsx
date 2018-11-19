@@ -4,7 +4,6 @@ import toastr from 'toastr';
 
 import './auth.css';
 import Authenticator from '../../authenticator/authenticator';
-import K8sClient from '../../k8s/client';
 
 import App from '../App';
 import NavigationBar from '../navigationBar/NavigationBar';
@@ -15,7 +14,7 @@ class Auth extends React.Component {
 
     const cb = (err, profile) => {
       if (err) {
-        toastr.err(err);
+        toastr.error(err);
       } else {
         this.setState({ profile });
       }
@@ -26,13 +25,13 @@ class Auth extends React.Component {
   }
 
   render() {
-    const { authenticator, client } = this.props;
+    const { authenticator } = this.props;
     const { profile } = this.state;
     if (authenticator.isAuthenticated()) {
       return (
         <div className="home-container">
           <NavigationBar name={profile.name} logout={authenticator.logout} />
-          <App client={client} />
+          <App />
         </div>
       );
     }
@@ -48,7 +47,6 @@ class Auth extends React.Component {
 
 Auth.propTypes = {
   authenticator: PropTypes.instanceOf(Authenticator).isRequired,
-  client: PropTypes.instanceOf(K8sClient).isRequired,
 };
 
 export default Auth;

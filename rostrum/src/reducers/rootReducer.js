@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import configReducer from './config';
 import namespaceReducer from './namespaces';
 import rolebindingReducer from './rolebindings';
 
@@ -11,13 +12,14 @@ import rolebindingReducer from './rolebindings';
 // the state that gets produced actually looks like this:
 //
 //     {
+//       config: {},
 //       namespace: {
 //         namespaceCreateInput: '',
 //         namespaceDeleteInput: '',
 //         namespaceObjects: [ {..}, {..}, ... ]  <-- above reducer yields this line
 //       },
 //       rolebinding: {
-//         rolebindingObjects: {
+//         namespacedRolebindings: {
 //           <namespace1>: [ {..}, {..}, ... ],
 //           <namespace2>: [ {..}, {..}, ... ],
 //           ...
@@ -31,6 +33,7 @@ import rolebindingReducer from './rolebindings';
 //     return { nameOfProp: state.namespace.namespaceObjects };
 //
 const rootReducer = combineReducers({
+  config: configReducer,
   namespace: namespaceReducer,
   rolebinding: rolebindingReducer,
 });

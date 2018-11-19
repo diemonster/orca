@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { namespaceCreateChangeInput, namespaceCreate } from '../../actions/namespaces';
-import K8sClient from '../../k8s/client';
 
 class NamespaceCreate extends React.Component {
   constructor(props) {
@@ -24,9 +23,9 @@ class NamespaceCreate extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    const { client, dispatchNamespaceCreate, namespaceCreateInput} = this.props;
+    const { dispatchNamespaceCreate, namespaceCreateInput } = this.props;
 
-    dispatchNamespaceCreate(namespaceCreateInput, client);
+    dispatchNamespaceCreate(namespaceCreateInput);
   }
 
   render() {
@@ -56,7 +55,6 @@ class NamespaceCreate extends React.Component {
 }
 
 NamespaceCreate.propTypes = {
-  client: PropTypes.instanceOf(K8sClient).isRequired,
   dispatchNamespaceCreate: PropTypes.func.isRequired,
   dispatchNamespaceCreateChangeInput: PropTypes.func.isRequired,
   namespaceCreateInput: PropTypes.string.isRequired,
@@ -70,7 +68,7 @@ const mapDispatchToProps = dispatch => ({
   dispatchNamespaceCreateChangeInput: namespaceCreateInput => (
     dispatch(namespaceCreateChangeInput(namespaceCreateInput))
   ),
-  dispatchNamespaceCreate: (name, client) => dispatch(namespaceCreate(name, client)),
+  dispatchNamespaceCreate: name => dispatch(namespaceCreate(name)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NamespaceCreate);

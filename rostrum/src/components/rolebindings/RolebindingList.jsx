@@ -3,15 +3,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { rolebindingList } from '../../actions/rolebindings';
-import K8sClient from '../../k8s/client';
 
 import RolebindingListItem from './RolebindingListItem';
 
 class RolebindingList extends React.Component {
   componentDidMount() {
-    const { client, dispatchRolebindingList, namespace } = this.props;
+    const { dispatchRolebindingList, namespace } = this.props;
 
-    dispatchRolebindingList(namespace, client);
+    dispatchRolebindingList(namespace);
   }
 
   render() {
@@ -41,7 +40,6 @@ class RolebindingList extends React.Component {
 }
 
 RolebindingList.propTypes = {
-  client: PropTypes.instanceOf(K8sClient).isRequired,
   dispatchRolebindingList: PropTypes.func.isRequired,
   namespace: PropTypes.string.isRequired,
   namespacedRolebindings: PropTypes.objectOf(
@@ -56,7 +54,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  dispatchRolebindingList: (namespace, client) => dispatch(rolebindingList(namespace, client)),
+  dispatchRolebindingList: namespace => dispatch(rolebindingList(namespace)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RolebindingList);

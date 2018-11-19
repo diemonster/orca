@@ -1,7 +1,10 @@
-import { ROLEBINDING_LIST } from '../actions/actionTypes';
+import { ROLEBINDING_LIST_SUCCESS } from '../actions/actionTypes';
 
+const initialState = {
+  namespacedRolebindings: {},
+};
 
-// The ROLEBINDING_LIST action yields an object like so:
+// The ROLEBINDING_LIST_SUCCESS action yields an object like so:
 //
 //     { <name of namespace>: [ <array of rolebinding objects> ] }
 //
@@ -36,9 +39,9 @@ import { ROLEBINDING_LIST } from '../actions/actionTypes';
 //       }
 //     }
 //
-export default function rolebindingReducer(state = {}, action) {
+export default function rolebindingReducer(state = initialState, action) {
   switch (action.type) {
-    case ROLEBINDING_LIST:
+    case ROLEBINDING_LIST_SUCCESS:
       return {
         ...state,
         namespacedRolebindings: {

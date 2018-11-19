@@ -7,7 +7,7 @@ export default class Authenticator {
     this.auth0 = new auth0.WebAuth({
       domain,
       clientID,
-      redirectUri: window.location.origin + '/callback',
+      redirectUri: `${window.location.origin}/callback`,
       responseType: 'token id_token',
       scope: 'openid profile',
     });

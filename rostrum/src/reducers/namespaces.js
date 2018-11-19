@@ -1,17 +1,17 @@
 import {
   NAMESPACE_CREATE_CHANGE_INPUT,
   NAMESPACE_DELETE_CHANGE_INPUT,
-  NAMESPACE_LIST,
+  NAMESPACE_LIST_SUCCESS,
 } from '../actions/actionTypes';
 
-export default function namespaceReducer(state = {}, action) {
-  switch (action.type) {
-    case NAMESPACE_LIST:
-      return {
-        ...state,
-        namespaceObjects: action.namespaceObjects,
-      };
+const initialState = {
+  namespaceObjects: [],
+  namespaceCreateInput: '',
+  namespaceDeleteInput: '',
+};
 
+export default function namespaceReducer(state = initialState, action) {
+  switch (action.type) {
     case NAMESPACE_CREATE_CHANGE_INPUT:
       return {
         ...state,
@@ -22,6 +22,12 @@ export default function namespaceReducer(state = {}, action) {
       return {
         ...state,
         namespaceDeleteInput: action.namespaceDeleteInput,
+      };
+
+    case NAMESPACE_LIST_SUCCESS:
+      return {
+        ...state,
+        namespaceObjects: action.namespaceObjects,
       };
 
     default:

@@ -17,6 +17,7 @@ describe('components', () => {
 
       const rolebindingList = shallow(<RolebindingList {...props} />);
 
+      expect(rolebindingList).toMatchSnapshot();
       expect(rolebindingList.find('div').hasClass('rolebinding-container')).toBe(true);
       expect(rolebindingList.find('h5').text()).toEqual('Role Bindings:');
       expect(rolebindingList.find('ul').hasClass('rolebinding-list')).toBe(true);
@@ -34,6 +35,7 @@ describe('components', () => {
 
       const rolebindingList = shallow(<RolebindingList {...props} />);
 
+      expect(rolebindingList).toMatchSnapshot();
       expect(rolebindingList.find('div').hasClass('rolebinding-container')).toBe(true);
       expect(rolebindingList.find('h5').text()).toEqual('Role Bindings:');
       expect(rolebindingList.find('ul').hasClass('rolebinding-list')).toBe(true);
@@ -51,6 +53,7 @@ describe('components', () => {
 
       const rolebindingList = shallow(<RolebindingList {...props} />);
 
+      expect(rolebindingList).toMatchSnapshot();
       expect(rolebindingList.find('div').hasClass('rolebinding-container')).toBe(true);
       expect(rolebindingList.find('h5').text()).toEqual('Role Bindings:');
       const ul = rolebindingList.find('ul');

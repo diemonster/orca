@@ -2,8 +2,8 @@ import {
   NAMESPACE_CREATE,
   NAMESPACE_CREATE_CHANGE_INPUT,
   NAMESPACE_DELETE,
-  NAMESPACE_DELETE_CHANGE_INPUT,
   NAMESPACE_LIST,
+  NAMESPACE_SELECT,
 } from './actionTypes';
 
 export function namespaceCreate(name) {
@@ -27,15 +27,15 @@ export function namespaceDelete(name) {
   };
 }
 
-export function namespaceDeleteChangeInput(namespaceDeleteInput) {
-  return {
-    type: NAMESPACE_DELETE_CHANGE_INPUT,
-    namespaceDeleteInput,
-  };
-}
-
 export function namespaceList() {
   return {
     type: NAMESPACE_LIST,
+  };
+}
+
+export function namespaceSelect(namespace) {
+  return {
+    type: NAMESPACE_SELECT,
+    namespace,
   };
 }

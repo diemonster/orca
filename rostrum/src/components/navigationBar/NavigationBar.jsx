@@ -8,10 +8,12 @@ function NavigationBar(props) {
     return (
       <div className="navigation-bar">
         <ul>
-          <li className="home"><a href="/">Home</a></li>
           <li className="profile">
+            {name}
+          </li>
+          <li className="auth">
             <button type="button" onClick={logout}>
-              {name ? `${name}, Log Out` : 'Log Out'}
+              Log Out
             </button>
           </li>
         </ul>
@@ -22,7 +24,7 @@ function NavigationBar(props) {
   return (
     <div className="navigation-bar">
       <ul>
-        <li className="profile">
+        <li className="auth">
           <button type="button" onClick={login}>
             Log In
           </button>

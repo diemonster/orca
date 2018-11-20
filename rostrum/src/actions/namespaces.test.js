@@ -38,18 +38,6 @@ describe('actions', () => {
 });
 
 describe('actions', () => {
-  it('should create an action to change the "delete namespace" input', () => {
-    const namespaceDeleteInput = 'a';
-    const expectedAction = {
-      type: types.NAMESPACE_DELETE_CHANGE_INPUT,
-      namespaceDeleteInput,
-    };
-
-    expect(actions.namespaceDeleteChangeInput(namespaceDeleteInput)).toEqual(expectedAction);
-  });
-});
-
-describe('actions', () => {
   it('should create an action to list namespaces', () => {
     const expectedAction = {
       type: types.NAMESPACE_LIST,

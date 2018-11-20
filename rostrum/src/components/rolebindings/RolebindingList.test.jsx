@@ -8,11 +8,10 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe('components', () => {
   describe('RolebindingList', () => {
-    it('should render itself and its subcomponents when namespacedRolebindings === 0', () => {
+    it('should render itself and its subcomponents when rolebindings.length === 0', () => {
       const props = {
-        dispatchRolebindingList: jest.fn(),
-        namespace: 'some-namespace',
-        namespacedRolebindings: {},
+        rolebindings: [],
+        selectedNamespace: 'some-namespace',
       };
 
       const rolebindingList = shallow(<RolebindingList {...props} />);
@@ -20,27 +19,10 @@ describe('components', () => {
       expect(rolebindingList).toMatchSnapshot();
     });
 
-    it('should render itself and subcomponents when namespacedRolebindings.length > 0 and no namespaces match', () => {
+    it('should render itself and subcomponents when rolebindings.length > 0', () => {
       const props = {
-        dispatchRolebindingList: jest.fn(),
-        namespace: 'some-namespace',
-        namespacedRolebindings: {
-          'some-other-namespace': ['some-rolebinding'],
-        },
-      };
-
-      const rolebindingList = shallow(<RolebindingList {...props} />);
-
-      expect(rolebindingList).toMatchSnapshot();
-    });
-
-    it('should render itself and subcomponents when namespacedRolebindings.length > 0 and a namespace matches', () => {
-      const props = {
-        dispatchRolebindingList: jest.fn(),
-        namespace: 'some-namespace',
-        namespacedRolebindings: {
-          'some-namespace': ['some-rolebinding', 'some-other-rolebinding'],
-        },
+        rolebindings: ['rolebinding1', 'rolebinding2'],
+        selectedNamespace: 'some-namespace',
       };
 
       const rolebindingList = shallow(<RolebindingList {...props} />);

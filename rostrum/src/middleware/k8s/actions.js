@@ -12,7 +12,6 @@ import {
 
 import {
   namespaceCreateChangeInput,
-  namespaceDeleteChangeInput,
 } from '../../actions/namespaces';
 
 export function namespaceCreateError(error) {
@@ -76,13 +75,11 @@ export function watchNamespaceDelete(client, name) {
 export function namespaceDelete(client, name) {
   return dispatch => client.deleteNamespace(name)
     .then(() => {
-      dispatch(namespaceDeleteChangeInput(''));
       dispatch(namespaceWatchForDeletion(name));
       // watchNamespaceDelete(name, dispatch, client);
     })
     .catch((error) => {
       dispatch(namespaceDeleteError(error));
-      dispatch(namespaceDeleteChangeInput(''));
     });
 }
 

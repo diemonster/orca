@@ -6,7 +6,7 @@ describe('namespace reducer', () => {
     const initialState = {
       namespaceObjects: [],
       namespaceCreateInput: '',
-      namespaceDeleteInput: '',
+      selectedNamespace: '',
     };
 
     expect(namespaceReducer(undefined, {})).toEqual(initialState);
@@ -22,27 +22,6 @@ describe('namespace reducer', () => {
     const action = {
       type: types.NAMESPACE_CREATE_CHANGE_INPUT,
       namespaceCreateInput: '',
-    };
-
-    const expectedState = {
-      namespaceObjects: [],
-      namespaceCreateInput: '',
-      namespaceDeleteInput: '',
-    };
-
-    expect(namespaceReducer(state, action)).toEqual(expectedState);
-  });
-
-  it('should replace namespaceDeleteInput on NAMESPACE_DELETE_CHANGE_INPUT', () => {
-    const state = {
-      namespaceObjects: [],
-      namespaceCreateInput: '',
-      namespaceDeleteInput: 'ab',
-    };
-
-    const action = {
-      type: types.NAMESPACE_DELETE_CHANGE_INPUT,
-      namespaceDeleteInput: '',
     };
 
     const expectedState = {

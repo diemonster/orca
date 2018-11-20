@@ -6,11 +6,11 @@ describe('root reducer', () => {
       config: {},
       namespace: {
         namespaceCreateInput: '',
-        namespaceDeleteInput: '',
         namespaceObjects: [],
+        selectedNamespace: '',
       },
       rolebinding: {
-        namespacedRolebindings: {},
+        rolebindings: [],
       },
     };
 

@@ -8,29 +8,20 @@
     position:relative;
 }
 
-.navigation-bar .home {
-    float: left;
-}
-
 .navigation-bar .profile {
-    float: right;
-}
-
-.navigation-bar li a {
+    float: left;
     display: block;
     color: white;
     text-align: center;
     padding: 14px 16px;
-    text-decoration: none;
-    cursor: pointer;
 }
 
-.navigation-bar li a:hover {
-    background-color: #111;
+.navigation-bar .auth {
+    float: right;
 }
 
 /* button style */
-.navigation-bar .profile button {
+.navigation-bar .auth button {
     border: none;
     background: none;
     display: block;
@@ -42,6 +33,6 @@
     cursor: pointer;
 }
 
-.navigation-bar li button:hover {
+.navigation-bar .auth button:hover {
     background-color: #111;
 }

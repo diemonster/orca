@@ -33,16 +33,12 @@ export class NamespaceCreate extends React.Component {
 
     return (
       <div className="create-namespace">
-        <h2>Create Namespace</h2>
         <form className="namespace-input-form" id="namespace-create-input-form" onSubmit={this.handleSubmit}>
-          <label className="namespace-input-label" htmlFor="namespace-create-input">
-            New Namespace:
-          </label>
           <input
             type="text"
             value={namespaceCreateInput}
             onChange={this.handleChange}
-            placeholder="enter namespace"
+            placeholder="new namespace"
             name="namespace-create-input"
             id="namespace-create-input"
           />

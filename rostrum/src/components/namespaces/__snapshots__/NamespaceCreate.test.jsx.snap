@@ -4,25 +4,16 @@ exports[`components NamespaceCreate should render itself and its subcomponents 1
 <div
   className="create-namespace"
 >
-  <h2>
-    Create Namespace
-  </h2>
   <form
     className="namespace-input-form"
     id="namespace-create-input-form"
     onSubmit={[Function]}
   >
-    <label
-      className="namespace-input-label"
-      htmlFor="namespace-create-input"
-    >
-      New Namespace:
-    </label>
     <input
       id="namespace-create-input"
       name="namespace-create-input"
       onChange={[Function]}
-      placeholder="enter namespace"
+      placeholder="new namespace"
       type="text"
       value=""
     />

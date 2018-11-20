@@ -6,7 +6,7 @@ exports[`components NavigationBar should render the login view if a logout funct
 >
   <ul>
     <li
-      className="profile"
+      className="auth"
     >
       <button
         onClick={[Function]}
@@ -25,16 +25,10 @@ exports[`components NavigationBar should render the logout view if a logout func
 >
   <ul>
     <li
-      className="home"
-    >
-      <a
-        href="/"
-      >
-        Home
-      </a>
-    </li>
-    <li
       className="profile"
+    />
+    <li
+      className="auth"
     >
       <button
         onClick={[Function]}
@@ -53,22 +47,18 @@ exports[`components NavigationBar should render the logout view with a username 
 >
   <ul>
     <li
-      className="home"
+      className="profile"
     >
-      <a
-        href="/"
-      >
-        Home
-      </a>
+      username
     </li>
     <li
-      className="profile"
+      className="auth"
     >
       <button
         onClick={[Function]}
         type="button"
       >
-        username, Log Out
+        Log Out
       </button>
     </li>
   </ul>

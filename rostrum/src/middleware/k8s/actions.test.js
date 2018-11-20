@@ -129,7 +129,7 @@ describe('middleware async actions', () => {
       .then(() => { expect(store.getActions()).toEqual(expectedActions); });
   });
 
-  it('on namespaceDelete success, should emit namespaceDeleteChangeInput and namespaceWatchForDeletion actions', () => {
+  it('on namespaceDelete success, should emit namespaceWatchForDeletion action', () => {
     const client = {
       deleteNamespace: jest.fn(() => new Promise((resolve) => {
         resolve();
@@ -140,7 +140,6 @@ describe('middleware async actions', () => {
 
     const name = 'some-namespace';
     const expectedActions = [
-      { type: types.NAMESPACE_DELETE_CHANGE_INPUT, namespaceDeleteInput: '' },
       { type: types.NAMESPACE_WATCH_FOR_DELETION, name },
     ];
 
@@ -153,7 +152,7 @@ describe('middleware async actions', () => {
       });
   });
 
-  it('on namespaceDelete failure, should emit namespaceDeleteError and namespaceDeleteChangeInput actions', () => {
+  it('on namespaceDelete failure, should emit namespaceDeleteError action', () => {
     const error = new Error('failed as intended');
     const client = {
       deleteNamespace: jest.fn(() => new Promise((resolve, reject) => {
@@ -166,7 +165,6 @@ describe('middleware async actions', () => {
     const name = 'some-namespace';
     const expectedActions = [
       { type: types.NAMESPACE_DELETE_ERROR, error },
-      { type: types.NAMESPACE_DELETE_CHANGE_INPUT, namespaceDeleteInput: '' },
     ];
 
     return store.dispatch(actions.namespaceDelete(client, name))

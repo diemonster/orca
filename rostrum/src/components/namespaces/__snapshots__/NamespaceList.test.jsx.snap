@@ -4,9 +4,6 @@ exports[`components NamespaceList should render itself and its subcomponents whe
 <div
   className="namespace-list-container"
 >
-  <h2>
-    List Namespaces
-  </h2>
   <p>
     Loading namespaces...
   </p>
@@ -17,18 +14,15 @@ exports[`components NamespaceList should render itself and subcomponents when na
 <div
   className="namespace-list-container"
 >
-  <h2>
-    List Namespaces
-  </h2>
   <ul
     className="namespace-list"
   >
-    <NamespaceListItem
+    <Connect(NamespaceListItem)
       key="namespace1"
       namespace="namespace1"
       phase="Active"
     />
-    <NamespaceListItem
+    <Connect(NamespaceListItem)
       key="namespace2"
       namespace="namespace2"
       phase="Terminating"

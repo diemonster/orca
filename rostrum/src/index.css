@@ -37,9 +37,10 @@ li {
     justify-content: left;
 }
 
-.kube-display {
-    width: 100%;
-    margin: 0 1rem;
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .phase-active {
@@ -56,17 +57,12 @@ li {
 }
 
 .namespace-list {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: block;
     padding: 0;
 }
 
 .namespace-list-item {
-    background-color: #dff0ff;
-    border-radius: 10px;
     margin: 10px;
-    padding: 10px;
     width: 28%;
     min-width: 200px;
     display: flex;
@@ -75,19 +71,47 @@ li {
     align-items: center;
 }
 
-.namespace-list-item h4 {
-    margin: 0 0 10px 0;
+.namespace-button-container {
+    width: 100%;
 }
 
-.namespace-list-item p {
-    margin: 0;
+.namespace-button-container button {
+    display: inline;
+    height: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #dff0ff;
+    border-color: #cfe0ef;
+    border-width: 1px;
+    cursor: pointer;
+}
+
+.namespace-select-button {
+    float: left;
+    width: 80%;
+    border-radius: 10px 0 0 10px;
+    border: none;
+    border-right: solid;
+}
+
+.namespace-delete-button {
+    float: right;
+    width: 20%;
+    font-weight: bold;
+    border-radius: 0 10px 10px 0;
+    border: none;
+    border-left: solid;
+}
+
+.selected {
+    background-color: #fff !important;
 }
 
 .rolebinding-container {
     width: 100%;
+    padding: 0 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
 }
 
 .rolebinding-list-item {

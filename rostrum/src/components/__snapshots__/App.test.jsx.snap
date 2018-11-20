@@ -11,22 +11,8 @@ exports[`components App should render itself and its subcomponents 1`] = `
     <div
       className="kube-container"
     >
-      <Sidebar />
-      <Switch>
-        <Route
-          component={[Function]}
-          exact={true}
-          path="/namespace/"
-        />
-        <Route
-          component={[Function]}
-          exact={true}
-          path="/pod/"
-        />
-        <Route
-          render={[Function]}
-        />
-      </Switch>
+      <Namespaces />
+      <Connect(Rolebindings) />
     </div>
   </div>
 </BrowserRouter>

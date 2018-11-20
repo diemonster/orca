@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components Namespaces should render itself and subcomponents 1`] = `
+<div
+  className="sidebar"
+>
+  <h2>
+    Namespaces
+  </h2>
+  <Connect(NamespaceCreate) />
+  <Connect(NamespaceList) />
+</div>
+`;

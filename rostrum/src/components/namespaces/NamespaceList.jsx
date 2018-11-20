@@ -19,7 +19,6 @@ export class NamespaceList extends React.Component {
     if (namespaceObjects.length === 0) {
       return (
         <div className="namespace-list-container">
-          <h2>List Namespaces</h2>
           <p>Loading namespaces...</p>
         </div>
       );
@@ -35,7 +34,6 @@ export class NamespaceList extends React.Component {
 
     return (
       <div className="namespace-list-container">
-        <h2>List Namespaces</h2>
         <ul className="namespace-list">
           {namespaceListItems}
         </ul>

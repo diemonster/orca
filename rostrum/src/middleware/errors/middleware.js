@@ -1,6 +1,6 @@
 import toastr from 'toastr';
 
-const errorMiddleware = store => next => (action) => {
+const errorMiddleware = () => next => (action) => {
   if (action.error) {
     if (
       action.error.response

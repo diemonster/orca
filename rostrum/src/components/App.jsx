@@ -1,11 +1,8 @@
 import React from 'react';
-import {
-  BrowserRouter as Router, Route, Switch, Redirect,
-} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import Sidebar from './sidebar/Sidebar';
-import Namespace from './namespaces/Namespace';
-import Pod from './pods/Pod';
+import Namespaces from './namespaces/Namespaces';
+import Rolebindings from './rolebindings/Rolebindings';
 
 function App() {
   return (
@@ -13,13 +10,8 @@ function App() {
       <div className="app-container">
         <h1>Orca: the Kubernetes permissions manager</h1>
         <div className="kube-container">
-          <Sidebar />
-          <Switch>
-            <Route exact path="/namespace/" component={Namespace} />
-            <Route exact path="/pod/" component={Pod} />
-            { /* default behavior: reroute to "/" */ }
-            <Route render={() => <Redirect to="/" />} />
-          </Switch>
+          <Namespaces />
+          <Rolebindings />
         </div>
       </div>
     </Router>

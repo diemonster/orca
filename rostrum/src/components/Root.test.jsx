@@ -25,11 +25,11 @@ describe('components', () => {
         },
         namespace: {
           namespaceCreateInput: '',
-          namespaceDeleteInput: '',
           namespaceObjects: [],
+          selectedNamespace: '',
         },
         rolebinding: {
-          namespacedRolebindings: {},
+          rolebindings: [],
         },
       };
 
@@ -47,11 +47,11 @@ describe('components', () => {
         },
         namespace: {
           namespaceCreateInput: '',
-          namespaceDeleteInput: '',
           namespaceObjects: [],
+          selectedNamespace: '',
         },
         rolebinding: {
-          namespacedRolebindings: {},
+          rolebindings: [],
         },
       };
 

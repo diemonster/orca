@@ -11,7 +11,7 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe('components', () => {
   describe('Auth', () => {
-    it('renders a login view if unauthenticated', () => {
+    it('should render a login view when unauthenticated', () => {
       const authenticator = new Authenticator('', '');
       authenticator.login = jest.fn();
       authenticator.isAuthenticated = jest.fn(() => false);
@@ -21,12 +21,13 @@ describe('components', () => {
 
       const auth = shallow(<Auth {...props} />);
 
+      expect(auth).toMatchSnapshot();
       expect(auth.find('div').hasClass('login-container')).toBe(true);
       expect(auth.find(NavigationBar).prop('login')).toBe(authenticator.login);
       expect(auth.find('h1').text()).toEqual('ORCA');
     });
 
-    it('renders a logout view if authenticated', () => {
+    it('should render a logout view when authenticated', () => {
       const authenticator = new Authenticator('', '');
       authenticator.logout = jest.fn();
       authenticator.isAuthenticated = jest.fn(() => true);
@@ -38,6 +39,7 @@ describe('components', () => {
 
       const auth = shallow(<Auth {...props} />);
 
+      expect(auth).toMatchSnapshot();
       expect(auth.find('div').hasClass('home-container')).toBe(true);
       expect(auth.find(NavigationBar).prop('name')).toBe('username');
       expect(auth.find(NavigationBar).prop('logout')).toBe(authenticator.logout);

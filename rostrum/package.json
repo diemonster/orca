@@ -28,6 +28,7 @@
   "devDependencies": {
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
+    "enzyme-to-json": "^3.3.4",
     "eslint": "^5.6.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
@@ -38,6 +39,11 @@
     "redux-devtools-extension": "^2.13.5",
     "redux-mock-store": "^1.5.3"
   },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
+  },
   "lint-staged": {
     "src/**/*.{js,jsx}": [
       "yarn test-staged",
@@ -47,7 +53,9 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": ["lint-staged"]
+      "pre-commit": [
+        "lint-staged"
+      ]
     }
   }
 }

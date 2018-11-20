@@ -16,6 +16,7 @@ describe('components', () => {
 
       const navigationBar = shallow(<NavigationBar {...props} />);
 
+      expect(navigationBar).toMatchSnapshot();
       expect(navigationBar.find('div').hasClass('navigation-bar')).toBe(true);
       expect(navigationBar.find('ul').children().length).toEqual(1);
       expect(navigationBar.find('ul').childAt(0).hasClass('profile')).toBe(true);
@@ -30,6 +31,7 @@ describe('components', () => {
 
       const navigationBar = shallow(<NavigationBar {...props} />);
 
+      expect(navigationBar).toMatchSnapshot();
       expect(navigationBar.find('div').hasClass('navigation-bar')).toBe(true);
       expect(navigationBar.find('ul').children().length).toEqual(2);
       const ul = navigationBar.find('ul');
@@ -48,6 +50,7 @@ describe('components', () => {
 
       const navigationBar = shallow(<NavigationBar {...props} />);
 
+      expect(navigationBar).toMatchSnapshot();
       expect(navigationBar.find('button').prop('onClick')).toEqual(props.logout);
       expect(navigationBar.find('button').text()).toEqual(`${props.name}, Log Out`);
     });

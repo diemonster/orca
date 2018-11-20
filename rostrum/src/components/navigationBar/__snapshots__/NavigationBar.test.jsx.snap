@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components NavigationBar should render the login view if a logout function is not passed 1`] = `
+<div
+  className="navigation-bar"
+>
+  <ul>
+    <li
+      className="profile"
+    >
+      <button
+        onClick={[Function]}
+        type="button"
+      >
+        Log In
+      </button>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`components NavigationBar should render the logout view if a logout function is passed 1`] = `
+<div
+  className="navigation-bar"
+>
+  <ul>
+    <li
+      className="home"
+    >
+      <a
+        href="/"
+      >
+        Home
+      </a>
+    </li>
+    <li
+      className="profile"
+    >
+      <button
+        onClick={[Function]}
+        type="button"
+      >
+        Log Out
+      </button>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`components NavigationBar should render the logout view with a username if a logout function and username are passed 1`] = `
+<div
+  className="navigation-bar"
+>
+  <ul>
+    <li
+      className="home"
+    >
+      <a
+        href="/"
+      >
+        Home
+      </a>
+    </li>
+    <li
+      className="profile"
+    >
+      <button
+        onClick={[Function]}
+        type="button"
+      >
+        username, Log Out
+      </button>
+    </li>
+  </ul>
+</div>
+`;

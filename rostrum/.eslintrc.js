@@ -18,4 +18,7 @@ module.exports = {
     "beforeEach": true,
     "afterEach": true,
   },
+  "rules": {
+    "import/no-named-as-default": 0
+  },
 };

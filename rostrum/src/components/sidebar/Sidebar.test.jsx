@@ -11,6 +11,7 @@ describe('components', () => {
     it('renders itself', () => {
       const sidebar = shallow(<Sidebar />);
 
+      expect(sidebar).toMatchSnapshot();
       expect(sidebar.find('div').hasClass('sidebar')).toBe(true);
       const ul = sidebar.find('ul');
       expect(ul.children().length).toEqual(2);

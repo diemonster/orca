@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components NamespaceDelete should render itself and its subcomponents 1`] = `
+<div
+  className="delete-namespace"
+>
+  <h2>
+    Delete Namespace
+  </h2>
+  <form
+    className="namespace-input-form"
+    id="namespace-delete-input-form"
+    onSubmit={[Function]}
+  >
+    <label
+      className="namespace-input-label"
+      htmlFor="namespace-delete-input"
+    >
+      Delete Namespace:
+    </label>
+    <input
+      id="namespace-delete-input"
+      name="namespace-delete-input"
+      onChange={[Function]}
+      placeholder="enter namespace"
+      type="text"
+      value=""
+    />
+    <button
+      className="button"
+      type="submit"
+      value="submit"
+    >
+      Delete
+    </button>
+  </form>
+</div>
+`;

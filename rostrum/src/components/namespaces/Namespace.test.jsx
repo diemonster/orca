@@ -15,6 +15,7 @@ describe('components', () => {
       const namespace = shallow(<Namespace />);
       const div = namespace.find('div');
 
+      expect(namespace).toMatchSnapshot();
       expect(div.hasClass('kube-display')).toBe(true);
       expect(div.children().length).toEqual(3);
       expect(div.childAt(0)).toEqual(namespace.find(NamespaceList));

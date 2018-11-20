@@ -17,6 +17,7 @@ describe('components', () => {
 
       const namespaceCreate = shallow(<NamespaceCreate {...props} />);
 
+      expect(namespaceCreate).toMatchSnapshot();
       expect(namespaceCreate.find('div').hasClass('create-namespace')).toBe(true);
       expect(namespaceCreate.find('h2').text()).toEqual('Create Namespace');
       expect(namespaceCreate.find('form').hasClass('namespace-input-form')).toBe(true);

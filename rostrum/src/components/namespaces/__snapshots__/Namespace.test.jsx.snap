@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components Namespace should render itself and its subcomponents 1`] = `
+<div
+  className="kube-display"
+>
+  <Connect(NamespaceList) />
+  <Connect(NamespaceCreate) />
+  <Connect(NamespaceDelete) />
+</div>
+`;

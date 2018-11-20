@@ -17,6 +17,7 @@ describe('components', () => {
 
       const namespaceListItem = shallow(<NamespaceListItem {...props} />);
 
+      expect(namespaceListItem).toMatchSnapshot();
       expect(namespaceListItem.find('li').hasClass('namespace-list-item')).toBe(true);
       expect(namespaceListItem.find('li').hasClass('phase-active')).toBe(true);
       expect(namespaceListItem.find('h4').text()).toEqual('some-namespace');

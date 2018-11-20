@@ -18,6 +18,7 @@ describe('components', () => {
 
       const namespaceDelete = shallow(<NamespaceDelete {...props} />);
 
+      expect(namespaceDelete).toMatchSnapshot();
       expect(namespaceDelete.find('div').hasClass('delete-namespace')).toBe(true);
       expect(namespaceDelete.find('h2').text()).toEqual('Delete Namespace');
       expect(namespaceDelete.find('form').hasClass('namespace-input-form')).toBe(true);

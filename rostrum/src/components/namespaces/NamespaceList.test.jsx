@@ -16,6 +16,7 @@ describe('components', () => {
 
       const namespaceList = shallow(<NamespaceList {...props} />);
 
+      expect(namespaceList).toMatchSnapshot();
       expect(namespaceList.find('div').hasClass('namespace-list-container')).toBe(true);
       expect(namespaceList.find('h2').text()).toEqual('List Namespaces');
       expect(namespaceList.find('p').text()).toEqual('Loading namespaces...');

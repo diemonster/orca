@@ -18,10 +18,6 @@ describe('components', () => {
       const rolebindingList = shallow(<RolebindingList {...props} />);
 
       expect(rolebindingList).toMatchSnapshot();
-      expect(rolebindingList.find('div').hasClass('rolebinding-container')).toBe(true);
-      expect(rolebindingList.find('h5').text()).toEqual('Role Bindings:');
-      expect(rolebindingList.find('ul').hasClass('rolebinding-list')).toBe(true);
-      expect(rolebindingList.find('ul').children().length).toEqual(0);
     });
 
     it('should render itself and subcomponents when namespacedRolebindings.length > 0 and no namespaces match', () => {
@@ -36,10 +32,6 @@ describe('components', () => {
       const rolebindingList = shallow(<RolebindingList {...props} />);
 
       expect(rolebindingList).toMatchSnapshot();
-      expect(rolebindingList.find('div').hasClass('rolebinding-container')).toBe(true);
-      expect(rolebindingList.find('h5').text()).toEqual('Role Bindings:');
-      expect(rolebindingList.find('ul').hasClass('rolebinding-list')).toBe(true);
-      expect(rolebindingList.find('ul').children().length).toEqual(0);
     });
 
     it('should render itself and subcomponents when namespacedRolebindings.length > 0 and a namespace matches', () => {
@@ -54,13 +46,6 @@ describe('components', () => {
       const rolebindingList = shallow(<RolebindingList {...props} />);
 
       expect(rolebindingList).toMatchSnapshot();
-      expect(rolebindingList.find('div').hasClass('rolebinding-container')).toBe(true);
-      expect(rolebindingList.find('h5').text()).toEqual('Role Bindings:');
-      const ul = rolebindingList.find('ul');
-      expect(ul.hasClass('rolebinding-list')).toBe(true);
-      expect(ul.children().length).toEqual(2);
-      expect(ul.childAt(0).prop('rolebindingName')).toEqual('some-rolebinding');
-      expect(ul.childAt(1).prop('rolebindingName')).toEqual('some-other-rolebinding');
     });
   });
 });

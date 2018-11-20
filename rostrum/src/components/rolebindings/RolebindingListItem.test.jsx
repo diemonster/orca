@@ -16,8 +16,6 @@ describe('components', () => {
       const rolebindingListItem = shallow(<RolebindingListItem {...props} />);
 
       expect(rolebindingListItem).toMatchSnapshot();
-      expect(rolebindingListItem.find('li').hasClass('rolebinding-list-item')).toBe(true);
-      expect(rolebindingListItem.find('li').text()).toEqual('some-rolebinding');
     });
   });
 });

@@ -17,9 +17,6 @@ describe('components', () => {
       const namespaceList = shallow(<NamespaceList {...props} />);
 
       expect(namespaceList).toMatchSnapshot();
-      expect(namespaceList.find('div').hasClass('namespace-list-container')).toBe(true);
-      expect(namespaceList.find('h2').text()).toEqual('List Namespaces');
-      expect(namespaceList.find('p').text()).toEqual('Loading namespaces...');
     });
 
     it('should render itself and subcomponents when namespaceObjects.length > 0', () => {
@@ -33,16 +30,7 @@ describe('components', () => {
 
       const namespaceList = shallow(<NamespaceList {...props} />);
 
-      expect(namespaceList.find('div').hasClass('namespace-list-container')).toBe(true);
-      expect(namespaceList.find('h2').text()).toEqual('List Namespaces');
-      expect(namespaceList.find('ul').hasClass('namespace-list')).toBe(true);
-
-      const listItems = namespaceList.find('ul').children();
-      expect(listItems.length).toEqual(2);
-      expect(listItems.at(0).props().namespace).toEqual('namespace1');
-      expect(listItems.at(0).props().phase).toEqual('Active');
-      expect(listItems.at(1).props().namespace).toEqual('namespace2');
-      expect(listItems.at(1).props().phase).toEqual('Terminating');
+      expect(namespaceList).toMatchSnapshot();
     });
   });
 });

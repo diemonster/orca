@@ -3,10 +3,8 @@ import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 import { Provider } from 'react-redux';
-import { Router, Switch } from 'react-router-dom';
 import Root from './Root';
 import Authenticator from '../authenticator/authenticator';
-import History from '../authenticator/history';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -39,9 +37,6 @@ describe('components', () => {
 
       expect(root).toMatchSnapshot();
       expect(root.find(Provider).prop('store').getState()).toEqual(expectedState);
-      expect(root.find(Router).prop('history')).toEqual(History);
-      expect(root.find(Switch).children().length).toEqual(2);
-      expect(root.find(Switch).childAt(0).prop('path')).toEqual('/callback');
     });
 
     it('should set properties on componentWillMount', () => {

@@ -12,3 +12,27 @@ exports[`components NamespaceList should render itself and its subcomponents whe
   </p>
 </div>
 `;
+
+exports[`components NamespaceList should render itself and subcomponents when namespaceObjects.length > 0 1`] = `
+<div
+  className="namespace-list-container"
+>
+  <h2>
+    List Namespaces
+  </h2>
+  <ul
+    className="namespace-list"
+  >
+    <NamespaceListItem
+      key="namespace1"
+      namespace="namespace1"
+      phase="Active"
+    />
+    <NamespaceListItem
+      key="namespace2"
+      namespace="namespace2"
+      phase="Terminating"
+    />
+  </ul>
+</div>
+`;

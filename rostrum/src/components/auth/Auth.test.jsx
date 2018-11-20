@@ -5,7 +5,6 @@ import Adapter from 'enzyme-adapter-react-16';
 import Auth from './Auth';
 import Authenticator from '../../authenticator/authenticator';
 import NavigationBar from '../navigationBar/NavigationBar';
-import App from '../App';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -22,9 +21,7 @@ describe('components', () => {
       const auth = shallow(<Auth {...props} />);
 
       expect(auth).toMatchSnapshot();
-      expect(auth.find('div').hasClass('login-container')).toBe(true);
       expect(auth.find(NavigationBar).prop('login')).toBe(authenticator.login);
-      expect(auth.find('h1').text()).toEqual('ORCA');
     });
 
     it('should render a logout view when authenticated', () => {
@@ -40,10 +37,7 @@ describe('components', () => {
       const auth = shallow(<Auth {...props} />);
 
       expect(auth).toMatchSnapshot();
-      expect(auth.find('div').hasClass('home-container')).toBe(true);
-      expect(auth.find(NavigationBar).prop('name')).toBe('username');
       expect(auth.find(NavigationBar).prop('logout')).toBe(authenticator.logout);
-      expect(auth.find(App).exists()).toBe(true);
     });
   });
 });

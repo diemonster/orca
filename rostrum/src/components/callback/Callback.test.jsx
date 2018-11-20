@@ -12,8 +12,6 @@ describe('components', () => {
       const callback = shallow(<Callback />);
 
       expect(callback).toMatchSnapshot();
-      expect(callback.find('div').hasClass('container')).toBe(true);
-      expect(callback.find('h4').text()).toEqual('Loading...');
     });
   });
 });

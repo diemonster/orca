@@ -18,21 +18,6 @@ describe('components', () => {
       const namespaceCreate = shallow(<NamespaceCreate {...props} />);
 
       expect(namespaceCreate).toMatchSnapshot();
-      expect(namespaceCreate.find('div').hasClass('create-namespace')).toBe(true);
-      expect(namespaceCreate.find('h2').text()).toEqual('Create Namespace');
-      expect(namespaceCreate.find('form').hasClass('namespace-input-form')).toBe(true);
-      expect(namespaceCreate.find('form').prop('id')).toEqual('namespace-create-input-form');
-      expect(namespaceCreate.find('label').hasClass('namespace-input-label')).toBe(true);
-      expect(namespaceCreate.find('label').text()).toEqual('New Namespace:');
-      expect(namespaceCreate.find('input').prop('type')).toEqual('text');
-      expect(namespaceCreate.find('input').prop('value')).toEqual('');
-      expect(namespaceCreate.find('input').prop('placeholder')).toEqual('enter namespace');
-      expect(namespaceCreate.find('input').prop('name')).toEqual('namespace-create-input');
-      expect(namespaceCreate.find('input').prop('id')).toEqual('namespace-create-input');
-      expect(namespaceCreate.find('button').hasClass('button')).toBe(true);
-      expect(namespaceCreate.find('button').prop('type')).toEqual('submit');
-      expect(namespaceCreate.find('button').prop('value')).toEqual('submit');
-      expect(namespaceCreate.find('button').text()).toEqual('Create');
     });
 
     it('appropriately calls dispatchNamespaceCreateChangeInput() on input change', () => {

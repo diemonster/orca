@@ -2,9 +2,7 @@ import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import {
-  BrowserRouter as Router, Route, Switch, Redirect,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import App from './App';
 import Sidebar from './sidebar/Sidebar';
 import Namespace from './namespaces/Namespace';
@@ -17,6 +15,7 @@ describe('components', () => {
     it('should render itself and its subcomponents', () => {
       const app = shallow(<App />);
 
+      expect(app).toMatchSnapshot();
       expect(app.find(Router).exists()).toBe(true);
       expect(app.find(Router).childAt(0)).toEqual(app.find('div').at(0));
       expect(app.find('div').at(0).hasClass('app-container')).toBe(true);

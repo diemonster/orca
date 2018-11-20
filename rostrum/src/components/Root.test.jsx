@@ -5,8 +5,6 @@ import Adapter from 'enzyme-adapter-react-16';
 import { Provider } from 'react-redux';
 import { Router, Switch } from 'react-router-dom';
 import Root from './Root';
-import Auth from './auth/Auth';
-import configureStore from '../store/configureStore';
 import Authenticator from '../authenticator/authenticator';
 import History from '../authenticator/history';
 
@@ -19,6 +17,31 @@ describe('components', () => {
         auth0Domain: 'test.com',
         auth0ClientID: '1234567890',
       };
+    });
+
+    it('should render itself and its subcomponents', () => {
+      const expectedState = {
+        config: {
+          auth0Domain: 'test.com',
+          auth0ClientID: '1234567890',
+        },
+        namespace: {
+          namespaceCreateInput: '',
+          namespaceDeleteInput: '',
+          namespaceObjects: [],
+        },
+        rolebinding: {
+          namespacedRolebindings: {},
+        },
+      };
+
+      const root = shallow(<Root />);
+
+      expect(root).toMatchSnapshot();
+      expect(root.find(Provider).prop('store').getState()).toEqual(expectedState);
+      expect(root.find(Router).prop('history')).toEqual(History);
+      expect(root.find(Switch).children().length).toEqual(2);
+      expect(root.find(Switch).childAt(0).prop('path')).toEqual('/callback');
     });
 
     it('should set properties on componentWillMount', () => {
@@ -65,29 +88,5 @@ describe('components', () => {
     //
     // expect(auth.prop('authenticator')).toBe(instance.authenticator);
     // });
-
-    it('should render itself and its subcomponents', () => {
-      const expectedState = {
-        config: {
-          auth0Domain: 'test.com',
-          auth0ClientID: '1234567890',
-        },
-        namespace: {
-          namespaceCreateInput: '',
-          namespaceDeleteInput: '',
-          namespaceObjects: [],
-        },
-        rolebinding: {
-          namespacedRolebindings: {},
-        },
-      };
-
-      const root = shallow(<Root />);
-
-      expect(root.find(Provider).prop('store').getState()).toEqual(expectedState);
-      expect(root.find(Router).prop('history')).toEqual(History);
-      expect(root.find(Switch).children().length).toEqual(2);
-      expect(root.find(Switch).childAt(0).prop('path')).toEqual('/callback');
-    });
   });
 });

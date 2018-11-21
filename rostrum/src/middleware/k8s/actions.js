@@ -6,6 +6,8 @@ import {
   NAMESPACE_LIST_ERROR,
   NAMESPACE_LIST_SUCCESS,
   NAMESPACE_WATCH_FOR_DELETION,
+  ROLEBINDING_CREATE_ERROR,
+  ROLEBINDING_LIST,
   ROLEBINDING_LIST_ERROR,
   ROLEBINDING_LIST_SUCCESS,
 } from '../../actions/actionTypes';
@@ -13,6 +15,10 @@ import {
 import {
   namespaceCreateChangeInput,
 } from '../../actions/namespaces';
+
+import {
+  rolebindingCreateChangeInput,
+} from '../../actions/rolebindings';
 
 export function namespaceCreateError(error) {
   return {
@@ -109,6 +115,24 @@ export function namespaceList(client) {
     })
     .catch((error) => {
       dispatch(namespaceListError(error));
+    });
+}
+
+export function rolebindingCreateError(error) {
+  return {
+    type: ROLEBINDING_CREATE_ERROR,
+    error,
+  };
+}
+
+export function rolebindingCreate(client, namespace, role, subject) {
+  return dispatch => client.createRolebinding(namespace, role, subject)
+    .then(() => {
+      dispatch(rolebindingCreateChangeInput('subject', ''));
+      dispatch({ type: ROLEBINDING_LIST });
+    })
+    .catch((error) => {
+      dispatch(rolebindingCreateError(error));
     });
 }
 

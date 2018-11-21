@@ -2,19 +2,23 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import RolebindingCreate from './RolebindingCreate';
 import RolebindingList from './RolebindingList';
 
 export function Rolebindings(props) {
   const { selectedNamespace } = props;
   if (selectedNamespace !== '') {
     return (
-      <RolebindingList />
+      <div className="rolebinding-container">
+        <RolebindingCreate />
+        <RolebindingList />
+      </div>
     );
   }
 
   return (
     <div className="rolebinding-container">
-      <h3>no namespace selected</h3>
+      <h2>(No Namespace Selected)</h2>
     </div>
   );
 }

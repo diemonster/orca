@@ -1,22 +1,16 @@
-import namespaceReducer from './namespaces';
+import namespaceReducer, { initialState } from './namespaces';
 import * as types from '../actions/actionTypes';
 
 describe('namespace reducer', () => {
   it('should return the initial state', () => {
-    const initialState = {
-      namespaceObjects: [],
-      namespaceCreateInput: '',
-      selectedNamespace: '',
-    };
-
     expect(namespaceReducer(undefined, {})).toEqual(initialState);
   });
 
   it('should replace namespaceCreateInput on NAMESPACE_CREATE_CHANGE_INPUT', () => {
     const state = {
-      namespaceObjects: [],
       namespaceCreateInput: 'ab',
-      namespaceDeleteInput: '',
+      namespaceObjects: [],
+      selectedNamespace: '',
     };
 
     const action = {
@@ -24,23 +18,17 @@ describe('namespace reducer', () => {
       namespaceCreateInput: '',
     };
 
-    const expectedState = {
-      namespaceObjects: [],
-      namespaceCreateInput: '',
-      namespaceDeleteInput: '',
-    };
-
-    expect(namespaceReducer(state, action)).toEqual(expectedState);
+    expect(namespaceReducer(state, action)).toEqual(initialState);
   });
 
   it('should replace namespaceObjects on NAMESPACE_LIST_SUCCESS', () => {
     const state = {
+      namespaceCreateInput: '',
       namespaceObjects: [
         { name: 'namespace1', status: 'ACTIVE' },
         { name: 'namespace2', status: 'ACTIVE' },
       ],
-      namespaceCreateInput: '',
-      namespaceDeleteInput: '',
+      selectedNamespace: '',
     };
 
     const action = {
@@ -49,9 +37,9 @@ describe('namespace reducer', () => {
     };
 
     const expectedState = {
-      namespaceObjects: [{ name: 'namespace2', status: 'ACTIVE' }],
       namespaceCreateInput: '',
-      namespaceDeleteInput: '',
+      namespaceObjects: [{ name: 'namespace2', status: 'ACTIVE' }],
+      selectedNamespace: '',
     };
 
     expect(namespaceReducer(state, action)).toEqual(expectedState);

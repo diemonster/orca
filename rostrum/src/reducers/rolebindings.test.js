@@ -1,9 +1,8 @@
-import rolebindingReducer from './rolebindings';
+import rolebindingReducer, { initialState } from './rolebindings';
 import * as types from '../actions/actionTypes';
 
 describe('rolebinding reducer', () => {
   it('should return the initial state', () => {
-    const initialState = { rolebindings: [] };
     expect(rolebindingReducer(undefined, {})).toEqual(initialState);
   });
 

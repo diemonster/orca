@@ -6,6 +6,9 @@ import { Provider } from 'react-redux';
 import Root from './Root';
 import Authenticator from '../authenticator/authenticator';
 
+import { initialState as namespace } from '../reducers/namespaces';
+import { initialState as rolebinding } from '../reducers/rolebindings';
+
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('components', () => {
@@ -23,14 +26,8 @@ describe('components', () => {
           auth0Domain: 'test.com',
           auth0ClientID: '1234567890',
         },
-        namespace: {
-          namespaceCreateInput: '',
-          namespaceObjects: [],
-          selectedNamespace: '',
-        },
-        rolebinding: {
-          rolebindings: [],
-        },
+        namespace,
+        rolebinding,
       };
 
       const root = shallow(<Root />);
@@ -45,14 +42,8 @@ describe('components', () => {
           auth0Domain: 'test.com',
           auth0ClientID: '1234567890',
         },
-        namespace: {
-          namespaceCreateInput: '',
-          namespaceObjects: [],
-          selectedNamespace: '',
-        },
-        rolebinding: {
-          rolebindings: [],
-        },
+        namespace,
+        rolebinding,
       };
 
       const instance = shallow(<Root />).instance();

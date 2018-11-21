@@ -69,8 +69,24 @@ class K8sClient {
     return this.do(METHODS.GET, '/api/v1/namespaces');
   }
 
+  createRolebinding(namespace, role, subject) {
+    const body = {
+      role,
+      subject,
+    };
+
+    return this.do(
+      METHODS.POST,
+      `/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings/`,
+      body,
+    );
+  }
+
   listRolebindings(namespace) {
-    return this.do(METHODS.GET, `/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings/`);
+    return this.do(
+      METHODS.GET,
+      `/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings/`,
+    );
   }
 }
 

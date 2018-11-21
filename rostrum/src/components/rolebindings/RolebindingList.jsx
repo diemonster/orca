@@ -12,7 +12,7 @@ export function RolebindingList(props) {
   ));
 
   return (
-    <div className="rolebinding-container">
+    <div>
       <h3>{`${selectedNamespace} rolebindings:`}</h3>
       <ul className="rolebinding-list">{rolebindingListItems}</ul>
     </div>

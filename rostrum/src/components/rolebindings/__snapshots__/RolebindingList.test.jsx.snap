@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`components RolebindingList should render itself and its subcomponents when rolebindings.length === 0 1`] = `
-<div
-  className="rolebinding-container"
->
+<div>
   <h3>
     some-namespace rolebindings:
   </h3>
@@ -14,9 +12,7 @@ exports[`components RolebindingList should render itself and its subcomponents w
 `;
 
 exports[`components RolebindingList should render itself and subcomponents when rolebindings.length > 0 1`] = `
-<div
-  className="rolebinding-container"
->
+<div>
   <h3>
     some-namespace rolebindings:
   </h3>

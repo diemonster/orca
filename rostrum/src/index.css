@@ -103,6 +103,11 @@ li {
     border-left: solid;
 }
 
+.namespace-delete-button:hover {
+    background-color: firebrick !important;
+    color: #fff !important;
+}
+
 .selected {
     background-color: #fff !important;
 }

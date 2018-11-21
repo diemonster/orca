@@ -7,6 +7,7 @@ import {
   NAMESPACE_LIST,
   NAMESPACE_SELECT,
   NAMESPACE_WATCH_FOR_DELETION,
+  ROLEBINDING_CREATE,
   ROLEBINDING_LIST,
 } from '../../actions/actionTypes';
 
@@ -38,6 +39,16 @@ const k8sMiddleware = store => next => (action) => {
 
     case NAMESPACE_WATCH_FOR_DELETION:
       store.dispatch(actions.watchNamespaceDelete(client, action.name));
+      break;
+
+    case ROLEBINDING_CREATE:
+      store.dispatch(actions.rolebindingCreate(
+        client,
+        action.namespace,
+        action.role,
+        action.subject,
+      ));
+
       break;
 
     case ROLEBINDING_LIST:

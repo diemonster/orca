@@ -33,10 +33,11 @@ export function namespaceCreate(client, name) {
   };
 }
 
+// TODO: fingure a good way to test this function
 export function watchNamespaceDelete(client, name) {
   return (dispatch) => {
     watch(2000, (stop) => {
-    // todo: combine these two calls into one
+    // TODO: combine these two calls into one
       dispatch(namespaceList(client));
       client.listNamespaces()
         .then((response) => {

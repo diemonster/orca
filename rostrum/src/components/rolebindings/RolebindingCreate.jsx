@@ -46,6 +46,10 @@ export class RolebindingCreate extends React.Component {
       roleOptions,
     } = this.props;
 
+    const rolebindingOptions = roleOptions.map(option => (
+      <option key={option} value={option}>{option}</option>
+    ));
+
     return (
       <div className="create-rolebinding">
         <h2>Create New Rolebinding</h2>
@@ -64,7 +68,7 @@ export class RolebindingCreate extends React.Component {
             value={rolebindingCreateRoleInput}
             onChange={this.handleChange}
           >
-            <option value={roleOptions[0]}>{roleOptions[0]}</option>
+            {rolebindingOptions}
           </select>
           <button
             className="button"

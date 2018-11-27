@@ -25,9 +25,7 @@ exports[`components RolebindingCreate should render itself and its subcomponents
       onChange={[Function]}
       required={true}
       value=""
-    >
-      <option />
-    </select>
+    />
     <button
       className="button"
       type="submit"

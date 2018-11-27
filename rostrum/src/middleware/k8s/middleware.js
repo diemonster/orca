@@ -1,15 +1,7 @@
 import K8sClient from './client';
+import * as k8sActions from './k8sActions';
+import * as types from '../../actions/actionTypes';
 
-import * as actions from './actions';
-import {
-  NAMESPACE_CREATE,
-  NAMESPACE_DELETE,
-  NAMESPACE_LIST,
-  NAMESPACE_SELECT,
-  NAMESPACE_WATCH_FOR_DELETION,
-  ROLEBINDING_CREATE,
-  ROLEBINDING_LIST,
-} from '../../actions/actionTypes';
 
 const k8sMiddleware = store => next => (action) => {
   const state = store.getState();
@@ -21,28 +13,28 @@ const k8sMiddleware = store => next => (action) => {
   }
 
   switch (action.type) {
-    case NAMESPACE_CREATE:
-      store.dispatch(actions.namespaceCreate(client, action.name));
+    case types.NAMESPACE_CREATE:
+      store.dispatch(k8sActions.namespaceCreate(client, action.name));
       break;
 
-    case NAMESPACE_DELETE:
-      store.dispatch(actions.namespaceDelete(client, action.name));
+    case types.NAMESPACE_DELETE:
+      store.dispatch(k8sActions.namespaceDelete(client, action.name));
       break;
 
-    case NAMESPACE_LIST:
-      store.dispatch(actions.namespaceList(client));
+    case types.NAMESPACE_LIST:
+      store.dispatch(k8sActions.namespaceList(client));
       break;
 
-    case NAMESPACE_SELECT:
-      store.dispatch(actions.rolebindingList(client, action.namespace));
+    case types.NAMESPACE_SELECT:
+      store.dispatch(k8sActions.rolebindingList(client, action.namespace));
       break;
 
-    case NAMESPACE_WATCH_FOR_DELETION:
-      store.dispatch(actions.watchNamespaceDelete(client, action.name));
+    case types.NAMESPACE_WATCH_FOR_DELETION:
+      store.dispatch(k8sActions.watchNamespaceDelete(client, action.name));
       break;
 
-    case ROLEBINDING_CREATE:
-      store.dispatch(actions.rolebindingCreate(
+    case types.ROLEBINDING_CREATE:
+      store.dispatch(k8sActions.rolebindingCreate(
         client,
         action.namespace,
         action.role,
@@ -51,8 +43,8 @@ const k8sMiddleware = store => next => (action) => {
 
       break;
 
-    case ROLEBINDING_LIST:
-      store.dispatch(actions.rolebindingList(client, action.namespace));
+    case types.ROLEBINDING_LIST:
+      store.dispatch(k8sActions.rolebindingList(client, action.namespace));
       break;
 
     default:

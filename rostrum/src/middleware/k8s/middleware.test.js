@@ -1,6 +1,7 @@
 import * as types from '../../actions/actionTypes';
-import * as actions from './actions';
+import * as k8sActions from './k8sActions';
 import k8sMiddleware from './middleware';
+
 
 const create = () => {
   const client = {
@@ -30,10 +31,10 @@ describe('kubernetes middleware', () => {
     const { next, invoke } = create();
     const action = { type: 'IRRELEVANT' };
 
-    const namespaceCreate = jest.spyOn(actions, 'namespaceCreate');
-    const namespaceDelete = jest.spyOn(actions, 'namespaceDelete');
-    const namespaceList = jest.spyOn(actions, 'namespaceList');
-    const rolebindingList = jest.spyOn(actions, 'rolebindingList');
+    const namespaceCreate = jest.spyOn(k8sActions, 'namespaceCreate');
+    const namespaceDelete = jest.spyOn(k8sActions, 'namespaceDelete');
+    const namespaceList = jest.spyOn(k8sActions, 'namespaceList');
+    const rolebindingList = jest.spyOn(k8sActions, 'rolebindingList');
 
     invoke(action);
 
@@ -49,7 +50,7 @@ describe('kubernetes middleware', () => {
     const name = 'new-namespace';
     const action = { type: types.NAMESPACE_CREATE, name };
 
-    const namespaceCreate = jest.spyOn(actions, 'namespaceCreate');
+    const namespaceCreate = jest.spyOn(k8sActions, 'namespaceCreate');
 
     invoke(action);
 
@@ -62,7 +63,7 @@ describe('kubernetes middleware', () => {
     const name = 'some-namespace';
     const action = { type: types.NAMESPACE_DELETE, name };
 
-    const namespaceDelete = jest.spyOn(actions, 'namespaceDelete');
+    const namespaceDelete = jest.spyOn(k8sActions, 'namespaceDelete');
 
     invoke(action);
 
@@ -74,7 +75,7 @@ describe('kubernetes middleware', () => {
     const { next, invoke, client } = create();
     const action = { type: types.NAMESPACE_LIST };
 
-    const namespaceList = jest.spyOn(actions, 'namespaceList');
+    const namespaceList = jest.spyOn(k8sActions, 'namespaceList');
 
     invoke(action);
 
@@ -87,7 +88,7 @@ describe('kubernetes middleware', () => {
     const name = 'some-namespace';
     const action = { type: types.NAMESPACE_WATCH_FOR_DELETION, name };
 
-    const watchNamespaceDelete = jest.spyOn(actions, 'watchNamespaceDelete');
+    const watchNamespaceDelete = jest.spyOn(k8sActions, 'watchNamespaceDelete');
 
     invoke(action);
 
@@ -100,7 +101,7 @@ describe('kubernetes middleware', () => {
     const namespace = 'some-namespace';
     const action = { type: types.ROLEBINDING_LIST, namespace };
 
-    const rolebindingList = jest.spyOn(actions, 'rolebindingList');
+    const rolebindingList = jest.spyOn(k8sActions, 'rolebindingList');
 
     invoke(action);
 

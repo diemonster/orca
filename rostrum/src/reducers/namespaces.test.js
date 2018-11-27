@@ -8,9 +8,8 @@ describe('namespace reducer', () => {
 
   it('should replace namespaceCreateInput on NAMESPACE_CREATE_CHANGE_INPUT', () => {
     const state = {
+      ...initialState,
       namespaceCreateInput: 'ab',
-      namespaceObjects: [],
-      selectedNamespace: '',
     };
 
     const action = {
@@ -23,12 +22,11 @@ describe('namespace reducer', () => {
 
   it('should replace namespaceObjects on NAMESPACE_LIST_SUCCESS', () => {
     const state = {
-      namespaceCreateInput: '',
+      ...initialState,
       namespaceObjects: [
         { name: 'namespace1', status: 'ACTIVE' },
         { name: 'namespace2', status: 'ACTIVE' },
       ],
-      selectedNamespace: '',
     };
 
     const action = {
@@ -37,11 +35,24 @@ describe('namespace reducer', () => {
     };
 
     const expectedState = {
-      namespaceCreateInput: '',
+      ...initialState,
       namespaceObjects: [{ name: 'namespace2', status: 'ACTIVE' }],
-      selectedNamespace: '',
     };
 
     expect(namespaceReducer(state, action)).toEqual(expectedState);
+  });
+
+  it('should replace selectedNamespace on NAMESPACE_SELECT', () => {
+    const state = {
+      ...initialState,
+      selectedNamespace: 'some-namespace',
+    };
+
+    const action = {
+      type: types.NAMESPACE_SELECT,
+      namespace: '',
+    };
+
+    expect(namespaceReducer(state, action)).toEqual(initialState);
   });
 });

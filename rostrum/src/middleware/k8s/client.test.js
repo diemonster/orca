@@ -1,6 +1,7 @@
 import axios from 'axios';
 import K8sClient, { METHODS, DEFAULT_ENDPOINT, getTokenFromSession } from './client';
 
+
 describe('kubernetes client', () => {
   it('initializes correctly with default values', () => {
     const k8sClient = new K8sClient();

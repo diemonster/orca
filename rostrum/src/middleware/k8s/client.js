@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-export const DEFAULT_ENDPOINT = 'http://localhost:8080';
+import * as templates from './templates';
 
+
+export const DEFAULT_ENDPOINT = 'http://localhost:8080';
 export const METHODS = {
   DELETE: 'delete',
   GET: 'get',
@@ -43,17 +45,7 @@ class K8sClient {
   }
 
   createNamespace(name) {
-    const body = {
-      kind: 'Namespace',
-      apiVersion: 'v1',
-      metadata: {
-        name,
-        labels: {
-          name,
-        },
-      },
-    };
-
+    const body = templates.createNamespace(name);
     return this.do(METHODS.POST, '/api/v1/namespaces', body);
   }
 
@@ -69,12 +61,42 @@ class K8sClient {
     return this.do(METHODS.GET, '/api/v1/namespaces');
   }
 
-  createRolebinding(namespace, role, subject) {
-    const body = {
-      role,
-      subject,
-    };
+  createRole(namespace, role) {
+    let body;
+    switch (role) {
+      case 'admin':
+        body = templates.createAdminRole(namespace);
+        break;
 
+      default:
+        return new Promise((resolve, reject) => {
+          reject(new Error(`No template implemented for role '${role}'`));
+        });
+    }
+
+    return this.do(
+      METHODS.POST,
+      `/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/roles/`,
+      body,
+    );
+  }
+
+  getRole(namespace, role) {
+    return this.do(
+      METHODS.GET,
+      `/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/roles/${namespace}-namespace-${role}-role`,
+    );
+  }
+
+  listRoles(namespace) {
+    return this.do(
+      METHODS.GET,
+      `/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/roles/`,
+    );
+  }
+
+  createRolebinding(namespace, role, subject) {
+    const body = templates.createRolebinding(namespace, role, subject);
     return this.do(
       METHODS.POST,
       `/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings/`,

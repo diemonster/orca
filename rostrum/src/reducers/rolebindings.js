@@ -3,10 +3,12 @@ import {
   ROLEBINDING_LIST_SUCCESS,
 } from '../actions/actionTypes';
 
+const roleOptions = ['admin'];
+const roleInput = roleOptions[0];
 export const initialState = {
   rolebindings: [],
-  roleInput: 'admin',
-  roleOptions: ['admin'],
+  roleInput,
+  roleOptions,
   subjectInput: '',
 };
 

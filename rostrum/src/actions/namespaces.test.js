@@ -4,31 +4,19 @@ import * as types from './actionTypes';
 
 describe('actions', () => {
   describe('namespaceCreate', () => {
-    it('should create an action to create a namespace', () => {
-      const name = 'new-namespace';
+    it('should return an action to create a namespace', () => {
+      const namespace = 'new-namespace';
       const expectedAction = {
         type: types.NAMESPACE_CREATE,
-        name,
+        namespace,
       };
 
-      expect(actions.namespaceCreate(name)).toEqual(expectedAction);
-    });
-  });
-
-  describe('namespaceCreateError', () => {
-    it('should emit an appropriate action', () => {
-      const error = new Error();
-      const expectedAction = {
-        type: types.NAMESPACE_CREATE_ERROR,
-        error,
-      };
-
-      expect(actions.namespaceCreateError(error)).toEqual(expectedAction);
+      expect(actions.namespaceCreate(namespace)).toEqual(expectedAction);
     });
   });
 
   describe('namespaceCreateChangeInput', () => {
-    it('should create an action to change the "create namespace" input', () => {
+    it('should return an action to change the "create namespace" input', () => {
       const namespaceCreateInput = 'a';
       const expectedAction = {
         type: types.NAMESPACE_CREATE_CHANGE_INPUT,
@@ -39,20 +27,46 @@ describe('actions', () => {
     });
   });
 
-  describe('namespaceDelete', () => {
-    it('should create an action to delete a namespace', () => {
-      const name = 'some-namespace';
+  describe('namespaceCreateError', () => {
+    it('should return an action to display an error', () => {
+      const error = new Error();
       const expectedAction = {
-        type: types.NAMESPACE_DELETE,
-        name,
+        type: types.NAMESPACE_CREATE_ERROR,
+        error,
       };
 
-      expect(actions.namespaceDelete(name)).toEqual(expectedAction);
+      expect(actions.namespaceCreateError(error)).toEqual(expectedAction);
+    });
+  });
+
+  describe('namespaceDelete', () => {
+    it('should return an action to delete a namespace', () => {
+      const namespace = 'some-namespace';
+      const expectedAction = {
+        type: types.NAMESPACE_DELETE,
+        namespace,
+      };
+
+      expect(actions.namespaceDelete(namespace)).toEqual(expectedAction);
+    });
+  });
+
+  describe('namespaceDeleteCheckWatch', () => {
+    it('should return an action to check a namespace for deletion', () => {
+      const namespace = 'some-namespace';
+      const stop = jest.fn();
+      const expectedAction = {
+        type: types.NAMESPACE_DELETE_CHECK_WATCH,
+        namespace,
+        stop,
+      };
+
+      expect(actions.namespaceDeleteCheckWatch(namespace, stop)).toEqual(expectedAction);
     });
   });
 
   describe('namespaceDeleteError', () => {
-    it('should emit an appropriate action', () => {
+    it('should return an action to display an error', () => {
       const error = new Error();
       const expectedAction = {
         type: types.NAMESPACE_DELETE_ERROR,
@@ -62,8 +76,36 @@ describe('actions', () => {
       expect(actions.namespaceDeleteError(error)).toEqual(expectedAction);
     });
 
+    describe('namespaceDeleteStartWatch', () => {
+      it('should return an action to start watching a namespace for deletion', () => {
+        const namespace = 'some-namespace';
+        const interval = 10;
+        const expectedAction = {
+          type: types.NAMESPACE_DELETE_START_WATCH,
+          namespace,
+          interval,
+        };
+
+        expect(
+          actions.namespaceDeleteStartWatch(namespace, interval),
+        ).toEqual(expectedAction);
+      });
+    });
+
+    describe('namespaceDeleteStopWatch', () => {
+      it('should return an action to stop watching a namespace for deletion', () => {
+        const stop = jest.fn();
+        const expectedAction = {
+          type: types.NAMESPACE_DELETE_STOP_WATCH,
+          stop,
+        };
+
+        expect(actions.namespaceDeleteStopWatch(stop)).toEqual(expectedAction);
+      });
+    });
+
     describe('namespaceList', () => {
-      it('should create an action to list namespaces', () => {
+      it('should return an action to list namespaces', () => {
         const expectedAction = {
           type: types.NAMESPACE_LIST,
         };
@@ -74,7 +116,7 @@ describe('actions', () => {
   });
 
   describe('namespaceListError', () => {
-    it('should emit an appropriate action', () => {
+    it('should return an action to display an error', () => {
       const error = new Error();
       const expectedAction = {
         type: types.NAMESPACE_LIST_ERROR,
@@ -86,7 +128,7 @@ describe('actions', () => {
   });
 
   describe('namespaceListSuccess', () => {
-    it('should emit an appropriate action', () => {
+    it('should return an action to write namespaces to state', () => {
       const namespaceObjects = [{ namespace: 'any' }];
       const expectedAction = {
         type: types.NAMESPACE_LIST_SUCCESS,
@@ -97,15 +139,15 @@ describe('actions', () => {
     });
   });
 
-  describe('namespaceWatchForDeletion', () => {
-    it('should emit an appropriate action', () => {
-      const name = 'some-namespace';
+  describe('namespaceSelect', () => {
+    it('should return an action to select a namespace', () => {
+      const namespace = 'some-namespace';
       const expectedAction = {
-        type: types.NAMESPACE_WATCH_FOR_DELETION,
-        name,
+        type: types.NAMESPACE_SELECT,
+        namespace,
       };
 
-      expect(actions.namespaceWatchForDeletion(name)).toEqual(expectedAction);
+      expect(actions.namespaceSelect(namespace)).toEqual(expectedAction);
     });
   });
 });

@@ -1,9 +1,9 @@
 import * as types from './actionTypes';
 
-export function namespaceCreate(name) {
+export function namespaceCreate(namespace) {
   return {
     type: types.NAMESPACE_CREATE,
-    name,
+    namespace,
   };
 }
 
@@ -21,10 +21,18 @@ export function namespaceCreateChangeInput(namespaceCreateInput) {
   };
 }
 
-export function namespaceDelete(name) {
+export function namespaceDelete(namespace) {
   return {
     type: types.NAMESPACE_DELETE,
-    name,
+    namespace,
+  };
+}
+
+export function namespaceDeleteCheckWatch(namespace, stop) {
+  return {
+    type: types.NAMESPACE_DELETE_CHECK_WATCH,
+    namespace,
+    stop,
   };
 }
 
@@ -32,6 +40,21 @@ export function namespaceDeleteError(error) {
   return {
     type: types.NAMESPACE_DELETE_ERROR,
     error,
+  };
+}
+
+export function namespaceDeleteStartWatch(namespace, interval) {
+  return {
+    type: types.NAMESPACE_DELETE_START_WATCH,
+    namespace,
+    interval,
+  };
+}
+
+export function namespaceDeleteStopWatch(stop) {
+  return {
+    type: types.NAMESPACE_DELETE_STOP_WATCH,
+    stop,
   };
 }
 
@@ -59,12 +82,5 @@ export function namespaceSelect(namespace) {
   return {
     type: types.NAMESPACE_SELECT,
     namespace,
-  };
-}
-
-export function namespaceWatchForDeletion(name) {
-  return {
-    type: types.NAMESPACE_WATCH_FOR_DELETION,
-    name,
   };
 }

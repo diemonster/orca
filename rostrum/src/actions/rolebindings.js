@@ -25,6 +25,46 @@ export function rolebindingCreateChangeInput(inputType, inputValue) {
   };
 }
 
+export function rolebindingDelete(namespace, rolebinding) {
+  return {
+    type: types.ROLEBINDING_DELETE,
+    namespace,
+    rolebinding,
+  };
+}
+
+export function rolebindingDeleteCheckWatch(namespace, rolebinding, stop) {
+  return {
+    type: types.ROLEBINDING_DELETE_CHECK_WATCH,
+    namespace,
+    rolebinding,
+    stop,
+  };
+}
+
+export function rolebindingDeleteError(error) {
+  return {
+    type: types.ROLEBINDING_DELETE_ERROR,
+    error,
+  };
+}
+
+export function rolebindingDeleteStartWatch(namespace, rolebinding, interval) {
+  return {
+    type: types.ROLEBINDING_DELETE_START_WATCH,
+    namespace,
+    rolebinding,
+    interval,
+  };
+}
+
+export function rolebindingDeleteStopWatch(stop) {
+  return {
+    type: types.ROLEBINDING_DELETE_STOP_WATCH,
+    stop,
+  };
+}
+
 export function rolebindingList(namespace) {
   return {
     type: types.ROLEBINDING_LIST,

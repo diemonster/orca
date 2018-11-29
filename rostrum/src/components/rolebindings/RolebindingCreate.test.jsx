@@ -38,22 +38,21 @@ describe('components', () => {
       };
 
       rolebindingCreate.find('input').simulate('change', event);
-      expect(mockFn).toBeCalledWith('name', 'a');
+      expect(mockFn).toHaveBeenCalledWith('name', 'a');
     });
 
     it('dispatches an action to create a rolebinding on form submit', () => {
       const mockFn = jest.fn();
+      const event = { preventDefault: jest.fn() };
       props.dispatchRolebindingCreate = mockFn;
       props.rolebindingCreateRoleInput = 'some-role';
       props.rolebindingCreateSubjectInput = 'some-subject';
       props.selectedNamespace = 'some-namespace';
 
       const rolebindingCreate = shallow(<RolebindingCreate {...props} />);
-
-      const event = { preventDefault: jest.fn() };
-
       rolebindingCreate.find('form').simulate('submit', event);
-      expect(mockFn).toBeCalledWith('some-namespace', 'some-role', 'some-subject');
+
+      expect(mockFn).toHaveBeenCalledWith('some-namespace', 'some-role', 'some-subject');
     });
   });
 });

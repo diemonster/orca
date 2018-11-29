@@ -5,5 +5,12 @@ exports[`components RolebindingListItem should render itself and its subcomponen
   className="rolebinding-list-item"
 >
   some-rolebinding
+  <button
+    className="rolebinding-delete-button"
+    onClick={[Function]}
+    type="button"
+  >
+    X
+  </button>
 </li>
 `;

@@ -30,6 +30,80 @@ describe('actions', () => {
     });
   });
 
+  describe('rolebindingDelete', () => {
+    it('should return an action to delete a rolebinding', () => {
+      const namespace = 'some-namespace';
+      const rolebinding = 'some-rolebinding';
+      const expectedAction = {
+        type: types.ROLEBINDING_DELETE,
+        namespace,
+        rolebinding,
+      };
+
+      expect(actions.rolebindingDelete(namespace, rolebinding)).toEqual(expectedAction);
+    });
+  });
+
+  describe('rolebindingDeleteCheckWatch', () => {
+    it('should return an action to check a rolebinding for deletion', () => {
+      const namespace = 'some-namespace';
+      const rolebinding = 'some-rolebinding';
+      const stop = jest.fn();
+      const expectedAction = {
+        type: types.ROLEBINDING_DELETE_CHECK_WATCH,
+        namespace,
+        rolebinding,
+        stop,
+      };
+
+      expect(
+        actions.rolebindingDeleteCheckWatch(namespace, rolebinding, stop),
+      ).toEqual(expectedAction);
+    });
+  });
+
+  describe('rolebindingDeleteError', () => {
+    it('should return an action to display an error', () => {
+      const error = Error();
+      const expectedAction = {
+        type: types.ROLEBINDING_DELETE_ERROR,
+        error,
+      };
+
+      expect(actions.rolebindingDeleteError(error)).toEqual(expectedAction);
+    });
+  });
+
+  describe('rolebindingDeleteStartWatch', () => {
+    it('should return an action to start watching a rolebinding for deletion', () => {
+      const namespace = 'some-namespace';
+      const rolebinding = 'some-rolebinding';
+      const interval = 10;
+      const expectedAction = {
+        type: types.ROLEBINDING_DELETE_START_WATCH,
+        namespace,
+        rolebinding,
+        interval,
+      };
+
+      expect(
+        actions.rolebindingDeleteStartWatch(namespace, rolebinding, interval),
+      ).toEqual(expectedAction);
+    });
+  });
+
+  describe('rolebindingDeleteStopWatch', () => {
+    it('should return an action to stop watching a namespace for deletion', () => {
+      const stop = jest.fn();
+      const expectedAction = {
+        type: types.ROLEBINDING_DELETE_STOP_WATCH,
+        stop,
+      };
+
+      expect(actions.rolebindingDeleteStopWatch(stop)).toEqual(expectedAction);
+    });
+  });
+
   describe('rolebindingList', () => {
     it('should return an action to list rolebindings', () => {
       const expectedAction = {

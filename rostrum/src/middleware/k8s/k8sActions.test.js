@@ -452,6 +452,58 @@ describe('k8s middleware actions', () => {
     });
   });
 
+  describe('rolebindingDelete', () => {
+    const namespace = 'some-namespace';
+    const rolebinding = 'some-rolebinding';
+    const interval = 10;
+    let client;
+
+    beforeEach(() => {
+      client = {
+        deleteRolebinding: jest.fn(() => new Promise((resolve) => {
+          resolve();
+        })),
+        listRolebindings: jest.fn(() => new Promise((resolve) => {
+          resolve({ data: { items: [] } });
+        })),
+      };
+    });
+
+    it('should start a watcher on success', () => {
+      const store = mockStore({ config: { client } });
+      const expectedActions = [
+        {
+          type: types.ROLEBINDING_DELETE_START_WATCH, namespace, rolebinding, interval,
+        },
+      ];
+
+      store.dispatch(k8sActions.rolebindingDelete(client, namespace, rolebinding, interval))
+        .then(() => {
+          expect(client.deleteRolebinding).toHaveBeenCalledWith(namespace, rolebinding);
+          expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+
+    it('should emit an error on failure', () => {
+      const error = new Error();
+      client.deleteRolebinding = jest.fn(() => new Promise((resolve, reject) => {
+        reject(error);
+      }));
+
+      const store = mockStore({ config: { client } });
+
+      const expectedActions = [
+        { type: types.ROLEBINDING_DELETE_ERROR, error },
+      ];
+
+      return store.dispatch(k8sActions.rolebindingDelete(client, namespace, rolebinding))
+        .then(() => {
+          expect(client.deleteRolebinding).toHaveBeenCalledWith(namespace, rolebinding);
+          expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+  });
+
   describe('rolebindingList', () => {
     const namespace = 'some-namespace';
 

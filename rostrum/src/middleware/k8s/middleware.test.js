@@ -1,9 +1,11 @@
 import * as types from '../../actions/actionTypes';
 import * as k8sActions from './k8sActions';
+import * as rolebindingActions from '../../actions/rolebindings';
 import k8sMiddleware from './middleware';
 import watch from '../../utils/watch';
 
 jest.mock('./k8sActions');
+jest.mock('../../actions/rolebindings');
 jest.mock('../../utils/watch');
 
 describe('kubernetes middleware', () => {
@@ -87,13 +89,13 @@ describe('kubernetes middleware', () => {
     expect(k8sActions.namespaceList).toHaveBeenCalledWith(client);
   });
 
-  it('dispatches a k8s action to list rolebindings on NAMESPACE_SELECT', () => {
+  it('dispatches an action to list rolebindings on NAMESPACE_SELECT', () => {
     const namespace = 'some-namespace';
-    const action = { type: types.ROLEBINDING_LIST, namespace };
+    const action = { type: types.NAMESPACE_SELECT, namespace };
 
     invoke(action);
 
-    expect(k8sActions.rolebindingList).toHaveBeenCalledWith(client, namespace);
+    expect(rolebindingActions.rolebindingList).toHaveBeenCalledWith(namespace);
     expect(next).toHaveBeenCalledWith(action);
   });
 
@@ -108,6 +110,60 @@ describe('kubernetes middleware', () => {
     invoke(action);
 
     expect(k8sActions.rolebindingCreate).toHaveBeenCalledWith(client, namespace, role, subject);
+    expect(next).toHaveBeenCalledWith(action);
+  });
+
+  it('dispatches a k8s action to delete a rolebinding', () => {
+    const namespace = 'some-namespace';
+    const rolebinding = 'some-rolebinding';
+    const action = { type: types.ROLEBINDING_DELETE, namespace, rolebinding };
+
+    invoke(action);
+
+    expect(k8sActions.rolebindingDelete).toHaveBeenCalledWith(client, namespace, rolebinding);
+    expect(next).toHaveBeenCalledWith(action);
+  });
+
+  it('dispatchs a k8s action to check for rolebinding deletion', () => {
+    const namespace = 'some-namespace';
+    const rolebinding = 'some-rolebinding';
+    const stop = jest.fn();
+    const action = {
+      type: types.ROLEBINDING_DELETE_CHECK_WATCH, namespace, rolebinding, stop,
+    };
+
+    invoke(action);
+
+    expect(
+      k8sActions.rolebindingDeleteCheckWatch,
+    ).toHaveBeenCalledWith(
+      client, namespace, rolebinding, stop,
+    );
+
+    expect(next).toHaveBeenCalledWith(action);
+  });
+
+  it('starts a watcher for rolebinding deletion', () => {
+    const namespace = 'some-namespace';
+    const rolebinding = 'some-rolebinding';
+    const interval = 10;
+    const action = {
+      type: types.ROLEBINDING_DELETE_START_WATCH, namespace, rolebinding, interval,
+    };
+
+    invoke(action);
+
+    expect(watch).toHaveBeenCalledWith(interval, expect.any(Function));
+    expect(next).toHaveBeenCalledWith(action);
+  });
+
+  it('calls a rolebinding deletion watcher\'s stop function', () => {
+    const stop = jest.fn();
+    const action = { type: types.ROLEBINDING_DELETE_STOP_WATCH, stop };
+
+    invoke(action);
+
+    expect(stop).toHaveBeenCalledWith();
     expect(next).toHaveBeenCalledWith(action);
   });
 

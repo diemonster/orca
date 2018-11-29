@@ -106,6 +106,13 @@ class K8sClient {
     );
   }
 
+  deleteRolebinding(namespace, rolebinding) {
+    return this.do(
+      METHODS.DELETE,
+      `/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings/${rolebinding}`,
+    );
+  }
+
   listRolebindings(namespace) {
     return this.do(
       METHODS.GET,

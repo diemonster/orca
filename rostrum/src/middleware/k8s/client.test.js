@@ -129,6 +129,15 @@ describe('kubernetes client', () => {
       );
     });
 
+    it('calls do() with correct args on deleteRolebinding()', () => {
+      k8sClient.deleteRolebinding('some-namespace', 'some-rolebinding');
+
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.DELETE,
+        '/apis/rbac.authorization.k8s.io/v1/namespaces/some-namespace/rolebindings/some-rolebinding',
+      );
+    });
+
     it('calls do() with correct args on listRolebindings()', () => {
       k8sClient.listRolebindings('some-namespace');
 

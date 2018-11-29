@@ -19,11 +19,11 @@ exports[`components RolebindingList should render itself and subcomponents when 
   <ul
     className="rolebinding-list"
   >
-    <RolebindingListItem
+    <Connect(RolebindingListItem)
       key="rolebinding1"
       rolebindingName="rolebinding1"
     />
-    <RolebindingListItem
+    <Connect(RolebindingListItem)
       key="rolebinding2"
       rolebindingName="rolebinding2"
     />

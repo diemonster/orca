@@ -122,3 +122,17 @@ li {
 .rolebinding-list-item {
     padding: 5px 0;
 }
+
+.rolebinding-delete-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    color: green;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+}
+
+.rolebinding-delete-button:hover {
+    background-color: firebrick !important;
+    color: #fff !important;
+}

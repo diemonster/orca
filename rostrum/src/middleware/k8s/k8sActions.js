@@ -1,6 +1,7 @@
 import * as namespaceActions from '../../actions/namespaces';
 import * as roleActions from '../../actions/roles';
 import * as rolebindingActions from '../../actions/rolebindings';
+import { DEFAULT_INTERVAL } from '../../utils/watch';
 
 
 export function namespaceCreate(client, name) {
@@ -16,10 +17,10 @@ export function namespaceCreate(client, name) {
   };
 }
 
-export function namespaceDelete(client, name, interval = 2000) {
-  return dispatch => client.deleteNamespace(name)
+export function namespaceDelete(client, namespace, interval = DEFAULT_INTERVAL) {
+  return dispatch => client.deleteNamespace(namespace)
     .then(() => {
-      dispatch(namespaceActions.namespaceDeleteStartWatch(name, interval));
+      dispatch(namespaceActions.namespaceDeleteStartWatch(namespace, interval));
     })
     .catch((error) => {
       dispatch(namespaceActions.namespaceDeleteError(error));
@@ -98,6 +99,36 @@ export function rolebindingCreate(client, namespace, role, subject) {
         return dispatch(roleActions.roleGetError(getRoleError));
       });
   };
+}
+
+export function rolebindingDelete(client, namespace, rolebinding, interval = DEFAULT_INTERVAL) {
+  return dispatch => client.deleteRolebinding(namespace, rolebinding)
+    .then(() => {
+      dispatch(rolebindingActions.rolebindingDeleteStartWatch(namespace, rolebinding, interval));
+    })
+    .catch((error) => {
+      dispatch(rolebindingActions.rolebindingDeleteError(error));
+    });
+}
+
+export function rolebindingDeleteCheckWatch(client, namespace, rolebinding, stop) {
+  return dispatch => client.listRolebindings(namespace)
+    .then((response) => {
+      const { items } = response.data;
+      const rolebindings = items.map(item => item.metadata.name);
+
+      dispatch(rolebindingActions.rolebindingListSuccess(namespace, rolebindings));
+      for (let i = 0; i < rolebindings.length; i += 1) {
+        if (rolebinding === rolebindings[i]) {
+          return;
+        }
+      }
+
+      dispatch(rolebindingActions.rolebindingDeleteStopWatch(stop));
+    })
+    .catch((error) => {
+      dispatch(rolebindingActions.rolebindingListError(error));
+    });
 }
 
 export function rolebindingList(client, namespace) {

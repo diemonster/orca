@@ -69,7 +69,7 @@ const mapDispatchToProps = dispatch => ({
   dispatchNamespaceCreateChangeInput: namespaceCreateInput => (
     dispatch(namespaceCreateChangeInput(namespaceCreateInput))
   ),
-  dispatchNamespaceCreate: name => dispatch(namespaceCreate(name)),
+  dispatchNamespaceCreate: namespace => dispatch(namespaceCreate(namespace)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NamespaceCreate);

@@ -1,101 +1,165 @@
 import axios from 'axios';
-import K8sClient, { METHODS, DEFAULT_ENDPOINT, getTokenFromSession } from './client';
+import * as templates from './templates';
+import K8sClient, {
+  METHODS,
+  DEFAULT_ENDPOINT,
+  getTokenFromSession,
+} from './client';
 
 
 describe('kubernetes client', () => {
-  it('initializes correctly with default values', () => {
-    const k8sClient = new K8sClient();
+  describe('initialization', () => {
+    it('initializes correctly with default values', () => {
+      const k8sClient = new K8sClient();
+      expect(k8sClient.endpoint).toBe(DEFAULT_ENDPOINT);
+      expect(k8sClient.getToken).toBe(getTokenFromSession);
+    });
 
-    expect(k8sClient.endpoint).toBe(DEFAULT_ENDPOINT);
-    expect(k8sClient.getToken).toBe(getTokenFromSession);
+    it('initializes correctly with non-default values', () => {
+      const getToken = jest.fn();
+      const k8sClient = new K8sClient('endpoint', getToken);
+      expect(k8sClient.endpoint).toEqual('endpoint');
+      expect(k8sClient.getToken).toBe(getToken);
+    });
   });
 
-  it('initializes correctly with non-default values', () => {
-    const endpoint = 'endpoint';
-    const getToken = jest.fn();
-    const k8sClient = new K8sClient(endpoint, getToken);
+  describe('API methods', () => {
+    let k8sClient;
+    let mockDo;
 
-    expect(k8sClient.endpoint).toBe(endpoint);
-    expect(k8sClient.getToken).toBe(getToken);
-  });
+    beforeEach(() => {
+      k8sClient = new K8sClient('', jest.fn());
+      mockDo = jest.fn();
+      k8sClient.do = mockDo;
+    });
 
-  it('calls do() with correct args on createNamespace()', () => {
-    const k8sClient = new K8sClient('', jest.fn());
-    const mockDo = jest.fn();
-    k8sClient.do = mockDo;
-    const expectedBody = {
-      kind: 'Namespace',
-      apiVersion: 'v1',
-      metadata: {
-        name: 'new-namespace',
-        labels: {
-          name: 'new-namespace',
-        },
-      },
-    };
+    it('calls do() with correct args on createNamespace()', () => {
+      const expectedBody = templates.createNamespace('new-namespace');
 
-    k8sClient.createNamespace('new-namespace');
+      k8sClient.createNamespace('new-namespace');
 
-    expect(mockDo).toHaveBeenCalledWith(METHODS.POST, '/api/v1/namespaces', expectedBody);
-  });
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.POST,
+        '/api/v1/namespaces',
+        expectedBody,
+      );
+    });
 
-  it('calls do() with correct args on deleteNamespace()', () => {
-    const k8sClient = new K8sClient('', jest.fn());
-    const mockDo = jest.fn();
-    k8sClient.do = mockDo;
+    it('calls do() with correct args on deleteNamespace()', () => {
+      k8sClient.deleteNamespace('some-namespace');
 
-    k8sClient.deleteNamespace('some-namespace');
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.DELETE,
+        '/api/v1/namespaces/some-namespace',
+      );
+    });
 
-    expect(mockDo).toHaveBeenCalledWith(METHODS.DELETE, '/api/v1/namespaces/some-namespace');
-  });
+    it('calls do() with correct args on getNamespace()', () => {
+      k8sClient.getNamespace('some-namespace');
 
-  it('calls do() with correct args on getNamespace()', () => {
-    const k8sClient = new K8sClient('', jest.fn());
-    const mockDo = jest.fn();
-    k8sClient.do = mockDo;
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.GET,
+        '/api/v1/namespaces/some-namespace',
+      );
+    });
 
-    k8sClient.getNamespace('some-namespace');
+    it('calls do() with correct args on listNamespaces()', () => {
+      k8sClient.listNamespaces();
 
-    expect(mockDo).toHaveBeenCalledWith(METHODS.GET, '/api/v1/namespaces/some-namespace');
-  });
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.GET,
+        '/api/v1/namespaces',
+      );
+    });
 
-  it('calls do() with correct args on listNamespaces()', () => {
-    const k8sClient = new K8sClient('', jest.fn());
-    const mockDo = jest.fn();
-    k8sClient.do = mockDo;
+    describe('createRole()', () => {
+      it('calls do() with correct args on when creating an admin role', () => {
+        const expectedBody = templates.createAdminRole('some-namespace');
 
-    k8sClient.listNamespaces();
+        k8sClient.createRole('some-namespace', 'admin');
 
-    expect(mockDo).toHaveBeenCalledWith(METHODS.GET, '/api/v1/namespaces');
-  });
+        expect(mockDo).toHaveBeenCalledWith(
+          METHODS.POST,
+          '/apis/rbac.authorization.k8s.io/v1/namespaces/some-namespace/roles/',
+          expectedBody,
+        );
+      });
 
-  it('calls do() with correct args on listRolebindings()', () => {
-    const k8sClient = new K8sClient('', jest.fn());
-    const mockDo = jest.fn();
-    k8sClient.do = mockDo;
+      it('throws an error if a non-templated role is provided', () => {
+        k8sClient.createRole('some-namespace', 'unsupported-role')
+          .catch((error) => {
+            expect(error.message).toEqual(
+              'No template implemented for role \'unsupported-role\'',
+            );
+          });
+      });
+    });
 
-    k8sClient.listRolebindings('some-namespace');
+    it('calls do() with correct args on getRole()', () => {
+      k8sClient.getRole('some-namespace', 'some-role');
 
-    expect(mockDo).toHaveBeenCalledWith(METHODS.GET, '/apis/rbac.authorization.k8s.io/v1/namespaces/some-namespace/rolebindings/');
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.GET,
+        '/apis/rbac.authorization.k8s.io/v1/namespaces/some-namespace/roles/some-namespace-namespace-some-role-role',
+      );
+    });
+
+    it('calls do() with correct args on listRoles()', () => {
+      k8sClient.listRoles('some-namespace');
+
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.GET,
+        '/apis/rbac.authorization.k8s.io/v1/namespaces/some-namespace/roles/',
+      );
+    });
+
+    it('calls do() with correct args on createRolebinding()', () => {
+      const expectedBody = templates.createRolebinding(
+        'some-namespace',
+        'some-role',
+        'some-subject',
+      );
+
+      k8sClient.createRolebinding('some-namespace', 'some-role', 'some-subject');
+
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.POST,
+        '/apis/rbac.authorization.k8s.io/v1/namespaces/some-namespace/rolebindings/',
+        expectedBody,
+      );
+    });
+
+    it('calls do() with correct args on listRolebindings()', () => {
+      k8sClient.listRolebindings('some-namespace');
+
+      expect(mockDo).toHaveBeenCalledWith(
+        METHODS.GET,
+        '/apis/rbac.authorization.k8s.io/v1/namespaces/some-namespace/rolebindings/',
+      );
+    });
   });
 
   describe('do() method', () => {
+    const token = 'TOKEN';
+    const endpoint = 'endpoint';
+    const path = '/path';
+    const body = { test: 'body' };
+    const expectedHeaders = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    let mockGetToken;
+    let k8sClient;
+
+    beforeEach(() => {
+      mockGetToken = jest.fn(() => token);
+      k8sClient = new K8sClient(endpoint, mockGetToken);
+    });
+
     it('calls axios.delete() correctly on DELETE method', () => {
-      const token = 'TOKEN';
-      const mockGetToken = jest.fn(() => token);
-
-      const endpoint = 'endpoint';
-      const k8sClient = new K8sClient(endpoint, mockGetToken);
-
-      const expectedHeaders = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-
       const axiosDelete = jest.fn();
       axios.delete = axiosDelete;
 
-      const path = '/path';
-      const body = { test: 'body' };
       k8sClient.do(METHODS.DELETE, path, body);
 
       expect(mockGetToken).toHaveBeenCalled();
@@ -103,21 +167,9 @@ describe('kubernetes client', () => {
     });
 
     it('calls axios.get() correctly on GET method', () => {
-      const token = 'TOKEN';
-      const mockGetToken = jest.fn(() => token);
-
-      const endpoint = 'endpoint';
-      const k8sClient = new K8sClient(endpoint, mockGetToken);
-
-      const expectedHeaders = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-
       const axiosGet = jest.fn();
       axios.get = axiosGet;
 
-      const path = '/path';
-      const body = { test: 'body' };
       k8sClient.do(METHODS.GET, path, body);
 
       expect(mockGetToken).toHaveBeenCalled();
@@ -125,21 +177,9 @@ describe('kubernetes client', () => {
     });
 
     it('calls axios.post() correctly on POST method', () => {
-      const token = 'TOKEN';
-      const mockGetToken = jest.fn(() => token);
-
-      const endpoint = 'endpoint';
-      const k8sClient = new K8sClient(endpoint, mockGetToken);
-
-      const expectedHeaders = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-
       const axiosPost = jest.fn();
       axios.post = axiosPost;
 
-      const path = '/path';
-      const body = { test: 'body' };
       k8sClient.do(METHODS.POST, path, body);
 
       expect(mockGetToken).toHaveBeenCalled();
@@ -147,21 +187,9 @@ describe('kubernetes client', () => {
     });
 
     it('calls axios.put() correctly on PUT method', () => {
-      const token = 'TOKEN';
-      const mockGetToken = jest.fn(() => token);
-
-      const endpoint = 'endpoint';
-      const k8sClient = new K8sClient(endpoint, mockGetToken);
-
-      const expectedHeaders = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
-
       const axiosPut = jest.fn();
       axios.put = axiosPut;
 
-      const path = '/path';
-      const body = { test: 'body' };
       k8sClient.do(METHODS.PUT, path, body);
 
       expect(mockGetToken).toHaveBeenCalled();
@@ -169,17 +197,12 @@ describe('kubernetes client', () => {
     });
 
     it('throws an error on an unrecognized method', () => {
-      const token = 'TOKEN';
-      const mockGetToken = jest.fn(() => token);
-
-      const endpoint = 'endpoint';
-      const k8sClient = new K8sClient(endpoint, mockGetToken);
-
-      const path = '/path';
-      const body = { test: 'body' };
       const method = 'UNEXPECTED';
 
-      expect(() => k8sClient.do(method, path, body)).toThrow(Error(`method ${method} not recognized`));
+      k8sClient.do(method, path, body).catch((error) => {
+        expect(error.message).toEqual(`method ${method} not recognized`);
+      });
+
       expect(mockGetToken).toHaveBeenCalled();
     });
   });

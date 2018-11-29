@@ -6,15 +6,13 @@ import * as k8sActions from './k8sActions';
 import * as types from '../../actions/actionTypes';
 
 
-// TODO: figure out how to test watchNamespaceDelete
-
 const middlewares = [thunk, k8sMiddleware];
 const mockStore = configureMockStore(middlewares);
 
 describe('k8s middleware actions', () => {
   describe('namespaceCreate', () => {
+    const namespace = 'new-namespace';
     let client;
-    const name = 'new-namespace';
 
     beforeEach(() => {
       client = {
@@ -36,9 +34,9 @@ describe('k8s middleware actions', () => {
         { type: types.NAMESPACE_LIST_SUCCESS, namespaceObjects: [] },
       ];
 
-      return store.dispatch(k8sActions.namespaceCreate(client, name))
+      return store.dispatch(k8sActions.namespaceCreate(client, namespace))
         .then(() => {
-          expect(client.createNamespace).toHaveBeenCalledWith(name);
+          expect(client.createNamespace).toHaveBeenCalledWith(namespace);
           expect(client.listNamespaces).toHaveBeenCalledWith();
           expect(store.getActions()).toEqual(expectedActions);
         });
@@ -57,9 +55,9 @@ describe('k8s middleware actions', () => {
         { type: types.NAMESPACE_CREATE_ERROR, error },
       ];
 
-      return store.dispatch(k8sActions.namespaceCreate(client, name))
+      return store.dispatch(k8sActions.namespaceCreate(client, namespace))
         .then(() => {
-          expect(client.createNamespace).toHaveBeenCalledWith(name);
+          expect(client.createNamespace).toHaveBeenCalledWith(namespace);
           expect(client.listNamespaces).not.toHaveBeenCalled();
           expect(store.getActions()).toEqual(expectedActions);
         });
@@ -67,9 +65,9 @@ describe('k8s middleware actions', () => {
   });
 
   describe('namespaceDelete', () => {
-    const name = 'some-namespace';
+    const namespace = 'some-namespace';
 
-    it('should kick off the watcher on success', () => {
+    it('should start a watcher on success', () => {
       const client = {
         deleteNamespace: jest.fn(() => new Promise((resolve) => {
           resolve();
@@ -78,16 +76,14 @@ describe('k8s middleware actions', () => {
 
       const store = mockStore({ config: { client } });
 
+      const interval = 10;
       const expectedActions = [
-        { type: types.NAMESPACE_WATCH_FOR_DELETION, name },
+        { type: types.NAMESPACE_DELETE_START_WATCH, namespace, interval },
       ];
 
-      const watchNamespaceDelete = jest.spyOn(k8sActions, 'watchNamespaceDelete');
-
-      return store.dispatch(k8sActions.namespaceDelete(client, name))
+      store.dispatch(k8sActions.namespaceDelete(client, namespace, interval))
         .then(() => {
-          expect(client.deleteNamespace).toHaveBeenCalledWith(name);
-          expect(watchNamespaceDelete).toHaveBeenCalledWith(client, name);
+          expect(client.deleteNamespace).toHaveBeenCalledWith(namespace);
           expect(store.getActions()).toEqual(expectedActions);
         });
     });
@@ -106,9 +102,89 @@ describe('k8s middleware actions', () => {
         { type: types.NAMESPACE_DELETE_ERROR, error },
       ];
 
-      return store.dispatch(k8sActions.namespaceDelete(client, name))
+      return store.dispatch(k8sActions.namespaceDelete(client, namespace))
         .then(() => {
-          expect(client.deleteNamespace).toHaveBeenCalledWith(name);
+          expect(client.deleteNamespace).toHaveBeenCalledWith(namespace);
+          expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+  });
+
+  describe('namespaceDeleteCheckWatch', () => {
+    const namespace = 'some-namespace';
+    const phase = 'Active';
+    let client;
+    let stop;
+
+    beforeEach(() => {
+      client = {
+        listNamespaces: jest.fn(() => new Promise((resolve) => {
+          resolve({
+            data: {
+              items: [
+                {
+                  metadata: { name: namespace },
+                  status: { phase },
+                },
+              ],
+            },
+          });
+        })),
+      };
+
+      stop = jest.fn();
+    });
+
+    it('should not stop the watcher if the namespace is found', () => {
+      const store = mockStore({ config: { client } });
+
+      const namespaceObjects = [{ name: namespace, status: phase }];
+      const expectedActions = [
+        { type: types.NAMESPACE_LIST_SUCCESS, namespaceObjects },
+      ];
+
+      store.dispatch(k8sActions.namespaceDeleteCheckWatch(client, namespace, stop))
+        .then(() => {
+          expect(client.listNamespaces).toHaveBeenCalledWith();
+          expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+
+    it('should stop the watcher if the namespace is not found', () => {
+      client.listNamespaces = jest.fn(() => new Promise((resolve) => {
+        resolve({ data: { items: [] } });
+      }));
+
+      const store = mockStore({ config: { client } });
+
+      const namespaceObjects = [];
+      const expectedActions = [
+        { type: types.NAMESPACE_LIST_SUCCESS, namespaceObjects },
+        { type: types.NAMESPACE_DELETE_STOP_WATCH, stop },
+      ];
+
+      store.dispatch(k8sActions.namespaceDeleteCheckWatch(client, namespace, stop))
+        .then(() => {
+          expect(client.listNamespaces).toHaveBeenCalledWith();
+          expect(store.getActions()).toEqual(expectedActions);
+        });
+    });
+
+    it('should emit an error on listNamespaces failure', () => {
+      const error = Error();
+      client.listNamespaces = jest.fn(() => new Promise((resolve, reject) => {
+        reject(error);
+      }));
+
+      const store = mockStore({ config: { client } });
+
+      const expectedActions = [
+        { type: types.NAMESPACE_LIST_ERROR, error },
+      ];
+
+      return store.dispatch(k8sActions.namespaceDeleteCheckWatch(client, namespace, stop))
+        .then(() => {
+          expect(client.listNamespaces).toHaveBeenCalledWith();
           expect(store.getActions()).toEqual(expectedActions);
         });
     });

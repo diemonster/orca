@@ -40,7 +40,9 @@ class K8sClient {
       case METHODS.PUT:
         return axios.put(this.endpoint + path, body, headers);
       default:
-        throw Error(`method ${method} not recognized`);
+        return new Promise((resolve, reject) => {
+          reject(Error(`method ${method} not recognized`));
+        });
     }
   }
 

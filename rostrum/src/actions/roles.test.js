@@ -1,9 +1,24 @@
 import * as actions from './roles';
 import * as types from './actionTypes';
 
+
 describe('actions', () => {
+  describe('roleCreate', () => {
+    it('should return an action to create a role', () => {
+      const namespace = 'some-namespace';
+      const role = 'some-role';
+      const expectedAction = {
+        type: types.ROLE_CREATE,
+        namespace,
+        role,
+      };
+
+      expect(actions.roleCreate(namespace, role)).toEqual(expectedAction);
+    });
+  });
+
   describe('roleCreateError', () => {
-    it('should emit an appropriate action', () => {
+    it('should return an action to display an error', () => {
       const error = new Error();
       const expectedAction = {
         type: types.ROLE_CREATE_ERROR,
@@ -14,8 +29,20 @@ describe('actions', () => {
     });
   });
 
+  describe('roleGet', () => {
+    it('should return an action to get a role', () => {
+      const role = 'some-role';
+      const expectedAction = {
+        type: types.ROLE_GET,
+        role,
+      };
+
+      expect(actions.roleGet(role)).toEqual(expectedAction);
+    });
+  });
+
   describe('roleGetError', () => {
-    it('should emit an appropriate action', () => {
+    it('should return an action to display an error', () => {
       const error = new Error();
       const expectedAction = {
         type: types.ROLE_GET_ERROR,

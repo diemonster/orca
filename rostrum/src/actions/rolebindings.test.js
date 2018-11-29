@@ -2,8 +2,36 @@ import * as actions from './rolebindings';
 import * as types from './actionTypes';
 
 describe('actions', () => {
+  describe('rolebindingCreate', () => {
+    it('should return an action to create a rolebinding', () => {
+      const namespace = 'some-namespace';
+      const role = 'some-role';
+      const subject = 'some-subject';
+      const expectedAction = {
+        type: types.ROLEBINDING_CREATE,
+        namespace,
+        role,
+        subject,
+      };
+
+      expect(actions.rolebindingCreate(namespace, role, subject)).toEqual(expectedAction);
+    });
+  });
+
+  describe('rolebindingCreateError', () => {
+    it('should return an action to display an error', () => {
+      const error = new Error();
+      const expectedAction = {
+        type: types.ROLEBINDING_CREATE_ERROR,
+        error,
+      };
+
+      expect(actions.rolebindingCreateError(error)).toEqual(expectedAction);
+    });
+  });
+
   describe('rolebindingList', () => {
-    it('should create an action to list rolebindings', () => {
+    it('should return an action to list rolebindings', () => {
       const expectedAction = {
         type: types.ROLEBINDING_LIST,
       };
@@ -11,20 +39,8 @@ describe('actions', () => {
       expect(actions.rolebindingList()).toEqual(expectedAction);
     });
 
-    describe('rolebindingCreateError', () => {
-      it('should emit an appropriate action', () => {
-        const error = new Error();
-        const expectedAction = {
-          type: types.ROLEBINDING_CREATE_ERROR,
-          error,
-        };
-
-        expect(actions.rolebindingCreateError(error)).toEqual(expectedAction);
-      });
-    });
-
     describe('rolebindingListError', () => {
-      it('should emit an appropriate action', () => {
+      it('should return an action to display an error', () => {
         const error = new Error();
         const expectedAction = {
           type: types.ROLEBINDING_LIST_ERROR,
@@ -36,7 +52,7 @@ describe('actions', () => {
     });
 
     describe('rolebindingListSuccess', () => {
-      it('should emit an appropriate action', () => {
+      it('should return an action to write rolebindings to state', () => {
         const namespace = 'some-namespace';
         const rolebindings = ['rolebinding1', 'rolebinding2'];
         const expectedAction = {

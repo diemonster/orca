@@ -1,8 +1,11 @@
 import * as types from '../../actions/actionTypes';
 import * as k8sActions from './k8sActions';
 import * as rolebindingActions from '../../actions/rolebindings';
+import { initialState as namespaceInitialState } from '../../reducers/namespaces';
+import { initialState as rolebindingInitialState } from '../../reducers/rolebindings';
 import k8sMiddleware from './middleware';
 import watch from '../../utils/watch';
+
 
 jest.mock('./k8sActions');
 jest.mock('../../actions/rolebindings');
@@ -19,9 +22,9 @@ describe('kubernetes middleware', () => {
     store = {
       dispatch: jest.fn(),
       getState: jest.fn(() => ({
-        config: {
-          client,
-        },
+        config: { client },
+        namespace: namespaceInitialState,
+        rolebinding: rolebindingInitialState,
       })),
     };
 
@@ -49,14 +52,20 @@ describe('kubernetes middleware', () => {
     expect(next).toHaveBeenCalledWith(action);
   });
 
-  it('dispatchs a k8s action to check for namespace deletion', () => {
+  it('dispatches a k8s action to check for namespace deletion', () => {
     const namespace = 'some-namespace';
+    const { selectedNamespace } = store.getState().namespace;
     const stop = jest.fn();
-    const action = { type: types.NAMESPACE_DELETE_CHECK_WATCH, namespace, stop };
+    const action = {
+      type: types.NAMESPACE_DELETE_CHECK_WATCH, namespace, selectedNamespace, stop,
+    };
 
     invoke(action);
 
-    expect(k8sActions.namespaceDeleteCheckWatch).toHaveBeenCalledWith(client, namespace, stop);
+    expect(k8sActions.namespaceDeleteCheckWatch).toHaveBeenCalledWith(
+      client, namespace, selectedNamespace, stop,
+    );
+
     expect(next).toHaveBeenCalledWith(action);
   });
 
@@ -89,13 +98,23 @@ describe('kubernetes middleware', () => {
     expect(k8sActions.namespaceList).toHaveBeenCalledWith(client);
   });
 
-  it('dispatches an action to list rolebindings on NAMESPACE_SELECT', () => {
+  it('dispatches an action to list rolebindings on non-empty NAMESPACE_SELECT', () => {
     const namespace = 'some-namespace';
     const action = { type: types.NAMESPACE_SELECT, namespace };
 
     invoke(action);
 
     expect(rolebindingActions.rolebindingList).toHaveBeenCalledWith(namespace);
+    expect(next).toHaveBeenCalledWith(action);
+  });
+
+  it('does not dispatch an action to list rolebindings on empty NAMESPACE_SELECT', () => {
+    const namespace = '';
+    const action = { type: types.NAMESPACE_SELECT, namespace };
+
+    invoke(action);
+
+    expect(rolebindingActions.rolebindingList).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalledWith(action);
   });
 
@@ -124,7 +143,7 @@ describe('kubernetes middleware', () => {
     expect(next).toHaveBeenCalledWith(action);
   });
 
-  it('dispatchs a k8s action to check for rolebinding deletion', () => {
+  it('dispatches a k8s action to check for rolebinding deletion', () => {
     const namespace = 'some-namespace';
     const rolebinding = 'some-rolebinding';
     const stop = jest.fn();

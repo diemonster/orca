@@ -25,7 +25,9 @@ const k8sMiddleware = store => next => (action) => {
       break;
 
     case types.NAMESPACE_DELETE_CHECK_WATCH:
-      store.dispatch(k8sActions.namespaceDeleteCheckWatch(client, action.namespace, action.stop));
+      store.dispatch(k8sActions.namespaceDeleteCheckWatch(
+        client, action.namespace, state.namespace.selectedNamespace, action.stop,
+      ));
       break;
 
     case types.NAMESPACE_DELETE_START_WATCH:
@@ -44,7 +46,10 @@ const k8sMiddleware = store => next => (action) => {
       break;
 
     case types.NAMESPACE_SELECT:
-      store.dispatch(rolebindingActions.rolebindingList(action.namespace));
+      if (action.namespace !== '') {
+        store.dispatch(rolebindingActions.rolebindingList(action.namespace));
+      }
+
       break;
 
     case types.ROLEBINDING_CREATE:

@@ -150,24 +150,65 @@ describe('k8s middleware actions', () => {
         });
     });
 
-    it('should stop the watcher if the namespace is not found', () => {
-      client.listNamespaces = jest.fn(() => new Promise((resolve) => {
-        resolve({ data: { items: [] } });
-      }));
+    describe('if the namespace is found', () => {
+      it('should clear the selected namespace if it matches the watched namespace, then stop the watcher', () => {
+        client.listNamespaces = jest.fn(() => new Promise((resolve) => {
+          resolve({ data: { items: [] } });
+        }));
+        client.listRolebindings = jest.fn(() => new Promise((resolve) => {
+          resolve({ data: { items: [] } });
+        }));
 
-      const store = mockStore({ config: { client } });
-
-      const namespaceObjects = [];
-      const expectedActions = [
-        { type: types.NAMESPACE_LIST_SUCCESS, namespaceObjects },
-        { type: types.NAMESPACE_DELETE_STOP_WATCH, stop },
-      ];
-
-      store.dispatch(k8sActions.namespaceDeleteCheckWatch(client, namespace, stop))
-        .then(() => {
-          expect(client.listNamespaces).toHaveBeenCalledWith();
-          expect(store.getActions()).toEqual(expectedActions);
+        const selectedNamespace = namespace;
+        const store = mockStore({
+          config: { client },
+          namespace: { selectedNamespace },
         });
+
+        const namespaceObjects = [];
+        const expectedActions = [
+          { type: types.NAMESPACE_LIST_SUCCESS, namespaceObjects },
+          { type: types.NAMESPACE_SELECT, namespace: '' },
+          { type: types.NAMESPACE_DELETE_STOP_WATCH, stop },
+        ];
+
+        store.dispatch(k8sActions.namespaceDeleteCheckWatch(
+          client, namespace, selectedNamespace, stop,
+        ))
+          .then(() => {
+            expect(client.listNamespaces).toHaveBeenCalledWith();
+            expect(store.getActions()).toEqual(expectedActions);
+          });
+      });
+
+      it('should not clear the selected namespace if it does not match the watched namespace, then stop the watcher', () => {
+        client.listNamespaces = jest.fn(() => new Promise((resolve) => {
+          resolve({ data: { items: [] } });
+        }));
+        client.listRolebindings = jest.fn(() => new Promise((resolve) => {
+          resolve({ data: { items: [] } });
+        }));
+
+        const selectedNamespace = 'some-different-namespace';
+        const store = mockStore({
+          config: { client },
+          namespace: { selectedNamespace },
+        });
+
+        const namespaceObjects = [];
+        const expectedActions = [
+          { type: types.NAMESPACE_LIST_SUCCESS, namespaceObjects },
+          { type: types.NAMESPACE_DELETE_STOP_WATCH, stop },
+        ];
+
+        store.dispatch(k8sActions.namespaceDeleteCheckWatch(
+          client, namespace, selectedNamespace, stop,
+        ))
+          .then(() => {
+            expect(client.listNamespaces).toHaveBeenCalledWith();
+            expect(store.getActions()).toEqual(expectedActions);
+          });
+      });
     });
 
     it('should emit an error on listNamespaces failure', () => {

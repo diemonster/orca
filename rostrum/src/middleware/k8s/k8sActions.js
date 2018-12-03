@@ -27,7 +27,7 @@ export function namespaceDelete(client, namespace, interval = DEFAULT_INTERVAL) 
     });
 }
 
-export function namespaceDeleteCheckWatch(client, namespace, stop) {
+export function namespaceDeleteCheckWatch(client, namespace, selectedNamespace, stop) {
   return dispatch => client.listNamespaces()
     .then((response) => {
       const { items } = response.data;
@@ -42,6 +42,10 @@ export function namespaceDeleteCheckWatch(client, namespace, stop) {
         if (namespace === namespaces[i]) {
           return;
         }
+      }
+
+      if (namespace === selectedNamespace) {
+        dispatch(namespaceActions.namespaceSelect(''));
       }
 
       dispatch(namespaceActions.namespaceDeleteStopWatch(stop));

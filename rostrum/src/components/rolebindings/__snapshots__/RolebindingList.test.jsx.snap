@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components RolebindingList should render itself and its subcomponents when namespacedRolebindings === 0 1`] = `
+<div
+  className="rolebinding-container"
+>
+  <h5>
+    Role Bindings:
+  </h5>
+  <ul
+    className="rolebinding-list"
+  />
+</div>
+`;
+
+exports[`components RolebindingList should render itself and subcomponents when namespacedRolebindings.length > 0 and a namespace matches 1`] = `
+<div
+  className="rolebinding-container"
+>
+  <h5>
+    Role Bindings:
+  </h5>
+  <ul
+    className="rolebinding-list"
+  >
+    <RolebindingListItem
+      key="some-rolebinding"
+      rolebindingName="some-rolebinding"
+    />
+    <RolebindingListItem
+      key="some-other-rolebinding"
+      rolebindingName="some-other-rolebinding"
+    />
+  </ul>
+</div>
+`;
+
+exports[`components RolebindingList should render itself and subcomponents when namespacedRolebindings.length > 0 and no namespaces match 1`] = `
+<div
+  className="rolebinding-container"
+>
+  <h5>
+    Role Bindings:
+  </h5>
+  <ul
+    className="rolebinding-list"
+  />
+</div>
+`;

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components RolebindingListItem should render itself and its subcomponents 1`] = `
+<li
+  className="rolebinding-list-item"
+>
+  some-rolebinding
+</li>
+`;

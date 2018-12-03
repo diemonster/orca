@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components App should render itself and its subcomponents 1`] = `
+<BrowserRouter>
+  <div
+    className="app-container"
+  >
+    <h1>
+      Orca: the Kubernetes permissions manager
+    </h1>
+    <div
+      className="kube-container"
+    >
+      <Sidebar />
+      <Switch>
+        <Route
+          component={[Function]}
+          exact={true}
+          path="/namespace/"
+        />
+        <Route
+          component={[Function]}
+          exact={true}
+          path="/pod/"
+        />
+        <Route
+          render={[Function]}
+        />
+      </Switch>
+    </div>
+  </div>
+</BrowserRouter>
+`;

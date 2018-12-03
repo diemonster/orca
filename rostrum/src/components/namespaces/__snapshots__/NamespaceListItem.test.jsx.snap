@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components NamespaceListItem should render itself with a terminating namespace 1`] = `
+<li
+  className="namespace-list-item phase-terminating"
+>
+  <h4>
+    some-namespace
+  </h4>
+  <Connect(RolebindingList)
+    namespace="some-namespace"
+  />
+</li>
+`;
+
+exports[`components NamespaceListItem should render itself with an active namespace 1`] = `
+<li
+  className="namespace-list-item phase-active"
+>
+  <h4>
+    some-namespace
+  </h4>
+  <Connect(RolebindingList)
+    namespace="some-namespace"
+  />
+</li>
+`;

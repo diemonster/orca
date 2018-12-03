@@ -7,7 +7,18 @@ module.exports = {
   ],
   "globals": {
     "document": true,
+    "window": true,
     "localStorage": true,
     "fetch": true,
+    // testing keywords:
+    "jest": true,
+    "describe": true,
+    "it": true,
+    "expect": true,
+    "beforeEach": true,
+    "afterEach": true,
+  },
+  "rules": {
+    "import/no-named-as-default": 0
   },
 };

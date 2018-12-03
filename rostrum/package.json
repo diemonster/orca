@@ -21,14 +21,41 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "test-staged": "CI=true react-scripts test --env=jsdom --findRelatedTests",
+    "cov": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "enzyme-to-json": "^3.3.4",
     "eslint": "^5.6.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
-    "redux-devtools-extension": "^2.13.5"
+    "husky": "^1.1.4",
+    "lint-staged": "^8.0.4",
+    "redux-devtools-extension": "^2.13.5",
+    "redux-mock-store": "^1.5.3"
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "yarn test-staged",
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": [
+        "lint-staged"
+      ]
+    }
   }
 }

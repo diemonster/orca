@@ -2,15 +2,15 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import rootReducer from '../reducers/rootReducer';
-
-import k8sMiddleware from '../middleware/k8s/middleware';
-import errorMiddleware from '../middleware/errors/middleware';
+import authMiddleware from '../middleware/authMiddleware';
+import k8sMiddleware from '../middleware/k8sMiddleware';
+import errorMiddleware from '../middleware/errorMiddleware';
 
 
 export default function configureStore(initialState) {
   return createStore(
     rootReducer,
     initialState,
-    applyMiddleware(thunk, k8sMiddleware, errorMiddleware),
+    applyMiddleware(thunk, authMiddleware, errorMiddleware, k8sMiddleware),
   );
 }

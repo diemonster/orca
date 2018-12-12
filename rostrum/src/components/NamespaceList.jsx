@@ -1,0 +1,67 @@
+import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { namespaceList } from '../actions/namespaceActions';
+
+import NamespaceListItem from './NamespaceListItem';
+
+export class NamespaceList extends React.Component {
+  componentDidMount() {
+    const { dispatchNamespaceList } = this.props;
+
+    dispatchNamespaceList();
+  }
+
+  render() {
+    const { namespaceObjects } = this.props;
+
+    if (namespaceObjects.length === 0) {
+      return (
+        <div className="namespace-list-container">
+          <p>Loading namespaces...</p>
+        </div>
+      );
+    }
+
+    const namespaceListItems = namespaceObjects.map(namespace => (
+      <NamespaceListItem
+        key={namespace.name}
+        namespace={namespace.name}
+        phase={namespace.status}
+      />
+    ));
+
+    return (
+      <div className="namespace-list-container">
+        <ul className="namespace-list">
+          {namespaceListItems}
+        </ul>
+      </div>
+    );
+  }
+}
+
+NamespaceList.propTypes = {
+  dispatchNamespaceList: PropTypes.func.isRequired,
+  namespaceObjects: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      status: PropTypes.string.isRequired,
+    }),
+  ),
+};
+
+NamespaceList.defaultProps = {
+  namespaceObjects: [],
+};
+
+const mapStateToProps = state => ({
+  namespaceObjects: state.namespace.namespaceObjects,
+});
+
+const mapDispatchToProps = dispatch => ({
+  dispatchNamespaceList: () => dispatch(namespaceList()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NamespaceList);

@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/middleware/k8s/k8sActions.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">src/middleware/k8s</a> k8sActions.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">79.69% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>51/64</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">62.5% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>5/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">83.72% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>36/43</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">83.02% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>44/53</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as namespaceActions from '../../actions/namespaces';
+import * as roleActions from '../../actions/roles';
+import * as rolebindingActions from '../../actions/rolebindings';
+import { DEFAULT_INTERVAL } from '../../utils/watch';
+&nbsp;
+&nbsp;
+export function namespaceCreate(client, name) {
+  return (dispatch) =&gt; {
+    dispatch(namespaceActions.namespaceCreateChangeInput(''));
+    return client.createNamespace(name)
+      .then(() =&gt; {
+        dispatch(namespaceActions.namespaceList());
+      })
+      .catch((error) =&gt; {
+        dispatch(namespaceActions.namespaceCreateError(error));
+      });
+  };
+}
+&nbsp;
+export function namespaceDelete(client, namespace, interval = DEFAULT_INTERVAL) {
+  return dispatch =&gt; client.deleteNamespace(namespace)
+    .then(() =&gt; {
+      dispatch(namespaceActions.namespaceDeleteStartWatch(namespace, interval));
+    })
+    .catch((error) =&gt; {
+      dispatch(namespaceActions.namespaceDeleteError(error));
+    });
+}
+&nbsp;
+export function namespaceDeleteCheckWatch(client, namespace, stop) {
+  return dispatch =&gt; client.listNamespaces()
+    .then((response) =&gt; {
+      const { items } = response.data;
+      const namespaceObjects = items.map(item =&gt; ({
+        name: item.metadata.name,
+        status: item.status.phase,
+      }));
+&nbsp;
+      dispatch(namespaceActions.namespaceListSuccess(namespaceObjects));
+      const namespaces = namespaceObjects.map(namespaceObject =&gt; namespaceObject.name);
+      for (let i = 0; i &lt; namespaces.length; i += 1) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (namespace === namespaces[i]) {
+          return;
+        }
+      }
+&nbsp;
+      dispatch(namespaceActions.namespaceDeleteStopWatch(stop));
+    })
+    .catch((error) =&gt; {
+      dispatch(namespaceActions.namespaceListError(error));
+    });
+}
+&nbsp;
+export function namespaceList(client) {
+  return dispatch =&gt; client.listNamespaces()
+    .then((response) =&gt; {
+      const { items } = response.data;
+      const namespaceObjects = items.map(<span class="fstat-no" title="function not covered" >na</span>mespace =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+        name: namespace.metadata.name,
+        status: namespace.status.phase,
+      }));
+&nbsp;
+      return dispatch(namespaceActions.namespaceListSuccess(namespaceObjects));
+    })
+    .catch((error) =&gt; {
+      dispatch(namespaceActions.namespaceListError(error));
+    });
+}
+&nbsp;
+export function rolebindingCreate(client, namespace, role, subject) {
+  // check if the role exists
+  return (dispatch) =&gt; {
+    dispatch(rolebindingActions.rolebindingCreateChangeInput('subject', ''));
+    return client.getRole(namespace, role)
+    // if it does, create the rolebinding
+      .then(() =&gt; client.createRolebinding(namespace, role, subject)
+        .then(() =&gt; {
+          dispatch(rolebindingActions.rolebindingList(namespace));
+        })
+        .catch((createRolebindingError) =&gt; {
+          dispatch(rolebindingActions.rolebindingCreateError(createRolebindingError));
+        }))
+    // if it doesn't, create the role first, _then_ create the rolebinding
+      .catch((getRoleError) =&gt; {
+        if (getRoleError.response.status === 404) {
+          return client.createRole(namespace, role)
+            .then(() =&gt; client.createRolebinding(namespace, role, subject)
+              .then(() =&gt; {
+                dispatch(rolebindingActions.rolebindingList(namespace));
+              })
+              .catch((createRolebindingError) =&gt; {
+                dispatch(rolebindingActions.rolebindingCreateError(createRolebindingError));
+              }))
+            .catch((createRoleError) =&gt; {
+              dispatch(roleActions.roleCreateError(createRoleError));
+            });
+        }
+&nbsp;
+        return dispatch(roleActions.roleGetError(getRoleError));
+      });
+  };
+}
+&nbsp;
+export function rolebindingDelete(client, namespace, rolebinding, interval = DEFAULT_INTERVAL) {
+  return dispatch =&gt; client.deleteRolebinding(namespace, rolebinding)
+    .then(() =&gt; {
+      dispatch(rolebindingActions.rolebindingDeleteStartWatch(namespace, rolebinding, interval));
+    })
+    .catch((error) =&gt; {
+      dispatch(rolebindingActions.rolebindingDeleteError(error));
+    });
+}
+&nbsp;
+export function <span class="fstat-no" title="function not covered" >rolebindingDeleteCheckWatch(</span>client, namespace, rolebinding, stop) {
+<span class="cstat-no" title="statement not covered" >  return <span class="fstat-no" title="function not covered" >di</span>spatch =&gt; <span class="cstat-no" title="statement not covered" >client.listRolebindings(namespace)</span></span>
+    .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+      const { items } = <span class="cstat-no" title="statement not covered" >response.data;</span>
+      const rolebindings = <span class="cstat-no" title="statement not covered" >items.map(<span class="fstat-no" title="function not covered" >it</span>em =&gt; <span class="cstat-no" title="statement not covered" >item.metadata.name)</span>;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      dispatch(rolebindingActions.rolebindingListSuccess(namespace, rolebindings));</span>
+<span class="cstat-no" title="statement not covered" >      for (let i = 0; i &lt; rolebindings.length; i += 1) {</span>
+<span class="cstat-no" title="statement not covered" >        if (rolebinding === rolebindings[i]) {</span>
+<span class="cstat-no" title="statement not covered" >          return;</span>
+        }
+      }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      dispatch(rolebindingActions.rolebindingDeleteStopWatch(stop));</span>
+    })
+    .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; {
+<span class="cstat-no" title="statement not covered" >      dispatch(rolebindingActions.rolebindingListError(error));</span>
+    });
+}
+&nbsp;
+export function rolebindingList(client, namespace) {
+  return dispatch =&gt; client.listRolebindings(namespace)
+    .then((response) =&gt; {
+      const { items } = response.data;
+      const rolebindings = items.map(<span class="fstat-no" title="function not covered" >it</span>em =&gt; <span class="cstat-no" title="statement not covered" >item.metadata.name)</span>;
+      return dispatch(rolebindingActions.rolebindingListSuccess(namespace, rolebindings));
+    })
+    .catch((error) =&gt; {
+      dispatch(rolebindingActions.rolebindingListError(error));
+    });
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Nov 29 2018 13:07:23 GMT-0800 (Pacific Standard Time)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

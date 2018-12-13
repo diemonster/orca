@@ -23,9 +23,9 @@ export class NamespaceCreate extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    const { dispatchNamespaceCreate, namespaceCreateInput } = this.props;
+    const { dispatchNamespaceCreate, namespaceCreateInput, username } = this.props;
 
-    dispatchNamespaceCreate(namespaceCreateInput);
+    dispatchNamespaceCreate(namespaceCreateInput, username);
   }
 
   render() {
@@ -59,17 +59,19 @@ NamespaceCreate.propTypes = {
   dispatchNamespaceCreate: PropTypes.func.isRequired,
   dispatchNamespaceCreateChangeInput: PropTypes.func.isRequired,
   namespaceCreateInput: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
   namespaceCreateInput: state.namespace.namespaceCreateInput,
+  username: state.auth.username,
 });
 
 const mapDispatchToProps = dispatch => ({
   dispatchNamespaceCreateChangeInput: namespaceCreateInput => (
     dispatch(namespaceCreateChangeInput(namespaceCreateInput))
   ),
-  dispatchNamespaceCreate: namespace => dispatch(namespaceCreate(namespace)),
+  dispatchNamespaceCreate: (namespace, username) => dispatch(namespaceCreate(namespace, username)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NamespaceCreate);

@@ -1,10 +1,13 @@
+import * as k8sRoleOptions from '../middleware/k8sRoleOptions';
 import {
   ROLEBINDING_CREATE_CHANGE_INPUT,
   ROLEBINDING_LIST_SUCCESS,
 } from '../actions/actionTypes';
 
-const roleOptions = ['admin'];
-const roleInput = roleOptions[0];
+
+const roleInput = k8sRoleOptions.ADMIN;
+const roleOptions = Object.values(k8sRoleOptions);
+
 export const initialState = {
   rolebindings: [],
   roleInput,

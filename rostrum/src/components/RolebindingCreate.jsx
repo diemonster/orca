@@ -47,7 +47,7 @@ export class RolebindingCreate extends React.Component {
       roleOptions,
     } = this.props;
 
-    const rolebindingOptions = roleOptions.map(option => (
+    const rolebindingOptions = Object.values(roleOptions).map(option => (
       <option key={option} value={option}>{option}</option>
     ));
 

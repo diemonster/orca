@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import * as templates from './k8sTemplates';
+import * as k8sRoleOptions from './k8sRoleOptions';
 
 
 export const DEFAULT_ENDPOINT = 'http://localhost:8080';
@@ -66,8 +67,12 @@ class K8sClient {
   createRole(namespace, role) {
     let body;
     switch (role) {
-      case 'admin':
+      case k8sRoleOptions.ADMIN:
         body = templates.createAdminRole(namespace);
+        break;
+
+      case k8sRoleOptions.READONLY:
+        body = templates.createReadOnlyRole(namespace);
         break;
 
       default:

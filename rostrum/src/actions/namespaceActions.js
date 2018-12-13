@@ -1,9 +1,10 @@
 import * as types from './actionTypes';
 
-export function namespaceCreate(namespace) {
+export function namespaceCreate(namespace, username) {
   return {
     type: types.NAMESPACE_CREATE,
     namespace,
+    username,
   };
 }
 

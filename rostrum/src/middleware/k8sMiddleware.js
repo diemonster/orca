@@ -10,11 +10,9 @@ const k8sMiddleware = store => next => (action) => {
     case types.NAMESPACE_CREATE: {
       const state = store.getState();
       const { k8sClient } = state.k8s;
-      const { authClient } = state.auth;
-      const currentUser = authClient.getCurrentUser();
 
       store.dispatch(k8sMiddlewareActions.namespaceCreate(
-        k8sClient, action.namespace, currentUser,
+        k8sClient, action.namespace, action.username,
       ));
 
       break;

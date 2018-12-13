@@ -1,3 +1,6 @@
+import * as k8sRoleOptions from './k8sRoleOptions';
+
+
 export function createNamespace(name) {
   return {
     kind: 'Namespace',
@@ -16,11 +19,12 @@ export function createNamespace(name) {
 // functions because the rules will need to be different for each preset role
 // we support.
 export function createAdminRole(namespace) {
+  const role = k8sRoleOptions.ADMIN;
   return {
     kind: 'Role',
     apiVersion: 'rbac.authorization.k8s.io/v1',
     metadata: {
-      name: `${namespace}-namespace-admin-role`,
+      name: `${namespace}-namespace-${role}-role`,
       namespace,
     },
     rules: [
@@ -28,6 +32,25 @@ export function createAdminRole(namespace) {
         apiGroups: ['*'],
         resources: ['*'],
         verbs: ['*'],
+      },
+    ],
+  };
+}
+
+export function createReadOnlyRole(namespace) {
+  const role = k8sRoleOptions.READONLY;
+  return {
+    kind: 'Role',
+    apiVersion: 'rbac.authorization.k8s.io/v1',
+    metadata: {
+      name: `${namespace}-namespace-${role}-role`,
+      namespace,
+    },
+    rules: [
+      {
+        apiGroups: ['*'],
+        resources: ['*'],
+        verbs: ['get', 'list', 'watch'],
       },
     ],
   };

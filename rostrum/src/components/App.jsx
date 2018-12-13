@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { checkAuthentication, handleAuthentication } from '../actions/authActions';
+import { handleAuthentication } from '../actions/authActions';
 import NavigationBar from './NavigationBar';
 import Namespaces from './Namespaces';
 import Rolebindings from './Rolebindings';
@@ -13,23 +13,17 @@ export class App extends React.Component {
     this.handleAuthentication();
   }
 
-  checkAuthentication() {
-    const { dispatchCheckAuthentication } = this.props;
-    dispatchCheckAuthentication();
-  }
-
   // If the URL has been populated with information from logging in through
   // Auth0, then call the authenticator's handleAuthentication method to
   // set session information
   handleAuthentication() {
     const { dispatchHandleAuthentication, location } = this.props;
     if (/access_token|id_token|error/.test(location.hash)) {
-      dispatchHandleAuthentication();
+      dispatchHandleAuthentication(location.hash);
     }
   }
 
   render() {
-    this.checkAuthentication();
     const { isAuthenticated } = this.props;
 
     if (isAuthenticated) {
@@ -67,8 +61,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  dispatchCheckAuthentication: () => dispatch(checkAuthentication()),
-  dispatchHandleAuthentication: () => dispatch(handleAuthentication()),
+  dispatchHandleAuthentication: urlHash => dispatch(handleAuthentication(urlHash)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

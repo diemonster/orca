@@ -9,19 +9,13 @@ export const initialState = {
 
 export default function authReducer(state = initialState, action) {
   switch (action.type) {
-    case types.AUTH_SET_CLIENT:
+    case types.AUTH_SET_AUTHENTICATED:
       return {
         ...state,
-        authClient: action.authClient,
+        isAuthenticated: action.authenticated,
       };
 
-    case types.SET_IS_AUTHENTICATED:
-      return {
-        ...state,
-        isAuthenticated: action.isAuthenticated,
-      };
-
-    case types.SET_USERNAME:
+    case types.AUTH_SET_USERNAME:
       return {
         ...state,
         username: action.username,

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { login, logout, setUsername } from '../actions/authActions';
+import { login, logout } from '../actions/authActions';
 import './navigation-bar.css';
 
 
@@ -25,7 +25,7 @@ export class NavigationBar extends React.Component {
   }
 
   render() {
-    const { dispatchSetUsername, isAuthenticated, username } = this.props;
+    const { isAuthenticated, username } = this.props;
 
     if (isAuthenticated) {
       return (
@@ -42,10 +42,6 @@ export class NavigationBar extends React.Component {
           </ul>
         </div>
       );
-    }
-
-    if (username) {
-      dispatchSetUsername('');
     }
 
     return (
@@ -65,7 +61,6 @@ export class NavigationBar extends React.Component {
 NavigationBar.propTypes = {
   dispatchLogin: PropTypes.func.isRequired,
   dispatchLogout: PropTypes.func.isRequired,
-  dispatchSetUsername: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   username: PropTypes.string.isRequired,
 };
@@ -78,7 +73,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   dispatchLogin: () => dispatch(login()),
   dispatchLogout: () => dispatch(logout()),
-  dispatchSetUsername: username => dispatch(setUsername(username)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavigationBar);

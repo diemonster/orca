@@ -28,7 +28,6 @@ export class RolebindingListItem extends React.Component {
 
     return (
       <li className="rolebinding-list-item">
-        {rolebindingName}
         <button
           type="button"
           className="rolebinding-delete-button"
@@ -36,6 +35,7 @@ export class RolebindingListItem extends React.Component {
         >
         X
         </button>
+        {rolebindingName}
       </li>
     );
   }

@@ -2,14 +2,20 @@ import * as namespaceActions from './namespaceActions';
 import * as roleActions from './roleActions';
 import * as rolebindingActions from './rolebindingActions';
 import { DEFAULT_INTERVAL } from '../utils/watch';
+import * as k8sRoleOptions from '../middleware/k8sRoleOptions';
 
 
-export function namespaceCreate(client, namespace, currentUser) {
+export function namespaceCreate(client, namespace, username) {
   return (dispatch) => {
     dispatch(namespaceActions.namespaceCreateChangeInput(''));
+
+    if (!namespace || !username) {
+      return dispatch(namespaceActions.namespaceCreateError(Error('Namespace or username missing!')));
+    }
+
     return client.createNamespace(namespace)
-      .then(() => client.createRole(namespace, 'admin')
-        .then(() => client.createRolebinding(namespace, 'admin', currentUser)
+      .then(() => client.createRole(namespace, k8sRoleOptions.ADMIN)
+        .then(() => client.createRolebinding(namespace, k8sRoleOptions.ADMIN, username)
           .catch((rolebindingCreateError) => {
             dispatch(rolebindingActions.rolebindingCreateError(rolebindingCreateError));
           }))

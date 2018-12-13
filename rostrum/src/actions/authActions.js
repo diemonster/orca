@@ -14,21 +14,10 @@ export function checkAuthentication() {
   };
 }
 
-export function getCurrentUser() {
-  return {
-    type: types.AUTH_GET_CURRENT_USER,
-  };
-}
-
-export function handleAuthentication() {
+export function handleAuthentication(urlHash) {
   return {
     type: types.AUTH_HANDLE_AUTHENTICATION,
-  };
-}
-
-export function isAuthenticated() {
-  return {
-    type: types.AUTH_CHECK_AUTHENTICATION,
+    urlHash,
   };
 }
 
@@ -45,9 +34,16 @@ export function logout() {
   };
 }
 
+export function setAuthenticated(authenticated) {
+  return {
+    type: types.AUTH_SET_AUTHENTICATED,
+    authenticated,
+  };
+}
+
 export function setUsername(username) {
   return {
-    type: types.SET_USERNAME,
+    type: types.AUTH_SET_USERNAME,
     username,
   };
 }

@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components Rolebindings should render itself and subcomponents when a namespace is selected 1`] = `
+<div
+  className="rolebinding-container"
+>
+  <Connect(RolebindingCreate) />
+  <Connect(RolebindingList) />
+</div>
+`;
+
+exports[`components Rolebindings should render itself when no namespace is selected 1`] = `
+<div
+  className="rolebinding-container"
+>
+  <h2>
+    (No Namespace Selected)
+  </h2>
+</div>
+`;

@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components NamespaceList should render itself and its subcomponents when namespaceObjects === 0 1`] = `
+<div
+  className="namespace-list-container"
+>
+  <p>
+    Loading namespaces...
+  </p>
+</div>
+`;
+
+exports[`components NamespaceList should render itself and subcomponents when namespaceObjects.length > 0 1`] = `
+<div
+  className="namespace-list-container"
+>
+  <ul
+    className="namespace-list"
+  >
+    <Connect(NamespaceListItem)
+      key="namespace1"
+      namespace="namespace1"
+      phase="Active"
+    />
+    <Connect(NamespaceListItem)
+      key="namespace2"
+      namespace="namespace2"
+      phase="Terminating"
+    />
+  </ul>
+</div>
+`;

@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components NamespaceListItem should render itself with a terminating namespace 1`] = `
+<li
+  className="namespace-list-item"
+>
+  <div
+    className="namespace-button-container"
+  >
+    <button
+      className="namespace-select-button phase-terminating "
+      onClick={[Function]}
+      type="button"
+    >
+      some-namespace
+    </button>
+    <button
+      className="namespace-delete-button phase-terminating "
+      onClick={[Function]}
+      type="button"
+    >
+      X
+    </button>
+  </div>
+</li>
+`;
+
+exports[`components NamespaceListItem should render itself with an active namespace 1`] = `
+<li
+  className="namespace-list-item"
+>
+  <div
+    className="namespace-button-container"
+  >
+    <button
+      className="namespace-select-button phase-active "
+      onClick={[Function]}
+      type="button"
+    >
+      some-namespace
+    </button>
+    <button
+      className="namespace-delete-button phase-active "
+      onClick={[Function]}
+      type="button"
+    >
+      X
+    </button>
+  </div>
+</li>
+`;

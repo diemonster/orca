@@ -1,10 +1,10 @@
 import axios from 'axios';
-import * as templates from './templates';
+import * as templates from './k8sTemplates';
 import K8sClient, {
   METHODS,
   DEFAULT_ENDPOINT,
   getTokenFromSession,
-} from './client';
+} from './k8sClient';
 
 
 describe('kubernetes client', () => {

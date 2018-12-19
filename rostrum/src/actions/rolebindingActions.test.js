@@ -1,4 +1,4 @@
-import * as actions from './rolebindings';
+import * as actions from './rolebindingActions';
 import * as types from './actionTypes';
 
 describe('actions', () => {

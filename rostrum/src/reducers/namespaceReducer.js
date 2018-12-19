@@ -4,6 +4,7 @@ import {
   NAMESPACE_SELECT,
 } from '../actions/actionTypes';
 
+
 export const initialState = {
   namespaceObjects: [],
   namespaceCreateInput: '',

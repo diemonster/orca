@@ -1,18 +1,24 @@
-import * as types from '../../actions/actionTypes';
-import * as k8sActions from './k8sActions';
-import * as rolebindingActions from '../../actions/rolebindings';
-import { initialState as namespaceInitialState } from '../../reducers/namespaces';
-import { initialState as rolebindingInitialState } from '../../reducers/rolebindings';
-import k8sMiddleware from './middleware';
-import watch from '../../utils/watch';
+import * as types from '../actions/actionTypes';
+import * as k8sMiddlewareActions from '../actions/k8sMiddlewareActions';
+import * as rolebindingActions from '../actions/rolebindingActions';
+import { initialState as namespaceInitialState } from '../reducers/namespaceReducer';
+import { initialState as rolebindingInitialState } from '../reducers/rolebindingReducer';
+import k8sMiddleware from './k8sMiddleware';
+import watch from '../utils/watch';
 
 
-jest.mock('./k8sActions');
-jest.mock('../../actions/rolebindings');
-jest.mock('../../utils/watch');
+jest.mock('../actions/k8sMiddlewareActions');
+jest.mock('../actions/rolebindingActions');
+jest.mock('../utils/watch');
 
 describe('kubernetes middleware', () => {
-  const client = {};
+  const k8sClient = {};
+  const state = {
+    k8s: { k8sClient },
+    namespace: namespaceInitialState,
+    rolebinding: rolebindingInitialState,
+  };
+
   let store;
   let next;
   let invoke;
@@ -21,11 +27,7 @@ describe('kubernetes middleware', () => {
     jest.resetAllMocks();
     store = {
       dispatch: jest.fn(),
-      getState: jest.fn(() => ({
-        config: { client },
-        namespace: namespaceInitialState,
-        rolebinding: rolebindingInitialState,
-      })),
+      getState: jest.fn(() => state),
     };
 
     next = jest.fn();
@@ -34,11 +36,13 @@ describe('kubernetes middleware', () => {
 
   it('dispatches a k8s action to create a namespace', () => {
     const namespace = 'new-namespace';
-    const action = { type: types.NAMESPACE_CREATE, namespace };
+    const username = 'username';
+    const action = { type: types.NAMESPACE_CREATE, namespace, username };
 
     invoke(action);
 
-    expect(k8sActions.namespaceCreate).toHaveBeenCalledWith(client, namespace);
+    expect(k8sMiddlewareActions.namespaceCreate)
+      .toHaveBeenCalledWith(k8sClient, namespace, username);
     expect(next).toHaveBeenCalledWith(action);
   });
 
@@ -48,7 +52,7 @@ describe('kubernetes middleware', () => {
 
     invoke(action);
 
-    expect(k8sActions.namespaceDelete).toHaveBeenCalledWith(client, namespace);
+    expect(k8sMiddlewareActions.namespaceDelete).toHaveBeenCalledWith(k8sClient, namespace);
     expect(next).toHaveBeenCalledWith(action);
   });
 
@@ -62,8 +66,8 @@ describe('kubernetes middleware', () => {
 
     invoke(action);
 
-    expect(k8sActions.namespaceDeleteCheckWatch).toHaveBeenCalledWith(
-      client, namespace, selectedNamespace, stop,
+    expect(k8sMiddlewareActions.namespaceDeleteCheckWatch).toHaveBeenCalledWith(
+      k8sClient, namespace, selectedNamespace, stop,
     );
 
     expect(next).toHaveBeenCalledWith(action);
@@ -95,7 +99,7 @@ describe('kubernetes middleware', () => {
 
     invoke(action);
 
-    expect(k8sActions.namespaceList).toHaveBeenCalledWith(client);
+    expect(k8sMiddlewareActions.namespaceList).toHaveBeenCalledWith(k8sClient);
   });
 
   it('dispatches an action to list rolebindings on non-empty NAMESPACE_SELECT', () => {
@@ -128,7 +132,8 @@ describe('kubernetes middleware', () => {
 
     invoke(action);
 
-    expect(k8sActions.rolebindingCreate).toHaveBeenCalledWith(client, namespace, role, subject);
+    expect(k8sMiddlewareActions.rolebindingCreate)
+      .toHaveBeenCalledWith(k8sClient, namespace, role, subject);
     expect(next).toHaveBeenCalledWith(action);
   });
 
@@ -139,7 +144,8 @@ describe('kubernetes middleware', () => {
 
     invoke(action);
 
-    expect(k8sActions.rolebindingDelete).toHaveBeenCalledWith(client, namespace, rolebinding);
+    expect(k8sMiddlewareActions.rolebindingDelete)
+      .toHaveBeenCalledWith(k8sClient, namespace, rolebinding);
     expect(next).toHaveBeenCalledWith(action);
   });
 
@@ -154,9 +160,9 @@ describe('kubernetes middleware', () => {
     invoke(action);
 
     expect(
-      k8sActions.rolebindingDeleteCheckWatch,
+      k8sMiddlewareActions.rolebindingDeleteCheckWatch,
     ).toHaveBeenCalledWith(
-      client, namespace, rolebinding, stop,
+      k8sClient, namespace, rolebinding, stop,
     );
 
     expect(next).toHaveBeenCalledWith(action);
@@ -192,7 +198,7 @@ describe('kubernetes middleware', () => {
 
     invoke(action);
 
-    expect(k8sActions.rolebindingList).toHaveBeenCalledWith(client, namespace);
+    expect(k8sMiddlewareActions.rolebindingList).toHaveBeenCalledWith(k8sClient, namespace);
     expect(next).toHaveBeenCalledWith(action);
   });
 
@@ -201,9 +207,9 @@ describe('kubernetes middleware', () => {
 
     invoke(action);
 
-    Object.keys(k8sActions).forEach((k8sAction) => {
-      if (typeof k8sAction === 'function') {
-        expect(k8sAction).not.toHaveBeenCalled();
+    Object.keys(k8sMiddlewareActions).forEach((k8sMiddlewareAction) => {
+      if (typeof k8sMiddlewareAction === 'function') {
+        expect(k8sMiddlewareAction).not.toHaveBeenCalled();
       }
     });
 

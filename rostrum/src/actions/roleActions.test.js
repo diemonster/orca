@@ -1,4 +1,4 @@
-import * as actions from './roles';
+import * as actions from './roleActions';
 import * as types from './actionTypes';
 
 

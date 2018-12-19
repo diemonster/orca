@@ -1,27 +1,21 @@
 import * as authMiddlewareActions from '../actions/authMiddlewareActions';
 import * as types from '../actions/actionTypes';
+import { authExemptActions } from './authConsts';
 
 
 const authMiddleware = store => next => (action) => {
-  // Excepting actions used to manage authentication, we should check that
-  // the user is still authenticated before each action.
-  const exemptActions = [
-    types.AUTH_ERROR,
-    types.AUTH_CHECK_AUTHENTICATION,
-    types.AUTH_HANDLE_AUTHENTICATION,
-    types.AUTH_LOGIN,
-    types.AUTH_LOGOUT,
-    types.AUTH_SET_AUTHENTICATED,
-    types.AUTH_SET_USERNAME,
-  ];
-
-  if (!exemptActions.includes(action.type)) {
+  if (!authExemptActions.includes(action.type)) {
     store.dispatch(authMiddlewareActions.checkAuthentication());
   }
 
   switch (action.type) {
     case types.AUTH_CHECK_AUTHENTICATION: {
       store.dispatch(authMiddlewareActions.checkAuthentication());
+      break;
+    }
+
+    case types.AUTH_CLEAR_LOCAL_STORAGE: {
+      store.dispatch(authMiddlewareActions.clearLocalStorage());
       break;
     }
 

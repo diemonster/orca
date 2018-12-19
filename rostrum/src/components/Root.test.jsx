@@ -2,77 +2,80 @@ import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-import { Provider } from 'react-redux';
-import Root from './Root';
-import Authenticator from '../authenticator/authenticator';
+import auth0 from 'auth0-js';
+import K8sClient from '../middleware/k8sClient';
 
-import { initialState as namespace } from '../reducers/namespaces';
-import { initialState as rolebinding } from '../reducers/rolebindings';
+import Root from './Root';
+
+import { initialState as auth } from '../reducers/authReducer';
+import { initialState as config } from '../reducers/configReducer';
+import { initialState as k8s } from '../reducers/k8sReducer';
+import { initialState as namespace } from '../reducers/namespaceReducer';
+import { initialState as rolebinding } from '../reducers/rolebindingReducer';
+
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('components', () => {
+  const auth0Domain = 'test.com';
+  const auth0ClientID = '1234567890';
+  const proxyURL = 'proxy.url';
+  const state = {
+    auth, config, k8s, namespace, rolebinding,
+  };
+
+  beforeEach(() => {
+    window.config = {
+      auth0Domain, auth0ClientID, proxyURL,
+    };
+  });
+
   describe('Root', () => {
-    beforeEach(() => {
-      window.config = {
-        auth0Domain: 'test.com',
-        auth0ClientID: '1234567890',
-      };
-    });
-
     it('should render itself and its subcomponents', () => {
-      const expectedState = {
-        config: {
-          auth0Domain: 'test.com',
-          auth0ClientID: '1234567890',
-        },
-        namespace,
-        rolebinding,
-      };
-
       const root = shallow(<Root />);
-
       expect(root).toMatchSnapshot();
-      expect(root.find(Provider).prop('store').getState()).toEqual(expectedState);
     });
 
-    it('should set properties on componentWillMount', () => {
-      const expectedState = {
-        config: {
-          auth0Domain: 'test.com',
-          auth0ClientID: '1234567890',
-        },
-        namespace,
-        rolebinding,
-      };
+    describe('on componentWillMount', () => {
+      it('configures store with supplied clients', () => {
+        const authClient = { someKey: 'some val' };
+        const k8sClient = { someKey: 'some val' };
+        window.config = { authClient, k8sClient };
 
-      const instance = shallow(<Root />).instance();
+        const expectedState = {
+          ...state,
+          auth: { ...state.auth, authClient },
+          config: { ...state.config, authClient, k8sClient },
+          k8s: { ...state.k8s, k8sClient },
+        };
 
-      const authenticator = new Authenticator(
-        window.config.auth0Domain,
-        window.config.auth0ClientID,
-      );
+        const instance = shallow(<Root />).instance();
+        expect(instance.store.getState()).toEqual(expectedState);
+      });
 
-      authenticator.getProfile = (cb) => {
-        this.auth0.client.userInfo('', cb);
-      };
+      it('configures store with constructed clients', () => {
+        const authClient = new auth0.WebAuth({
+          domain: auth0Domain,
+          clientID: auth0ClientID,
+          redirectUri: window.location.origin,
+          responseType: 'token id_token',
+          scope: 'openid profile',
+        });
 
-      expect(instance.config).toEqual(window.config);
-      expect(instance.store.getState()).toEqual(expectedState);
-      // I don't know if there's a better way to check for equality of two
-      // discrete but identical instances. Using JSON.stringify() here returns an
-      // error about converting a circular structure, and
-      // expect(instance.authenticator).toEqual(authenticator) returns false
-      // even though jest states that there is no visible diff.
-      expect(`${instance.authenticator}`).toEqual(`${authenticator}`);
+        const k8sClient = new K8sClient(proxyURL);
+
+        const expectedState = {
+          ...state,
+          auth: { ...state.auth, authClient },
+          config: {
+            auth0Domain, auth0ClientID, proxyURL, authClient: null, k8sClient: null,
+          },
+          k8s: { ...state.k8s, k8sClient },
+        };
+
+        const instance = shallow(<Root />).instance();
+        expect(instance.store.getState()).toEqual(expectedState);
+      });
     });
-
-    // it('should generate the right <Auth> component', () => {
-    // const instance = shallow(<Root />).instance();
-    // instance.authenticator.getProfile = jest.fn();
-    // const auth = shallow(instance.authWithProps());
-    //
-    // expect(auth.prop('authenticator')).toBe(instance.authenticator);
-    // });
   });
 });

@@ -1,5 +1,5 @@
 import toastr from 'toastr';
-import errorMiddleware from './middleware';
+import errorMiddleware from './errorMiddleware';
 
 const create = () => {
   const store = {};

@@ -14,6 +14,12 @@ export function checkAuthentication() {
   };
 }
 
+export function clearLocalStorage() {
+  return {
+    type: types.AUTH_CLEAR_LOCAL_STORAGE,
+  };
+}
+
 export function handleAuthentication(urlHash) {
   return {
     type: types.AUTH_HANDLE_AUTHENTICATION,
@@ -22,7 +28,6 @@ export function handleAuthentication(urlHash) {
 }
 
 export function login() {
-  console.log('creating login action');
   return {
     type: types.AUTH_LOGIN,
   };

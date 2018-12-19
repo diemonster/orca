@@ -1,19 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`components App should render itself and its subcomponents 1`] = `
-<BrowserRouter>
+exports[`components App should not render namespaces nor rolebindings when not authenticated 1`] = `
+<div
+  className="app-container"
+>
+  <Connect(NavigationBar) />
+  <h1>
+    Orca: the Kubernetes permissions manager
+  </h1>
+</div>
+`;
+
+exports[`components App should render namespaces and rolebindings when authenticated 1`] = `
+<div
+  className="app-container"
+>
+  <Connect(NavigationBar) />
+  <h1>
+    Orca: the Kubernetes permissions manager
+  </h1>
   <div
-    className="app-container"
+    className="kube-container"
   >
-    <h1>
-      Orca: the Kubernetes permissions manager
-    </h1>
-    <div
-      className="kube-container"
-    >
-      <Namespaces />
-      <Connect(Rolebindings) />
-    </div>
+    <Namespaces />
+    <Connect(Rolebindings) />
   </div>
-</BrowserRouter>
+</div>
 `;

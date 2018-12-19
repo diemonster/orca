@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components NavigationBar should render the login view when not authenticated 1`] = `
+<div
+  className="navigation-bar"
+>
+  <ul>
+    <li
+      className="auth"
+    >
+      <button
+        onClick={[Function]}
+        type="button"
+      >
+        Log In
+      </button>
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`components NavigationBar should render the logout view when authenticated 1`] = `
+<div
+  className="navigation-bar"
+>
+  <ul>
+    <li
+      className="profile"
+    >
+      username
+    </li>
+    <li
+      className="auth"
+    >
+      <button
+        onClick={[Function]}
+        type="button"
+      >
+        Log Out
+      </button>
+    </li>
+  </ul>
+</div>
+`;

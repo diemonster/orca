@@ -1,8 +1,8 @@
-import configReducer from './config';
+import configReducer, { initialState } from './configReducer';
+
 
 describe('config reducer', () => {
   it('should return the initial state', () => {
-    const initialState = {};
     expect(configReducer(undefined, {})).toEqual(initialState);
   });
 });

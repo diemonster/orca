@@ -7,47 +7,40 @@ import { NamespaceCreate } from './NamespaceCreate';
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('components', () => {
+  let props;
+
+  beforeEach(() => {
+    props = {
+      dispatchNamespaceCreate: jest.fn(),
+      dispatchNamespaceCreateChangeInput: jest.fn(),
+      namespaceCreateInput: '',
+      username: '',
+    };
+  });
+
   describe('NamespaceCreate', () => {
     it('should render itself and its subcomponents', () => {
-      const props = {
-        dispatchNamespaceCreate: jest.fn(),
-        dispatchNamespaceCreateChangeInput: jest.fn(),
-        namespaceCreateInput: '',
-      };
-
       const namespaceCreate = shallow(<NamespaceCreate {...props} />);
-
       expect(namespaceCreate).toMatchSnapshot();
     });
 
-    it('appropriately calls dispatchNamespaceCreateChangeInput() on input change', () => {
-      const mockFn = jest.fn();
-      const props = {
-        dispatchNamespaceCreate: jest.fn(),
-        dispatchNamespaceCreateChangeInput: mockFn,
-        namespaceCreateInput: '',
-      };
+    describe('methods', () => {
+      it('handleChange dispatches an action when input changes', () => {
+        const event = { preventDefault: jest.fn(), target: { value: 'a' } };
+        const namespaceCreate = shallow(<NamespaceCreate {...props} />);
+        namespaceCreate.find('input').simulate('change', event);
+        expect(props.dispatchNamespaceCreateChangeInput).toBeCalledWith('a');
+      });
 
-      const namespaceCreate = shallow(<NamespaceCreate {...props} />);
+      it('handleSubmit dispatches an action when form is submitted', () => {
+        props.namespaceCreateInput = 'new-namespace';
+        props.username = 'username';
 
-      const event = { preventDefault: jest.fn(), target: { value: 'a' } };
-      namespaceCreate.find('input').simulate('change', event);
-      expect(mockFn).toBeCalledWith('a');
-    });
-
-    it('appropriately calls dispatchNamespaceCreate() on form submit', () => {
-      const mockFn = jest.fn();
-      const props = {
-        dispatchNamespaceCreate: mockFn,
-        dispatchNamespaceCreateChangeInput: jest.fn(),
-        namespaceCreateInput: 'new-namespace',
-      };
-
-      const namespaceCreate = shallow(<NamespaceCreate {...props} />);
-
-      const event = { preventDefault: jest.fn(), target: { value: 'new-namespace' } };
-      namespaceCreate.find('form').simulate('submit', event);
-      expect(mockFn).toBeCalledWith('new-namespace');
+        const event = { preventDefault: jest.fn(), target: { value: 'new-namespace' } };
+        const namespaceCreate = shallow(<NamespaceCreate {...props} />);
+        namespaceCreate.find('form').simulate('submit', event);
+        expect(props.dispatchNamespaceCreate).toBeCalledWith('new-namespace', 'username');
+      });
     });
   });
 });

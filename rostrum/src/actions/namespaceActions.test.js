@@ -1,4 +1,4 @@
-import * as actions from './namespaces';
+import * as actions from './namespaceActions';
 import * as types from './actionTypes';
 
 

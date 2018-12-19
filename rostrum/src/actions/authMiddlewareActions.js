@@ -1,6 +1,7 @@
 import toastr from 'toastr';
 import * as authActions from './authActions';
 import history from '../middleware/history';
+import { authStorageItems } from '../middleware/authConsts';
 
 
 export function checkAuthentication() {
@@ -10,14 +11,22 @@ export function checkAuthentication() {
 
     if (!isAuthenticated) {
       toastr.warning('Auth0 token has expired; clearing session and logging out.');
-      dispatch(authActions.logout());
+      dispatch(authActions.clearLocalStorage());
+      dispatch(authActions.setAuthenticated(false));
+      dispatch(authActions.setUsername(''));
     }
+  };
+}
+
+export function clearLocalStorage() {
+  return () => {
+    Object.values(authStorageItems).forEach(item => localStorage.removeItem(item));
   };
 }
 
 export function handleAuthentication(authClient, urlHash) {
   return (dispatch) => {
-    let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    let expiresAt = JSON.parse(localStorage.getItem(authStorageItems.EXPIRES_AT));
     const isAuthenticated = new Date().getTime() < expiresAt;
 
     // This handles the case where a user has refreshed the page (which resets
@@ -25,7 +34,7 @@ export function handleAuthentication(authClient, urlHash) {
     // need to repopulate the auth fields in the state.
     if (isAuthenticated) {
       dispatch(authActions.setAuthenticated(true));
-      dispatch(authActions.setUsername(localStorage.getItem('username')));
+      dispatch(authActions.setUsername(localStorage.getItem(authStorageItems.USERNAME)));
     }
 
     if (!isAuthenticated) {
@@ -37,13 +46,13 @@ export function handleAuthentication(authClient, urlHash) {
 
           authClient.client.userInfo(authResult.accessToken, (userInfoErr, profile) => {
             if (profile) {
-              localStorage.setItem('username', profile.name);
+              localStorage.setItem(authStorageItems.USERNAME, profile.name);
               dispatch(authActions.setUsername(profile.name));
             }
           });
 
-          localStorage.setItem('access_token', authResult.accessToken);
-          localStorage.setItem('expires_at', expiresAt);
+          localStorage.setItem(authStorageItems.ACCESS_TOKEN, authResult.accessToken);
+          localStorage.setItem(authStorageItems.EXPIRES_AT, expiresAt);
           dispatch(authActions.setAuthenticated(true));
         }
       });
@@ -59,13 +68,7 @@ export function login(authClient) {
 
 export function logout() {
   return (dispatch) => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('expires_at');
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('name');
-    localStorage.removeItem('nickname');
-    localStorage.removeItem('username');
-
+    dispatch(authActions.clearLocalStorage());
     dispatch(authActions.setUsername(''));
     dispatch(authActions.setAuthenticated(false));
 

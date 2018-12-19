@@ -1,5 +1,6 @@
-import namespaceReducer, { initialState } from './namespaces';
+import namespaceReducer, { initialState } from './namespaceReducer';
 import * as types from '../actions/actionTypes';
+
 
 describe('namespace reducer', () => {
   it('should return the initial state', () => {
